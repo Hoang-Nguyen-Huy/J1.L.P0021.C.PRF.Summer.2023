@@ -31,7 +31,28 @@ int TotalStudents = 0;
 int TotalCourse = 0;
 bool IsRunning = true;
 //
-
+bool checkInt (char input[]) {	// kiem tra co phai la so nguyen hay khong
+	int valid = 0;
+		while (valid == 0) {
+			int isNegative = 0;
+			if (input[0] == '-') {
+				isNegative = 1;
+			}
+			int i = isNegative ? 1 : 0;
+			while (input[i] != '\0') {
+				if (input[i] < '0' || input[i] > '9') {
+					break;
+				}
+				i++;
+			}
+			if (input[i] == '\0') {
+				valid = 1;
+				return true;
+			} else {
+				return false;
+			}
+		} 
+}
 void Menu();
 void Create();
 int Find(char StudentID[10]);
@@ -49,9 +70,17 @@ void ExitProject();
 int main () {
 	while (IsRunning) {
 		Menu();
-		int Option;
-		scanf("%d", &Option);
-		switch(Option) {
+		char Option[50]; // kiem tra su lua chon cua nguoi dung
+		int chosen;   // kiem tra su lua chon cua nguoi dung
+		scanf("%s", Option);
+		while (checkInt(Option) == false) {
+			printf("\tPlease enter a valid option: ");
+			scanf("%s", Option);
+		}
+		if (checkInt(Option) == true) {
+			chosen = atoi(Option);
+		}
+		switch(chosen) {
 			case 1: 
 				system("cls");
 				printf("\n\t\t********Add a New Student********\n\n");
@@ -96,7 +125,8 @@ int IsAlreadyExists(char GivenLine[300], char InfoType, char StudentID[300]) { /
 void Create () {  // tao hoc sinh
 	char StudentID[300];
 	char Name[300];
-	int NumberOfCourses;
+	char CheckNumberOfCourses[300]; // kiem tra so luong khoa hoc
+	int NumberOfCourses; // kiem tra so luong khoa hoc
 	char CourseName[300];
 		
 	int IsValidID = 0;  
@@ -135,7 +165,14 @@ void Create () {  // tao hoc sinh
 	int IsValidNumberOfCourse = 0;
 	while (!IsValidNumberOfCourse) {
 		printf(" Number of courses: ");
-		scanf("%d", &NumberOfCourses);
+		scanf("%s", CheckNumberOfCourses);
+		while (checkInt(CheckNumberOfCourses) == false) {
+			printf(" Please enter a valid number of courses: ");
+			scanf("%s", CheckNumberOfCourses);
+		}
+		if (checkInt(CheckNumberOfCourses) == true) {
+			NumberOfCourses = atoi(CheckNumberOfCourses);
+		}
 		if(NumberOfCourses <= 0 || NumberOfCourses > 3) {
 			printf(" Error: NUmber of courses can not be more than 4 and less than 1.\n\n");
 			IsValidNumberOfCourse = 0;
