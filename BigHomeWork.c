@@ -55,6 +55,7 @@ bool checkInt (char input[]) {	// kiem tra co phai la so nguyen hay khong
 }
 void Menu();
 void Create();
+void ShowAllList();
 int Find(char StudentID[10]);
 void Sort();   // chua nghi ra
 void Update(int StudentFoundIndex);  
@@ -86,6 +87,11 @@ int main () {
 				printf("\n\t\t********Add a New Student********\n\n");
 				Create();
 				break;
+			case 7: 
+			    system("cls");
+			    printf("\n\t\t********List of all students********\n\n");
+			    ShowAllList();
+			    break;
 		}
 	}
 	return 0;
@@ -101,6 +107,8 @@ void Menu () {   // menu nguoi dung
 	printf("\t\t[4] Update student.\n");
 	printf("\t\t[5] Delete a student.\n");
 	printf("\t\t[6] Delete all student.\n");
+	printf("\t\t[7] Show all list.\n");
+	printf("\t\t[8] Report.\n");
 	printf("\t\t[0] Exit the Program.\n");
 	printf("\t\t=========================\n");
 	printf("\t\tEnter your Choice: ");
@@ -181,10 +189,7 @@ void Create () {  // tao hoc sinh
 		}
 	}
 	
-	strcpy(Students[TotalStudents].ID, StudentID);  // copy lai ID
-	strcpy(Students[TotalStudents].Name, Name);
-	Students[TotalStudents].NumberOfCourse = NumberOfCourses;
-	TotalStudents++;
+	
 	
 	for (i = 0; i < NumberOfCourses; i++) {
 		printf(" Enter Course %d Name: ", i + 1);
@@ -195,9 +200,67 @@ void Create () {  // tao hoc sinh
 		TotalCourse++;
 	}
 	
+	strcpy(Students[TotalStudents].ID, StudentID);  // copy lai ID
+	strcpy(Students[TotalStudents].Name, Name);   // copy lai Name
+	Students[TotalStudents].NumberOfCourse = NumberOfCourses;	// lay gia tri cua so khoa hoc
+	TotalStudents++;
+	
 	printf("\n Student Added Succesfully.\n\n");
 }
 
+void ShowAllList () {    // xuat ra full list
+	printf("|==========|====================|===================================================|===============|\n");
+    printf("|    ID    |        Name        |                    Course Name                    |   NO.Course   |\n");
+    printf("|==========|====================|===================================================|===============|\n");
+    
+    for (i = 0; i < TotalStudents; i++) {
+    	printf("|");
+    	printf("%s", Students[i].ID);								// ma sinh vien
+    	for (j = 0; j < (10 - strlen(Students[i].ID)); j++) {
+    		printf(" ");
+		}
+		
+		printf("|");
+		printf("%s", Students[i].Name);								// ten sinh vien
+		for (j = 0; j < (20 - strlen(Students[i].Name)); j++) {
+			printf(" ");
+		}	
+		
+		printf("|");
+		for (j = 0; j < Students[i].NumberOfCourse; j++) {
+			printf("%s", Courses[j].Name);
+			if (j == Students[i].NumberOfCourse - 1) {
+				printf(". ");
+				continue;
+			}
+			printf(", ");
+		}
+		
+		if (Students[i].NumberOfCourse == 1) {
+			for (j = 0; j < (51 - 5); j++) {
+				printf(" ");
+			}
+		} else if (Students[i].NumberOfCourse == 2) {
+			for (j = 0; j < (51 - 10); j++) {
+				printf(" ");
+			}
+		} else if (Students[i].NumberOfCourse == 3) {
+			for (j = 0; j < (51 - 15); j++) {
+				printf(" ");
+			}
+		}
+		
+		printf("|");
+		printf("%d", Students[i].NumberOfCourse);			// so luong khoa hoc
+		for (j = 0; j < 14; j++) {
+			printf(" ");
+		}	
+		
+		printf("|\n");
+		printf("|----------|--------------------|---------------------------------------------------|---------------|\n");
+	}
+	printf("\n");
+}
 
 
 
