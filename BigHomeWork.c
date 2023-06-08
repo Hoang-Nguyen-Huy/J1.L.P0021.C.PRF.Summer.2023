@@ -26,7 +26,7 @@ struct StudentInfo Students[100];
 struct CourseInfo Courses[500];
 
 // bien toan cuc
-int i, j;
+int i, j, z;
 int TotalStudents = 0;
 int TotalCourse = 0;
 bool IsRunning = true;
@@ -181,7 +181,7 @@ void Create () {  // tao hoc sinh
 		if (checkInt(CheckNumberOfCourses) == true) {
 			NumberOfCourses = atoi(CheckNumberOfCourses);
 		}
-		if(NumberOfCourses <= 0 || NumberOfCourses > 3) {
+		if(NumberOfCourses <= 0 || NumberOfCourses > 4) {
 			printf(" Error: NUmber of courses can not be more than 4 and less than 1.\n\n");
 			IsValidNumberOfCourse = 0;
 		} else {
@@ -227,13 +227,24 @@ void ShowAllList () {    // xuat ra full list
 		}	
 		
 		printf("|");
-		for (j = 0; j < Students[i].NumberOfCourse; j++) {
-			printf("%s", Courses[j].Name);
-			if (j == Students[i].NumberOfCourse - 1) {
-				printf(". ");
-				continue;
+		if (i == 1) {			// xuat cac khoa hoc ma sinh vien thu i = 1 dang hoc
+			for (z = Students[i - 1].NumberOfCourse; z <= Students[i - 1].NumberOfCourse + Students[i].NumberOfCourse - 1; z++) {
+				printf("%s", Courses[z].Name);
+				if (z == Students[i - 1].NumberOfCourse + Students[i].NumberOfCourse - 1) {
+					printf(". ");
+					continue;
+				}
+				printf(", ");
 			}
-			printf(", ");
+		} else if (i == 0) {  // xuat cac khoa hoc ma sinh vien thu i = 0 dang hoc
+			for (j = 0; j < Students[i].NumberOfCourse; j++) {
+				printf("%s", Courses[j].Name);
+				if (j == Students[i].NumberOfCourse - 1) {
+					printf(". ");
+					continue;
+				}
+				printf(", ");
+			}
 		}
 		
 		if (Students[i].NumberOfCourse == 1) {
@@ -246,6 +257,10 @@ void ShowAllList () {    // xuat ra full list
 			}
 		} else if (Students[i].NumberOfCourse == 3) {
 			for (j = 0; j < (51 - 15); j++) {
+				printf(" ");
+			}
+		} else if (Students[i].NumberOfCourse == 4) {
+			for (j = 0; j < (51 - 20); j++) {
 				printf(" ");
 			}
 		}
