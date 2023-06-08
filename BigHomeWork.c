@@ -245,7 +245,7 @@ void ShowAllList () {    // xuat ra full list
 				}
 				printf(", ");
 			}
-		}
+		}		// chua xu ly duoc khi i > 1
 		
 		if (Students[i].NumberOfCourse == 1) {
 			for (j = 0; j < (51 - 5); j++) {
