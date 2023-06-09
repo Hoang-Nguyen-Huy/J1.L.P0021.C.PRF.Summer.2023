@@ -109,17 +109,29 @@ void Menu () {   // menu nguoi dung
 	printf("\t\tEnter your Choice: ");
 }
 
-int IsAlreadyExists(char GivenLine[300], char InfoType, char StudentID[300]) { //kiem tra ID da bi trung hay ko
+int IsAlreadyExists(char GivenLine[300], char InfoType, char StudentID[300]) { //kiem tra ID, Email, Phone da bi trung hay ko
 	int IDExists = 0;
+	int EmailExists = 0;
+	int PhoneExists = 0;
 	int ep;
 	
 	for (ep = 0; ep < TotalStudents; ep++) {
 		if (strcmp(GivenLine, Students[ep].ID) == 0) {
 			IDExists++;
 		}
+		if(strcmp(GivenLine, Students[ep].Email) == 0 && strcmp(StudentID,Students[ep].ID) != 0 ) {
+            EmailExists++;
+        }
+         if(strcmp(GivenLine,Students[ep].PhoneNumber) == 0 && strcmp(StudentID,Students[ep].ID) != 0) {
+            PhoneExists++;
+        }
 	}
 	if (InfoType == 'i') {
 		return IDExists;
+	} else if (InfoType == 'e') {
+		return EmailExists;
+	} else if (InfoType == 'p') {
+		return PhoneExists;
 	} else {
 		return 0;
 	}
@@ -143,7 +155,7 @@ void Create () {  // tao hoc sinh
 	}
 	
 	int IsValidName = 0;
-	while (!IsValidName) {			// nhap ten sinh vien
+	while (!IsValidName) {				// nhap ten sinh vien
 		printf(" Enter the Name: ");
 		scanf(" %[^\n]s", &Name);
 		if (strlen(Name) > 20) {
@@ -175,30 +187,78 @@ void Create () {  // tao hoc sinh
 		}
 	}
 	
-
 	int IsValidSex = 0;
-	while (!IsValidSex) {
-		printf(" Are you [M]Male or [F]Female? ");
+	while (!IsValidSex) {				// nhap gioi tinh
+		printf(" Are you [M] Male or [F] Female? ");
 		scanf("%s", &Sex);
-		if (Sex[0] == 'M' || Sex[0] == 'F') {
+		if (Sex[0] == 'M' || Sex[0] == 'm') {
+			Sex[0] = 'M';
+			Sex[1] = 'a';
+			Sex[2] = 'l';
+			Sex[3] = 'e';
+			IsValidSex = 1;
+		} else if (Sex[0] == 'F' || Sex[0] == 'f') {
+			Sex[0] = 'F';
+			Sex[1] = 'e';
+			Sex[2] = 'm';
+			Sex[3] = 'a';
+			Sex[4] = 'l';
+			Sex[5] = 'e';
 			IsValidSex = 1;
 		} else {
-			printf(" Error: Your gender is not valid!!!\n\n");
+			printf(" Error: Your option is not valid!!!\n");
 			IsValidSex = 0;
 		}
 	}		
 	
+	int IsValidEmail = 0;		
+	while (!IsValidEmail) {			// nhap email
+		printf(" Enter the email: ");
+		scanf("%s", &Email);
+		if (IsAlreadyExists(Email, 'e', StudentID) > 0) {
+			printf(" This Email is ALREADY EXISTS. \n\n");
+			IsValidEmail = 0;
+		} else if (strlen(Email) > 30) {
+			printf(" Error: Email can not be more than 30 characters.\n\n");
+			IsValidEmail = 0;
+		} else if (strlen(Email) <= 0) {
+			printf(" Error: Email can not be empty.\n\n");
+			IsValidEmail = 0;
+		} else {
+			IsValidEmail = 1;
+		}
+	}
 	
+	int IsValidPhone = 0;
+	while (!IsValidPhone) {
+		printf(" Enter the Phone Number: ");
+		scanf("%s", &Phone);
+		if (IsAlreadyExists(Phone, 'p', StudentID) > 0) {
+			printf(" This Phone Number is ALREADY EXISTS.\n");
+			IsValidPhone = 0;
+		} else if (strlen(Phone) > 20) {
+			printf(" Error: Phone can not be more than 20 characters.\n\n");
+			IsValidPhone = 0;
+		} else if (strlen(Phone) <= 0) {
+			printf(" Error: Phone can not be empty.\n\n");
+			IsValidPhone = 0;
+		} else {
+			IsValidPhone = 1;
+		}
+	}
 	
-	
-	strcpy(Students[TotalStudents].ID, StudentID);  // copy lai ID
-	strcpy(Students[TotalStudents].Name, Name);   // copy lai Name
-	
-	fprintf(file, "Name: %s\n", Name);
-	fprintf(file, "ID: %s\n", StudentID);
-	fprintf(file, "Sex: %c\n", Sex[0]);
-	fprintf(file, "\n\n");
+	strcpy(Students[TotalStudents].Name, Name);   		// copy lai Name
+	strcpy(Students[TotalStudents].ID, StudentID);  	// copy lai ID
+	strcpy(Students[TotalStudents].Sex, Sex);			// copy gioi tinh
+	strcpy(Students[TotalStudents].Email, Email);		// copy email
+	strcpy(Students[TotalStudents].PhoneNumber, Phone); // copy dien thoai
 	TotalStudents++;
+	fprintf(file, "Name: %s\n", Name);				// nhap ten vao file
+	fprintf(file, "ID: %s\n", StudentID);			// nhap ma sinh vien vao file
+	fprintf(file, "Sex: %s\n", Sex);  				// nhap gioi tinh vao file
+	fprintf(file, "Email: %s\n", Email);			// nhap email vao file
+	fprintf(file, "---------------------\n");	
+	
 	
 	
 	printf("\n Student Added Succesfully.\n\n");
