@@ -12,25 +12,27 @@ Class: SE1809
 #include <unistd.h>
 
 struct StudentInfo {
-	char Name[30];
-	char ID[10];
-	int NumberOfCourse;	
+	char Name[30];			// ten
+	char ID[10];			// ma sinh vien
+	char Email[100];		// email
+	char PhoneNumber[50];	// so dien thoai
+	char Sex[10];		// gioi tinh
+	char DateOfBirth[50];	// ngay sinh
+	char PresentAddress[100];	// noi o hien tai
+	char Countries[100];		// que quan
 };
 
-struct CourseInfo {
-	char StudentID[10];
-	char Name[20];
-};
 
 struct StudentInfo Students[100];
-struct CourseInfo Courses[500];
+
 
 // bien toan cuc
 int i, j, z;
 int TotalStudents = 0;
-int TotalCourse = 0;
 bool IsRunning = true;
+FILE *file;
 //
+
 bool checkInt (char input[]) {	// kiem tra co phai la so nguyen hay khong
 	int valid = 0;
 		while (valid == 0) {
@@ -87,11 +89,6 @@ int main () {
 				printf("\n\t\t********Add a New Student********\n\n");
 				Create();
 				break;
-			case 7: 
-			    system("cls");
-			    printf("\n\t\t********List of all students********\n\n");
-			    ShowAllList();
-			    break;
 		}
 	}
 	return 0;
@@ -101,14 +98,12 @@ void Menu () {   // menu nguoi dung
 	printf("\n\n\t********Student Management System********\n\n");
 	printf("\t\t\tMAIN MENU\n");
 	printf("\t\t=========================\n");
-	printf("\t\t[1] Create.\n");
+	printf("\t\t[1] Add a new student to the list.\n");
 	printf("\t\t[2] Find student.\n");
-	printf("\t\t[3] Sort list.\n");
-	printf("\t\t[4] Update student.\n");
-	printf("\t\t[5] Delete a student.\n");
-	printf("\t\t[6] Delete all student.\n");
-	printf("\t\t[7] Show all list.\n");
-	printf("\t\t[8] Report.\n");
+	printf("\t\t[3] Update student.\n");
+	printf("\t\t[4] Delete a student.\n");
+	printf("\t\t[5] Delete all student.\n");
+	printf("\t\t[6] Show all list.\n");
 	printf("\t\t[0] Exit the Program.\n");
 	printf("\t\t=========================\n");
 	printf("\t\tEnter your Choice: ");
@@ -131,14 +126,39 @@ int IsAlreadyExists(char GivenLine[300], char InfoType, char StudentID[300]) { /
 }
 
 void Create () {  // tao hoc sinh
-	char StudentID[300];
-	char Name[300];
-	char CheckNumberOfCourses[300]; // kiem tra so luong khoa hoc
-	int NumberOfCourses; // kiem tra so luong khoa hoc
-	char CourseName[300];
-		
+	char StudentID[50];		// ma sinh vien 
+	char Name[50]; 			// ten 
+	char DateOfBirth[50]; 		// ngay sinh
+	char Sex[10]; 				// gioi tinh
+	char Phone[15];  			// so dien thoai
+	char Email[50];   			// email
+	char PresentAdress[100];  	// noi o hien tai
+	char Countries[50];  		// que quan
+	
+	file = fopen("StudentManagement.txt", "a");			// goi file
+	
+	if (file == NULL) {
+		printf("Can't access to file\n");
+		exit(1);
+	}
+	
+	int IsValidName = 0;
+	while (!IsValidName) {			// nhap ten sinh vien
+		printf(" Enter the Name: ");
+		scanf(" %[^\n]s", &Name);
+		if (strlen(Name) > 20) {
+			printf(" Error: Name can not be more than 20 characters.\n\n");
+			IsValidName = 0;
+		} else if (strlen(Name) <= 0) {
+			printf(" Error: Name can not be empty.\n\n");
+			IsValidName = 0;
+		} else {
+			IsValidName = 1;
+		}
+	}
+	
 	int IsValidID = 0;  
-	while (!IsValidID) {
+	while (!IsValidID) {				// nhap ma sinh vien
 		printf(" Enter the ID: ");
 		scanf("%s", &StudentID);
 		if (IsAlreadyExists(StudentID, 'i', StudentID) > 0) {
@@ -155,127 +175,37 @@ void Create () {  // tao hoc sinh
 		}
 	}
 	
-	int IsValidName = 0;
-	while (!IsValidName) {
-		printf(" Enter the Name: ");
-		scanf(" %[^\n]s", &Name);
-		if (strlen(Name) > 20) {
-			printf(" Error: Name can not be more than 20 characters.\n\n");
-			IsValidName = 0;
-		} else if (strlen(Name) <= 0) {
-			printf(" Error: Name can not be empty.\n\n");
-			IsValidName = 0;
+
+	int IsValidSex = 0;
+	while (!IsValidSex) {
+		printf(" Are you [M]Male or [F]Female? ");
+		scanf("%s", &Sex);
+		if (Sex[0] == 'M' || Sex[0] == 'F') {
+			IsValidSex = 1;
 		} else {
-			IsValidName = 1;
+			printf(" Error: Your gender is not valid!!!\n\n");
+			IsValidSex = 0;
 		}
-	}
-	
-	int IsValidNumberOfCourse = 0;
-	while (!IsValidNumberOfCourse) {
-		printf(" Number of courses: ");
-		scanf("%s", CheckNumberOfCourses);
-		while (checkInt(CheckNumberOfCourses) == false) {
-			printf(" Please enter a valid number of courses: ");
-			scanf("%s", CheckNumberOfCourses);
-		}
-		if (checkInt(CheckNumberOfCourses) == true) {
-			NumberOfCourses = atoi(CheckNumberOfCourses);
-		}
-		if(NumberOfCourses <= 0 || NumberOfCourses > 4) {
-			printf(" Error: NUmber of courses can not be more than 4 and less than 1.\n\n");
-			IsValidNumberOfCourse = 0;
-		} else {
-			IsValidNumberOfCourse = 1;
-		}
-	}
+	}		
 	
 	
 	
-	for (i = 0; i < NumberOfCourses; i++) {
-		printf(" Enter Course %d Name: ", i + 1);
-		scanf(" %[^\n]s", &CourseName);
-		
-		strcpy(Courses[TotalCourse].StudentID, StudentID);
-		strcpy(Courses[TotalCourse].Name, CourseName);
-		TotalCourse++;
-	}
 	
 	strcpy(Students[TotalStudents].ID, StudentID);  // copy lai ID
 	strcpy(Students[TotalStudents].Name, Name);   // copy lai Name
-	Students[TotalStudents].NumberOfCourse = NumberOfCourses;	// lay gia tri cua so khoa hoc
+	
+	fprintf(file, "Name: %s\n", Name);
+	fprintf(file, "ID: %s\n", StudentID);
+	fprintf(file, "Sex: %c\n", Sex[0]);
+	fprintf(file, "\n\n");
 	TotalStudents++;
 	
+	
 	printf("\n Student Added Succesfully.\n\n");
+	fclose(file);
 }
 
-void ShowAllList () {    // xuat ra full list
-	printf("|==========|====================|===================================================|===============|\n");
-    printf("|    ID    |        Name        |                    Course Name                    |   NO.Course   |\n");
-    printf("|==========|====================|===================================================|===============|\n");
-    
-    for (i = 0; i < TotalStudents; i++) {
-    	printf("|");
-    	printf("%s", Students[i].ID);								// ma sinh vien
-    	for (j = 0; j < (10 - strlen(Students[i].ID)); j++) {
-    		printf(" ");
-		}
-		
-		printf("|");
-		printf("%s", Students[i].Name);								// ten sinh vien
-		for (j = 0; j < (20 - strlen(Students[i].Name)); j++) {
-			printf(" ");
-		}	
-		
-		printf("|");
-		if (i == 1) {			// xuat cac khoa hoc ma sinh vien thu i = 1 dang hoc
-			for (z = Students[i - 1].NumberOfCourse; z <= Students[i - 1].NumberOfCourse + Students[i].NumberOfCourse - 1; z++) {
-				printf("%s", Courses[z].Name);
-				if (z == Students[i - 1].NumberOfCourse + Students[i].NumberOfCourse - 1) {
-					printf(". ");
-					continue;
-				}
-				printf(", ");
-			}
-		} else if (i == 0) {  // xuat cac khoa hoc ma sinh vien thu i = 0 dang hoc
-			for (j = 0; j < Students[i].NumberOfCourse; j++) {
-				printf("%s", Courses[j].Name);
-				if (j == Students[i].NumberOfCourse - 1) {
-					printf(". ");
-					continue;
-				}
-				printf(", ");
-			}
-		}		// chua xu ly duoc khi i > 1
-		
-		if (Students[i].NumberOfCourse == 1) {
-			for (j = 0; j < (51 - 5); j++) {
-				printf(" ");
-			}
-		} else if (Students[i].NumberOfCourse == 2) {
-			for (j = 0; j < (51 - 10); j++) {
-				printf(" ");
-			}
-		} else if (Students[i].NumberOfCourse == 3) {
-			for (j = 0; j < (51 - 15); j++) {
-				printf(" ");
-			}
-		} else if (Students[i].NumberOfCourse == 4) {
-			for (j = 0; j < (51 - 20); j++) {
-				printf(" ");
-			}
-		}
-		
-		printf("|");
-		printf("%d", Students[i].NumberOfCourse);			// so luong khoa hoc
-		for (j = 0; j < 14; j++) {
-			printf(" ");
-		}	
-		
-		printf("|\n");
-		printf("|----------|--------------------|---------------------------------------------------|---------------|\n");
-	}
-	printf("\n");
-}
+
 
 
 
