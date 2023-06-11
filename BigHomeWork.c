@@ -15,7 +15,7 @@ struct StudentInfo {
 	char Name[30];			// ten
 	char ID[10];			// ma sinh vien
 	char Email[100];		// email
-	char PhoneNumber[50];	// so dien thoai
+	char PhoneNumber[15];	// so dien thoai
 	char Sex[10];		// gioi tinh
 	char DateOfBirth[50];	// ngay sinh
 	char PresentAddress[100];	// noi o hien tai
@@ -63,7 +63,7 @@ void Sort();   // chua nghi ra
 void Update(int StudentFoundIndex);  
 void DeleteStudent(int StudentIndex);
 void DeleteAllStudent();
-int IsAlreadyExists(char GivenLine[30], char InfoType, char StudentID[300]);
+bool IsExistsInFile(const char *filename, const char *code);
 void ErrorAndRestart(char *Error[100]);
 void DeleteCourseByIndex(int CourseIndex);
 void DeleteStudentByIndex(int CourseIndex);
@@ -109,32 +109,21 @@ void Menu () {   // menu nguoi dung
 	printf("\t\tEnter your Choice: ");
 }
 
-int IsAlreadyExists(char GivenLine[300], char InfoType, char StudentID[300]) { //kiem tra ID, Email, Phone da bi trung hay ko
-	int IDExists = 0;
-	int EmailExists = 0;
-	int PhoneExists = 0;
-	int ep;
-	
-	for (ep = 0; ep < TotalStudents; ep++) {
-		if (strcmp(GivenLine, Students[ep].ID) == 0) {
-			IDExists++;
+bool IsExistsInFile(const char *filename, const char *code) {
+	file = fopen(filename, "r");
+	if (file == NULL) {
+		printf("Canot access to file........\n");
+		return false;
+	}
+	char line[100];
+	while (fgets(line, sizeof(line), file) != NULL) {			// kiem tra tung dong
+		if (strstr(line, code) != NULL) {				// kiem tra chuoi con trong chuoi lon
+			fclose(file);
+			return true;
 		}
-		if(strcmp(GivenLine, Students[ep].Email) == 0 && strcmp(StudentID,Students[ep].ID) != 0 ) {
-            EmailExists++;
-        }
-         if(strcmp(GivenLine,Students[ep].PhoneNumber) == 0 && strcmp(StudentID,Students[ep].ID) != 0) {
-            PhoneExists++;
-        }
 	}
-	if (InfoType == 'i') {
-		return IDExists;
-	} else if (InfoType == 'e') {
-		return EmailExists;
-	} else if (InfoType == 'p') {
-		return PhoneExists;
-	} else {
-		return 0;
-	}
+	fclose(file);
+	return false;
 }
 
 void Create () {  // tao hoc sinh
@@ -144,15 +133,12 @@ void Create () {  // tao hoc sinh
 	char Sex[10]; 				// gioi tinh
 	char Phone[15];  			// so dien thoai
 	char Email[50];   			// email
-	char PresentAdress[100];  	// noi o hien tai
+	char PresentAdress[200];  	// noi o hien tai
 	char Countries[50];  		// que quan
 	
-	file = fopen("StudentManagement.txt", "a");			// goi file
-	
-	if (file == NULL) {
-		printf("Can't access to file\n");
-		exit(1);
-	}
+	file = fopen("StudentManagement.txt", "a");
+	fprintf(file, "\n");
+	fclose(file);
 	
 	int IsValidName = 0;
 	while (!IsValidName) {				// nhap ten sinh vien
@@ -165,15 +151,19 @@ void Create () {  // tao hoc sinh
 			printf(" Error: Name can not be empty.\n\n");
 			IsValidName = 0;
 		} else {
+			file = fopen("StudentManagement.txt", "a");
+			fprintf(file, "Name: %s\n", Name);				// nhap ten vao file
+			fclose(file);
 			IsValidName = 1;
 		}
 	}
+	
 	
 	int IsValidID = 0;  
 	while (!IsValidID) {				// nhap ma sinh vien
 		printf(" Enter the ID: ");
 		scanf("%s", &StudentID);
-		if (IsAlreadyExists(StudentID, 'i', StudentID) > 0) {
+		if (IsExistsInFile("StudentManagement.txt", StudentID) == true) {
 			printf(" Error: This ID is already exists.\n\n");
 			IsValidID = 0;
 		} else if (strlen(StudentID) > 10) {
@@ -183,9 +173,13 @@ void Create () {  // tao hoc sinh
 			printf(" Error: ID can not be empty.\n\n");
 			IsValidID = 0;
 		} else {
+			file = fopen("StudentManagement.txt", "a");
+			fprintf(file, "ID: %s\n", StudentID);			// nhap ma sinh vien vao file
+			fclose(file);
 			IsValidID = 1;
 		}
 	}
+	
 	
 	int IsValidSex = 0;
 	while (!IsValidSex) {				// nhap gioi tinh
@@ -196,6 +190,9 @@ void Create () {  // tao hoc sinh
 			Sex[1] = 'a';
 			Sex[2] = 'l';
 			Sex[3] = 'e';
+			file = fopen("StudentManagement.txt", "a");
+			fprintf(file, "Sex: %s\n", Sex);  				// nhap gioi tinh vao file
+			fclose(file);
 			IsValidSex = 1;
 		} else if (Sex[0] == 'F' || Sex[0] == 'f') {
 			Sex[0] = 'F';
@@ -204,6 +201,9 @@ void Create () {  // tao hoc sinh
 			Sex[3] = 'a';
 			Sex[4] = 'l';
 			Sex[5] = 'e';
+			file = fopen("StudentManagement.txt", "a");
+			fprintf(file, "Sex: %s\n", Sex);  				// nhap gioi tinh vao file
+			fclose(file);
 			IsValidSex = 1;
 		} else {
 			printf(" Error: Your option is not valid!!!\n");
@@ -211,12 +211,13 @@ void Create () {  // tao hoc sinh
 		}
 	}		
 	
+
 	int IsValidEmail = 0;		
 	while (!IsValidEmail) {			// nhap email
 		printf(" Enter the email: ");
 		scanf("%s", &Email);
-		if (IsAlreadyExists(Email, 'e', StudentID) > 0) {
-			printf(" This Email is ALREADY EXISTS. \n\n");
+		if (IsExistsInFile("StudentManagement.txt", Email) == true) {
+			printf(" Error: This Email is ALREADY EXISTS. \n\n");
 			IsValidEmail = 0;
 		} else if (strlen(Email) > 30) {
 			printf(" Error: Email can not be more than 30 characters.\n\n");
@@ -225,27 +226,38 @@ void Create () {  // tao hoc sinh
 			printf(" Error: Email can not be empty.\n\n");
 			IsValidEmail = 0;
 		} else {
+			file = fopen("StudentManagement.txt", "a");
+			fprintf(file, "Email: %s\n", Email);			// nhap email vao file
+			fclose(file);
 			IsValidEmail = 1;
 		}
 	}
 	
+	
 	int IsValidPhone = 0;
-	while (!IsValidPhone) {
+	while (!IsValidPhone) {								// nhap phone
 		printf(" Enter the Phone Number: ");
 		scanf("%s", &Phone);
-		if (IsAlreadyExists(Phone, 'p', StudentID) > 0) {
-			printf(" This Phone Number is ALREADY EXISTS.\n");
+		if (IsExistsInFile("StudentManagement.txt", Phone) == true) {
+			printf(" Error: This Phone Number is ALREADY EXISTS.\n");
 			IsValidPhone = 0;
-		} else if (strlen(Phone) > 20) {
-			printf(" Error: Phone can not be more than 20 characters.\n\n");
+		} else if (strlen(Phone) > 11) {
+			printf(" Error: Phone can not be more than 11 characters.\n\n");
 			IsValidPhone = 0;
 		} else if (strlen(Phone) <= 0) {
 			printf(" Error: Phone can not be empty.\n\n");
 			IsValidPhone = 0;
-		} else {
+		} else if (strlen(Phone) < 10 && strlen(Phone) > 0) {
+			printf(" Error: This is not a valid phone number.\n");
+			IsValidPhone = 0;	
+		} else { 
+			file = fopen("StudentManagement.txt", "a");
+			fprintf(file, "Phone number: %s\n", Phone);			// nhap phone vao file
+			fclose(file);
 			IsValidPhone = 1;
 		}
 	}
+	
 	
 	strcpy(Students[TotalStudents].Name, Name);   		// copy lai Name
 	strcpy(Students[TotalStudents].ID, StudentID);  	// copy lai ID
@@ -253,13 +265,9 @@ void Create () {  // tao hoc sinh
 	strcpy(Students[TotalStudents].Email, Email);		// copy email
 	strcpy(Students[TotalStudents].PhoneNumber, Phone); // copy dien thoai
 	TotalStudents++;
-	fprintf(file, "Name: %s\n", Name);				// nhap ten vao file
-	fprintf(file, "ID: %s\n", StudentID);			// nhap ma sinh vien vao file
-	fprintf(file, "Sex: %s\n", Sex);  				// nhap gioi tinh vao file
-	fprintf(file, "Email: %s\n", Email);			// nhap email vao file
+	
+	file = fopen("StudentManagement.txt", "a");
 	fprintf(file, "---------------------\n");	
-	
-	
 	
 	printf("\n Student Added Succesfully.\n\n");
 	fclose(file);
