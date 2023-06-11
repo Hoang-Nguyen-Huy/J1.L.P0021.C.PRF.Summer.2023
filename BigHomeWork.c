@@ -109,7 +109,7 @@ void Menu () {   // menu nguoi dung
 	printf("\t\tEnter your Choice: ");
 }
 
-bool IsExistsInFile(const char *filename, const char *code) {
+bool IsExistsInFile(const char *filename, const char *code) {		// kiem tra ID, email, phone da xuat hien trong file hay chua
 	file = fopen(filename, "r");
 	if (file == NULL) {
 		printf("Canot access to file........\n");
@@ -133,7 +133,7 @@ void Create () {  // tao hoc sinh
 	char Sex[10]; 				// gioi tinh
 	char Phone[15];  			// so dien thoai
 	char Email[50];   			// email
-	char PresentAdress[200];  	// noi o hien tai
+	char PresentAddress[200];  	// noi o hien tai
 	char Countries[50];  		// que quan
 	
 	file = fopen("StudentManagement.txt", "a");
@@ -143,7 +143,7 @@ void Create () {  // tao hoc sinh
 	int IsValidName = 0;
 	while (!IsValidName) {				// nhap ten sinh vien
 		printf(" Enter the Name: ");
-		scanf(" %[^\n]s", &Name);
+		scanf(" %[^\n]s", &Name);			// co the nhap co khoang trang
 		if (strlen(Name) > 20) {
 			printf(" Error: Name can not be more than 20 characters.\n\n");
 			IsValidName = 0;
@@ -180,6 +180,100 @@ void Create () {  // tao hoc sinh
 		}
 	}
 	
+
+	char checkDay[5];					// nhap ngay sinh
+	int day; 
+	printf(" Enter the day of birth: ");
+	scanf("%s", &checkDay);
+	while (checkInt(checkDay) == false) {
+		printf(" Please enter the valid day!!\n");
+		printf(" Enter the day: ");
+		scanf("%s", &checkDay);
+	}
+	if (checkInt(checkDay) == true) {
+		day = atoi(checkDay);
+	}
+	while (day > 31 || day < 1) {
+		printf(" Please enter the valid day!!\n");
+		printf(" Enter the day: ");
+		scanf(" %s", &checkDay);
+		while (checkInt(checkDay) == false) {
+			printf(" Please enter the valid day!!\n");
+			printf(" Enter the day: ");
+			scanf(" %s", &checkDay);
+		}
+		if (checkInt(checkDay) == true) {
+			day = atoi(checkDay);
+		}
+		if (day <= 31 && day >= 1) {
+			break;
+		}
+	}								// nhap xong ngay sinh
+	
+	
+	char checkMonth[5];			// nhap thang sinh
+	int month;
+	printf(" Enter the month of birth: ");
+	scanf("%s", &checkMonth);
+	while (checkInt(checkMonth) == false) {
+		printf(" Please enter the valid month!!\n");
+		printf(" Enter the month of birth: ");
+		scanf("%s", &checkMonth);
+	}
+	if (checkInt(checkMonth) == true) {
+		month = atoi(checkMonth);
+	}
+	while (month > 12 || month < 1) {
+		printf(" Please enter the valid month!!\n");
+		printf(" Enter the month of birth: ");
+		scanf("%s", &checkMonth);
+		while (checkInt(checkMonth) == false) {
+			printf(" Please enter the valid month!!\n");
+			printf(" Enter the month of birth: ");
+			scanf("%s", &checkMonth);
+		}
+		if (checkInt(checkMonth) == true) {
+			month = atoi(checkMonth);
+		}
+		if (month <= 12 && month >= 1) {
+			break;
+		}
+	}							// nhap xong thang sinh
+	
+	
+	char checkYear[5];			// nhap nam sinh
+	int year;
+	printf(" Enter the year of birth: ");
+	scanf("%s", &checkYear);
+	while (checkInt(checkYear) == false) {
+		printf(" Please enter the valid year!!\n");
+		printf(" Enter the year of birth: ");
+		scanf("%s", &checkYear);
+	}
+	if (checkInt(checkYear) == true) {
+		year = atoi(checkYear);
+	}
+	while (year > 2005 || year < 1923) {
+		printf(" Please enter the valid year!!\n");
+		printf(" Enter the year of birth: ");
+		scanf("%s", &checkYear);
+		while (checkInt(checkYear) == false) {
+			printf(" Please enter the valid year!!\n");
+			printf(" Enter the year of birth: ");
+			scanf("%s", &checkYear);
+		}
+		if (checkInt(checkYear) == true) {
+			year = atoi(checkYear);
+		}
+		if (year <= 2005 && year >= 1923) {
+			break;
+		}
+	}								// nhap xong nam sinh
+	
+	sprintf(DateOfBirth, "%02d-%02d-%04d", day, month, year);      // tao thanh chuoi dd-mm-yy
+	file = fopen("StudentManagement.txt", "a");
+	fprintf(file, "Date of birth: %s\n", DateOfBirth);		// xuat ngay thang nam sinh vao file
+	fclose(file);		
 	
 	int IsValidSex = 0;
 	while (!IsValidSex) {				// nhap gioi tinh
@@ -258,20 +352,59 @@ void Create () {  // tao hoc sinh
 		}
 	}
 	
+	int IsValidPresentAddress = 0;
+	while (!IsValidPresentAddress) {		// nhap dia chi hien tai
+		printf(" Enter the present address: ");
+		scanf(" %[^\n]s", &PresentAddress);			// nhap co khoang trang
+		if (strlen(PresentAddress) > 200) {
+			printf(" Error: Enter the address which has under 200 characters.\n\n");
+			IsValidPresentAddress = 0;
+		} else if (strlen(PresentAddress) <= 0) {
+			printf(" Error: Please enter the address.\n\n");
+			IsValidPresentAddress = 0;
+		} else {
+			file = fopen("StudentManagement.txt", "a");
+			fprintf(file, "Address: %s\n", PresentAddress);		// ghi vao file
+			fclose(file);
+			IsValidPresentAddress = 1;
+		}
+	}
 	
-	strcpy(Students[TotalStudents].Name, Name);   		// copy lai Name
-	strcpy(Students[TotalStudents].ID, StudentID);  	// copy lai ID
-	strcpy(Students[TotalStudents].Sex, Sex);			// copy gioi tinh
-	strcpy(Students[TotalStudents].Email, Email);		// copy email
-	strcpy(Students[TotalStudents].PhoneNumber, Phone); // copy dien thoai
+	int IsValidCountries = 0;
+	while (!IsValidCountries) {				// nhap que quan
+		printf(" Enter the country: ");
+		scanf(" %[^\n]s", &Countries);		// nhap co khoang trang
+		if (strlen(Countries) > 50) {
+			printf(" Error: This is not valid!\n\n");
+			IsValidCountries = 0;
+		} else if (strlen(Countries) <= 0) {
+			printf(" Error: Please enter the conutry.\n\n");
+			IsValidCountries = 0;
+		} else {
+			file = fopen("StudentManagement.txt", "a");
+			fprintf(file, "Country: %s\n", Countries);		// ghi vao file
+			fclose(file);
+			IsValidCountries = 1;
+		}
+	}
+	strcpy(Students[TotalStudents].Name, Name);   					// copy lai Name
+	strcpy(Students[TotalStudents].ID, StudentID);  				// copy lai ID
+	strcpy(Students[TotalStudents].DateOfBirth, DateOfBirth);		// copy ngay thang nam sinh
+	strcpy(Students[TotalStudents].Sex, Sex);						// copy gioi tinh
+	strcpy(Students[TotalStudents].Email, Email);					// copy email
+	strcpy(Students[TotalStudents].PhoneNumber, Phone); 			// copy dien thoai
+	strcpy(Students[TotalStudents].PresentAddress, PresentAddress); // copy dia chi
+	strcpy(Students[TotalStudents].Countries, Countries);			// copy que quan
 	TotalStudents++;
 	
 	file = fopen("StudentManagement.txt", "a");
-	fprintf(file, "---------------------\n");	
+	fprintf(file, "------------------------------------------------\n");	
 	
 	printf("\n Student Added Succesfully.\n\n");
 	fclose(file);
 }
+
+
 
 
 
