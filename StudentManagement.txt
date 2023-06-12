@@ -1,0 +1,30 @@
+
+Name: Nguyen Huy Hoang
+ID: SE180435
+Date of birth: 13-02-2004
+Sex: Male
+Email: hoang@gmail.com
+Phone number: 0326947031
+Address: Vinhomes Grand Park, Thu Duc, Ho Chi Minh
+Country: Nha Trang - Khanh Hoa
+------------------------------------------------
+
+Name: Nguyen Hai Nam
+ID: SE180295
+Date of birth: 17-05-2004
+Sex: Male
+Email: nam@gmail.com
+Phone number: 0123213213
+Address: Gam Cau Phu My, Thu Duc, Ho Chi Minh
+Country: Nha Trang - Khanh Hoa
+------------------------------------------------
+
+Name: Bui Phuong Mai
+ID: SS180123
+Date of birth: 14-04-2004
+Sex: Female
+Email: mai@gmail.com
+Phone number: 03213421312
+Address: Dau Duong Xom Cho, Ho Chi Minh
+Country: Bien Hoa - Dong Nai
+------------------------------------------------

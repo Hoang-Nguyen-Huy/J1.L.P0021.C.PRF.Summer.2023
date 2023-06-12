@@ -57,7 +57,7 @@ bool checkInt (char input[]) {	// kiem tra co phai la so nguyen hay khong
 }
 void Menu();
 void Create();
-void ShowAllList();
+void ShowAllList(const char *filename);			// xuat tat ca cac ho so cua sinh vien trong file
 int Find(char StudentID[10]);
 void Sort();   // chua nghi ra
 void Update(int StudentFoundIndex);  
@@ -89,6 +89,11 @@ int main () {
 				printf("\n\t\t********Add a New Student********\n\n");
 				Create();
 				break;
+			case 2: 
+			    system("cls");
+			    printf("\n\t\t********List of all profile********\n\n");
+			    ShowAllList("StudentManagement.txt");
+			    break;
 		}
 	}
 	return 0;
@@ -99,11 +104,11 @@ void Menu () {   // menu nguoi dung
 	printf("\t\t\tMAIN MENU\n");
 	printf("\t\t=========================\n");
 	printf("\t\t[1] Add a new student to the list.\n");
-	printf("\t\t[2] Find student.\n");
+	printf("\t\t[2] Show all list of profile.\n");
 	printf("\t\t[3] Update student.\n");
 	printf("\t\t[4] Delete a student.\n");
 	printf("\t\t[5] Delete all student.\n");
-	printf("\t\t[6] Show all list.\n");
+	printf("\t\t[6] Find a student.\n");
 	printf("\t\t[0] Exit the Program.\n");
 	printf("\t\t=========================\n");
 	printf("\t\tEnter your Choice: ");
@@ -404,6 +409,19 @@ void Create () {  // tao hoc sinh
 	fclose(file);
 }
 
+void ShowAllList (const char *filename) {			// xuat tat ca cac ho so cua sinh vien trong file
+	file = fopen(filename, "r");
+	if (file == NULL) {
+		printf(" There are no profile of any students.\n\n");
+		return;
+	}
+	
+	char ch;
+	while ((ch = fgetc(file)) != EOF) {
+		putchar(ch);
+	}
+	fclose(file);
+}
 
 
 
