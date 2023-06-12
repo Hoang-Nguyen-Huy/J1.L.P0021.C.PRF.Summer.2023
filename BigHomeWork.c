@@ -67,7 +67,7 @@ bool IsExistsInFile(const char *filename, const char *code);
 void ErrorAndRestart(char *Error[100]);
 void DeleteCourseByIndex(int CourseIndex);
 void DeleteStudentByIndex(int CourseIndex);
-void GoBackOrExit();
+void GoBackOrExit();			// thoat case de quay lai menu chinh hoac exit chuong trinh
 void ExitProject();
 
 int main () {
@@ -88,12 +88,19 @@ int main () {
 				system("cls");
 				printf("\n\t\t********Add a New Student********\n\n");
 				Create();
+				GoBackOrExit();
 				break;
 			case 2: 
 			    system("cls");
 			    printf("\n\t\t********List of all profile********\n\n");
 			    ShowAllList("StudentManagement.txt");
+			    printf("\n\n");
+			    GoBackOrExit();
 			    break;
+			case 0: 
+				IsRunning = false;
+				ExitProject();
+				break;
 		}
 	}
 	return 0;
@@ -423,10 +430,32 @@ void ShowAllList (const char *filename) {			// xuat tat ca cac ho so cua sinh vi
 	fclose(file);
 }
 
+void GoBackOrExit() {		// thoat hoac quay lai menu chinh
+    getchar();
+    char Option;
+    printf(" Go back[b]? or Exit[e]?: ");
+    scanf("%c",&Option);
+    if(Option == 'e') {
+        ExitProject();
+    } else {
+        system("cls");
+    }
+}
 
-
-
-
+void ExitProject() {      // thoat chuong trinh
+	system("cls");
+    char ThankYou[100]     = " ========= Thank You =========\n";
+    char SeeYouSoon[100]   = " ========= See You Soon ======\n";
+    for (i = 0; i < strlen(ThankYou); i++) {			// chay chu thank you
+        printf("%c",ThankYou[i]);
+        Sleep(40);
+    }
+    for (i = 0; i < strlen(SeeYouSoon); i++) {		// chay chu thank you
+        printf("%c",SeeYouSoon[i]);
+        Sleep(40);
+    }
+    exit(0);	
+}
 
 
 
