@@ -58,15 +58,12 @@ bool checkInt (char input[]) {	// kiem tra co phai la so nguyen hay khong
 void Menu();
 void Create();
 void ShowAllList(const char *filename);			// xuat tat ca cac ho so cua sinh vien trong file
-int Find(char StudentID[10]);
+void SearchStudent(const char *filename);
 void Sort();   // chua nghi ra
 void Update(int StudentFoundIndex);  
 void DeleteStudent(int StudentIndex);
-void DeleteAllStudent();
+void DeleteAllStudent(const char *filename);		// xoa tat ca trong  file
 bool IsExistsInFile(const char *filename, const char *code);
-void ErrorAndRestart(char *Error[100]);
-void DeleteCourseByIndex(int CourseIndex);
-void DeleteStudentByIndex(int CourseIndex);
 void GoBackOrExit();			// thoat case de quay lai menu chinh hoac exit chuong trinh
 void ExitProject();
 
@@ -97,6 +94,16 @@ int main () {
 			    printf("\n\n");
 			    GoBackOrExit();
 			    break;
+			case 5: 
+				system("cls");
+				DeleteAllStudent("StudentManagement.txt");
+				GoBackOrExit();
+				break;
+			case 6: 
+				system("cls");
+				SearchStudent("StudentManagement.txt");
+				GoBackOrExit();
+				break;
 			case 0: 
 				IsRunning = false;
 				ExitProject();
@@ -127,7 +134,7 @@ bool IsExistsInFile(const char *filename, const char *code) {		// kiem tra ID, e
 		printf("Canot access to file........\n");
 		return false;
 	}
-	char line[100];
+	char line[500];
 	while (fgets(line, sizeof(line), file) != NULL) {			// kiem tra tung dong
 		if (strstr(line, code) != NULL) {				// kiem tra chuoi con trong chuoi lon
 			fclose(file);
@@ -156,8 +163,8 @@ void Create () {  // tao hoc sinh
 	while (!IsValidName) {				// nhap ten sinh vien
 		printf(" Enter the Name: ");
 		scanf(" %[^\n]s", &Name);			// co the nhap co khoang trang
-		if (strlen(Name) > 20) {
-			printf(" Error: Name can not be more than 20 characters.\n\n");
+		if (strlen(Name) > 30) {
+			printf(" Error: Name can not be more than 30 characters.\n\n");
 			IsValidName = 0;
 		} else if (strlen(Name) <= 0) {
 			printf(" Error: Name can not be empty.\n\n");
@@ -422,12 +429,89 @@ void ShowAllList (const char *filename) {			// xuat tat ca cac ho so cua sinh vi
 		printf(" There are no profile of any students.\n\n");
 		return;
 	}
-	
+	int IsEmpty = 1;
 	char ch;
 	while ((ch = fgetc(file)) != EOF) {
 		putchar(ch);
+		IsEmpty = 0;
 	}
 	fclose(file);
+	if (IsEmpty == 1) {
+		printf(" EMPTY file.\n\n");
+	}
+}
+
+void SearchStudent(const char *filename) {			// tim kiem
+	char Option;
+	char Name[40];
+	char ID[20];
+	char SearchKey[100];	// bien dung de tim kiem
+	int found = 0;
+	char line[500];
+	
+	
+	int IsSearching = 0;
+	while (!IsSearching) {
+		printf(" Search by name[N]? or by ID[I]?: ");
+		scanf(" %c", &Option);
+		printf("\n");
+		if (Option == 'N' || Option == 'n') {		// tim kiem bang ten
+			printf(" Enter the name: ");
+			scanf(" %[^\n]s", &Name);
+			printf("\n\n");
+			if (IsExistsInFile(filename, Name) == false) {
+				printf(" The '%s' is not found.\n\n", Name);
+				IsSearching = 0;
+			} else {
+				file = fopen(filename, "r");
+				while (fgets(line, sizeof(line), file) != NULL) {
+					int countLine = 0;
+					while (strstr(line, Name) != NULL) {
+						printf("%s", line);
+						
+						while (fgets(line, sizeof(line), file) != NULL && countLine < 8) {
+							countLine++;
+							printf("%s", line);
+						}
+					}
+				}
+				printf("\n\n");
+				IsSearching = 1;	
+			}
+		} else if (Option == 'I' || Option == 'i') {
+			printf(" Enter the ID: ");
+			scanf(" %s", &ID);
+			printf("\n\n");
+		}
+	}
+	
+}
+
+void DeleteAllStudent(const char *filename) {		// xoa tat ca trong file
+	
+	file = fopen(filename, "r");
+	if (file == NULL) {
+		printf(" INVALID file.\n\n");
+		return;
+	}
+	// kiem tra xem file co rong hay khong
+	fseek(file, 0, SEEK_END);	// di chuyen con tro toi cuoi file
+	if (ftell(file) == 0) {
+		printf(" EMPTY file.\n\n");
+		fclose(file);
+		return;		// neu file rong thi return 
+	}
+	
+	fclose(file);	
+	// xoa tat ca du lieu
+	file = fopen(filename, "w");  // w la ghi de, de xoa du lieu
+	if (file == NULL) {
+		printf(" INVALID file.\n\n");
+		return;
+	}
+	
+	fclose(file);
+	printf(" Delete all student succesfully.\n\n");
 }
 
 void GoBackOrExit() {		// thoat hoac quay lai menu chinh
