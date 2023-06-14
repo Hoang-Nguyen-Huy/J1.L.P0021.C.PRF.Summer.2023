@@ -1,61 +1,50 @@
 
-Name: Nguyen Huy Hoang
+Full name: Nguyen Huy Hoang
 ID: SE180435
 Date of birth: 13-02-2004
 Sex: Male
 Email: hoang@gmail.com
-Phone number: 0123213213
+Phone number: 0123123213
 Address: Vinhomes
 Country: Nha Trang
 ------------------------------------------------
 
-Name: Bui Phuong Mai
+Full name: Bui Phuong Mai
 ID: SS180123
 Date of birth: 14-04-2004
 Sex: Female
 Email: mai@gmail.com
-Phone number: 02432432432
+Phone number: 0234234234
 Address: Vinhomes
 Country: Bien Hoa
 ------------------------------------------------
 
-Name: Nguyen Minh Hoang
-ID: SE180321
-Date of birth: 22-02-2002
-Sex: Female
-Email: minh@gmail.com
-Phone number: 0324532523
+Full name: Nguyen Hai Nam
+ID: SE180295
+Date of birth: 17-05-2004
+Sex: Male
+Email: nam@gmail.com
+Phone number: 0123412341
 Address: Vinhomes
 Country: Nha Trang
 ------------------------------------------------
 
-Name: Mai Xuan Hung
+Full name: Mai Xuan Hung
 ID: ITIU123
 Date of birth: 14-10-2004
 Sex: Male
 Email: hung@gmail.com
-Phone number: 0546546456
+Phone number: 01513241234
 Address: Vinhomes
 Country: Nha Trang
 ------------------------------------------------
 
-
-Name: Nguyen Dinh Khanh Hung
-ID: SS180321
+Full name: Nguyen Dinh Khanh Hung
+ID: RMIT123
 Date of birth: 29-11-2004
 Sex: Male
-Email: khanhhung@gmail.com
-Phone number: 0234245245
-Address: Quan 7
+Email: khung@gmail.com
+Phone number: 04152345234
+Address: Chung cu Hung Phat
 Country: Nha Trang
-------------------------------------------------
-
-Name: Bui Xuan Mai
-ID: SS190312
-Date of birth: 10-01-1999
-Sex: Female
-Email: xuanmai@gmail.com
-Phone number: 01231234124
-Address: My 
-Country: Deo Biet
 ------------------------------------------------

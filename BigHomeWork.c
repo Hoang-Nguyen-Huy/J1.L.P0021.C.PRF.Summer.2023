@@ -123,6 +123,7 @@ void Menu () {   // menu nguoi dung
 	printf("\t\t[4] Delete a student.\n");
 	printf("\t\t[5] Delete all student.\n");
 	printf("\t\t[6] Find a student.\n");
+	printf("\t\t[7] Sort all list.\n");
 	printf("\t\t[0] Exit the Program.\n");
 	printf("\t\t=========================\n");
 	printf("\t\tEnter your Choice: ");
@@ -171,7 +172,7 @@ void Create () {  // tao hoc sinh
 			IsValidName = 0;
 		} else {
 			file = fopen("StudentManagement.txt", "a");
-			fprintf(file, "Name: %s\n", Name);				// nhap ten vao file
+			fprintf(file, "Full name: %s\n", Name);				// nhap ten vao file
 			fclose(file);
 			IsValidName = 1;
 		}
@@ -442,13 +443,21 @@ void ShowAllList (const char *filename) {			// xuat tat ca cac ho so cua sinh vi
 }
 
 void SearchStudent(const char *filename) {			// tim kiem
-	char Option;
-	char Name[40];
-	char ID[20];
-	char SearchKey[100];	// bien dung de tim kiem
-	int found = 0;
-	char line[500];
+	char Option;			// lua chon de nhap ten hoac id
+	char Name[40];			// ten
+	char ID[20];			// ma sinh vien			
+	char line[500];			// bien dung de tim kiem bang ten
 	
+	// kiem tra file co rong hay khong
+	file = fopen(filename, "r");	
+	fseek(file, 0, SEEK_END);	// di chuyen con tro toi cuoi file
+	if (ftell(file) == 0) {
+		printf(" EMPTY file.\n\n");
+		fclose(file);
+		return;		// neu file rong thi return 
+	}
+	fclose(file);
+	//kiem tra xong
 	
 	int IsSearching = 0;
 	while (!IsSearching) {
@@ -461,7 +470,15 @@ void SearchStudent(const char *filename) {			// tim kiem
 			printf("\n\n");
 			if (IsExistsInFile(filename, Name) == false) {
 				printf(" The '%s' is not found.\n\n", Name);
-				IsSearching = 0;
+				printf(" Do you want to continue ? [Y/N]. Your answer: ");
+				char Choices;									// bien de nguoi dung nhap yes/no
+				scanf(" %c", &Choices);
+				printf("\n");	
+				if (Choices == 'Y' || Choices == 'y') {			
+					IsSearching = 0;
+				} else if (Choices == 'N' || Choices == 'n') {
+					IsSearching = 1;
+				}
 			} else {
 				file = fopen(filename, "r");
 				while (fgets(line, sizeof(line), file) != NULL) {
@@ -475,29 +492,63 @@ void SearchStudent(const char *filename) {			// tim kiem
 					}
 				}
 				printf("\n\n");
-				IsSearching = 1;
-				fclose(file);	
+				fclose(file);
+				printf(" Do you want to continue ? [Y/N]. Your answer: ");
+				char Choices;								// bien de nguoi dung nhap yes/no
+				scanf(" %c", &Choices);						
+				printf("\n");
+				if (Choices == 'Y' || Choices == 'y') {
+					IsSearching = 0;
+				} else if (Choices == 'N' || Choices == 'n') {
+					IsSearching = 1;
+				}
 			}
-		} else if (Option == 'I' || Option == 'i') {			// tim kien bang ma sinh vien chua nghi ra ??????????????????????????
+		} else if (Option == 'I' || Option == 'i') {			// tim kien bang ma sinh vien 
 			printf(" Enter the ID: ");				
 			scanf(" %s", &ID);
 			printf("\n\n");
 			if (IsExistsInFile(filename, ID) == false) {
 				printf(" The ID: '%s' is not found.\n\n", ID);
-				IsSearching = 0;
+				printf(" Do you want to continue ? [Y/N]. Your answer: ");
+				char Choices;						// bien de nguoi dung nhap yes/no
+				scanf(" %c", &Choices);
+				printf("\n");
+				if (Choices == 'Y' || Choices == 'y') {
+					IsSearching = 0;
+				} else if (Choices == 'N' || Choices == 'n') {
+					IsSearching = 1;
+				}
 			} else {
-				char line[200][200];
+				char line[200][200];					// bien de duyet cac line trong file
 				file = fopen(filename, "r");
-				int lineCount = 0;	// dem so dong trong file
+				int lineCount = 0;			// dem so dong trong file
 				while (fgets(line[lineCount], sizeof(line[lineCount]), file) != NULL) {
 					lineCount++;
 				}
-				for (i = lineCount - 1; i >= 0; i--) {
-					printf("%s", line[i]);
+				for (i = 0; i < lineCount; i++) {
+					if (strstr(line[i], ID) != NULL) {
+						printf("%s", line[i - 1]);			// tên
+						printf("%s", line[i]);				// mã sinh viên
+						printf("%s", line[i + 1]);			// ngày sinh
+						printf("%s", line[i + 2]);			// gioi tính
+						printf("%s", line[i + 3]);			// email
+						printf("%s", line[i + 4]);			// phone number
+						printf("%s", line[i + 5]);			// address
+						printf("%s", line[i + 6]);			// country
+						printf("%s", line[i + 7]);			// -------------
+					}
 				}
 				printf("\n\n");
-				IsSearching = 1;
 				fclose(file);
+				printf(" Do you want to continue ? [Y/N]. Your answer: ");
+				char Choices;							// bien de nguoi dung nhap yes/no
+				scanf(" %c", &Choices);
+				printf("\n");
+				if (Choices == 'Y' || Choices == 'y') {
+					IsSearching = 0;
+				} else if (Choices == 'N' || Choices == 'n') {
+					IsSearching = 1;
+				}
 			}
 		}
 	}
@@ -559,6 +610,7 @@ void ExitProject() {      // thoat chuong trinh
     }
     exit(0);	
 }
+
 
 
 
