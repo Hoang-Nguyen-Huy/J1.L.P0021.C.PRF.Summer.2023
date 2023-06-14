@@ -61,7 +61,7 @@ void ShowAllList(const char *filename);			// xuat tat ca cac ho so cua sinh vien
 void SearchStudent(const char *filename);
 void Sort();   // chua nghi ra
 void Update(int StudentFoundIndex);  
-void DeleteStudent(int StudentIndex);
+void DeleteSelectedStudent(int StudentIndex);
 void DeleteAllStudent(const char *filename);		// xoa tat ca trong  file
 bool IsExistsInFile(const char *filename, const char *code);
 void GoBackOrExit();			// thoat case de quay lai menu chinh hoac exit chuong trinh
@@ -465,10 +465,9 @@ void SearchStudent(const char *filename) {			// tim kiem
 			} else {
 				file = fopen(filename, "r");
 				while (fgets(line, sizeof(line), file) != NULL) {
-					int countLine = 0;
-					while (strstr(line, Name) != NULL) {
-						printf("%s", line);
-						
+					int countLine = 0;				// de in ra cac thong tin cua sinh vien mang ten la "Name"
+					if (strstr(line, Name) != NULL) {
+						printf("%s", line);	
 						while (fgets(line, sizeof(line), file) != NULL && countLine < 8) {
 							countLine++;
 							printf("%s", line);
@@ -476,16 +475,36 @@ void SearchStudent(const char *filename) {			// tim kiem
 					}
 				}
 				printf("\n\n");
-				IsSearching = 1;	
+				IsSearching = 1;
+				fclose(file);	
 			}
-		} else if (Option == 'I' || Option == 'i') {
-			printf(" Enter the ID: ");
+		} else if (Option == 'I' || Option == 'i') {			// tim kien bang ma sinh vien chua nghi ra ??????????????????????????
+			printf(" Enter the ID: ");				
 			scanf(" %s", &ID);
 			printf("\n\n");
+			if (IsExistsInFile(filename, ID) == false) {
+				printf(" The ID: '%s' is not found.\n\n", ID);
+				IsSearching = 0;
+			} else {
+				char line[200][200];
+				file = fopen(filename, "r");
+				int lineCount = 0;	// dem so dong trong file
+				while (fgets(line[lineCount], sizeof(line[lineCount]), file) != NULL) {
+					lineCount++;
+				}
+				for (i = lineCount - 1; i >= 0; i--) {
+					printf("%s", line[i]);
+				}
+				printf("\n\n");
+				IsSearching = 1;
+				fclose(file);
+			}
 		}
 	}
 	
 }
+
+
 
 void DeleteAllStudent(const char *filename) {		// xoa tat ca trong file
 	
