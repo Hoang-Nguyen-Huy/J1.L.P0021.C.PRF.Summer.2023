@@ -61,7 +61,7 @@ void ShowAllList(const char *filename);			// xuat tat ca cac ho so cua sinh vien
 void SearchStudent(const char *filename);
 void Sort();   // chua nghi ra
 void Update(int StudentFoundIndex);  
-void DeleteSelectedStudent(int StudentIndex);
+void DeleteSelectedStudent(int StudentIndex);		// ?????????????????????????????????????????????????????????????
 void DeleteAllStudent(const char *filename);		// xoa tat ca trong  file
 bool IsExistsInFile(const char *filename, const char *code);
 void GoBackOrExit();			// thoat case de quay lai menu chinh hoac exit chuong trinh
@@ -119,11 +119,11 @@ void Menu () {   // menu nguoi dung
 	printf("\t\t=========================\n");
 	printf("\t\t[1] Add a new student to the list.\n");
 	printf("\t\t[2] Show all list of profile.\n");
-	printf("\t\t[3] Update student.\n");
-	printf("\t\t[4] Delete a student.\n");
+	printf("\t\t[3] Update student.\n");			//???
+	printf("\t\t[4] Delete a student.\n");          //???
 	printf("\t\t[5] Delete all student.\n");
 	printf("\t\t[6] Find a student.\n");
-	printf("\t\t[7] Sort all list.\n");
+	printf("\t\t[7] Sort all list.\n");				//???
 	printf("\t\t[0] Exit the Program.\n");
 	printf("\t\t=========================\n");
 	printf("\t\tEnter your Choice: ");
@@ -172,7 +172,7 @@ void Create () {  // tao hoc sinh
 			IsValidName = 0;
 		} else {
 			file = fopen("StudentManagement.txt", "a");
-			fprintf(file, "Full name: %s\n", Name);				// nhap ten vao file
+			fprintf(file, "Full name: %s\t", Name);				// nhap ten vao file
 			fclose(file);
 			IsValidName = 1;
 		}
@@ -194,7 +194,7 @@ void Create () {  // tao hoc sinh
 			IsValidID = 0;
 		} else {
 			file = fopen("StudentManagement.txt", "a");
-			fprintf(file, "ID: %s\n", StudentID);			// nhap ma sinh vien vao file
+			fprintf(file, "ID: %s\t", StudentID);			// nhap ma sinh vien vao file
 			fclose(file);
 			IsValidID = 1;
 		}
@@ -292,7 +292,7 @@ void Create () {  // tao hoc sinh
 	
 	sprintf(DateOfBirth, "%02d-%02d-%04d", day, month, year);      // tao thanh chuoi dd-mm-yy
 	file = fopen("StudentManagement.txt", "a");
-	fprintf(file, "Date of birth: %s\n", DateOfBirth);		// xuat ngay thang nam sinh vao file
+	fprintf(file, "Date of birth: %s\t", DateOfBirth);		// xuat ngay thang nam sinh vao file
 	fclose(file);		
 	
 	int IsValidSex = 0;
@@ -305,7 +305,7 @@ void Create () {  // tao hoc sinh
 			Sex[2] = 'l';
 			Sex[3] = 'e';
 			file = fopen("StudentManagement.txt", "a");
-			fprintf(file, "Sex: %s\n", Sex);  				// nhap gioi tinh vao file
+			fprintf(file, "Sex: %s\t", Sex);  				// nhap gioi tinh vao file
 			fclose(file);
 			IsValidSex = 1;
 		} else if (Sex[0] == 'F' || Sex[0] == 'f') {
@@ -316,7 +316,7 @@ void Create () {  // tao hoc sinh
 			Sex[4] = 'l';
 			Sex[5] = 'e';
 			file = fopen("StudentManagement.txt", "a");
-			fprintf(file, "Sex: %s\n", Sex);  				// nhap gioi tinh vao file
+			fprintf(file, "Sex: %s\t", Sex);  				// nhap gioi tinh vao file
 			fclose(file);
 			IsValidSex = 1;
 		} else {
@@ -341,7 +341,7 @@ void Create () {  // tao hoc sinh
 			IsValidEmail = 0;
 		} else {
 			file = fopen("StudentManagement.txt", "a");
-			fprintf(file, "Email: %s\n", Email);			// nhap email vao file
+			fprintf(file, "Email: %s\t", Email);			// nhap email vao file
 			fclose(file);
 			IsValidEmail = 1;
 		}
@@ -366,7 +366,7 @@ void Create () {  // tao hoc sinh
 			IsValidPhone = 0;	
 		} else { 
 			file = fopen("StudentManagement.txt", "a");
-			fprintf(file, "Phone number: %s\n", Phone);			// nhap phone vao file
+			fprintf(file, "  Phone number: %s\t", Phone);			// nhap phone vao file
 			fclose(file);
 			IsValidPhone = 1;
 		}
@@ -384,7 +384,7 @@ void Create () {  // tao hoc sinh
 			IsValidPresentAddress = 0;
 		} else {
 			file = fopen("StudentManagement.txt", "a");
-			fprintf(file, "Address: %s\n", PresentAddress);		// ghi vao file
+			fprintf(file, "Address: %s\t", PresentAddress);		// ghi vao file
 			fclose(file);
 			IsValidPresentAddress = 1;
 		}
@@ -402,7 +402,7 @@ void Create () {  // tao hoc sinh
 			IsValidCountries = 0;
 		} else {
 			file = fopen("StudentManagement.txt", "a");
-			fprintf(file, "Country: %s\n", Countries);		// ghi vao file
+			fprintf(file, "Country: %s\t\n", Countries);		// ghi vao file
 			fclose(file);
 			IsValidCountries = 1;
 		}
@@ -418,7 +418,7 @@ void Create () {  // tao hoc sinh
 	TotalStudents++;
 	
 	file = fopen("StudentManagement.txt", "a");
-	fprintf(file, "------------------------------------------------\n");	
+	fprintf(file, "-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n\n");	
 	
 	printf("\n Student Added Succesfully.\n\n");
 	fclose(file);
@@ -482,10 +482,10 @@ void SearchStudent(const char *filename) {			// tim kiem
 			} else {
 				file = fopen(filename, "r");
 				while (fgets(line, sizeof(line), file) != NULL) {
-					int countLine = 0;				// de in ra cac thong tin cua sinh vien mang ten la "Name"
+					int countLine = 0;
 					if (strstr(line, Name) != NULL) {
 						printf("%s", line);	
-						while (fgets(line, sizeof(line), file) != NULL && countLine < 8) {
+						while (fgets(line, sizeof(line), file) != NULL && countLine <= 1) {
 							countLine++;
 							printf("%s", line);
 						}
@@ -519,23 +519,15 @@ void SearchStudent(const char *filename) {			// tim kiem
 					IsSearching = 1;
 				}
 			} else {
-				char line[200][200];					// bien de duyet cac line trong file
 				file = fopen(filename, "r");
-				int lineCount = 0;			// dem so dong trong file
-				while (fgets(line[lineCount], sizeof(line[lineCount]), file) != NULL) {
-					lineCount++;
-				}
-				for (i = 0; i < lineCount; i++) {
-					if (strstr(line[i], ID) != NULL) {
-						printf("%s", line[i - 1]);			// tên
-						printf("%s", line[i]);				// mã sinh viên
-						printf("%s", line[i + 1]);			// ngày sinh
-						printf("%s", line[i + 2]);			// gioi tính
-						printf("%s", line[i + 3]);			// email
-						printf("%s", line[i + 4]);			// phone number
-						printf("%s", line[i + 5]);			// address
-						printf("%s", line[i + 6]);			// country
-						printf("%s", line[i + 7]);			// -------------
+				while (fgets(line, sizeof(line), file) != NULL) {
+					int countLine = 0;
+					if (strstr(line, ID) != NULL) {
+						printf("%s", line);	
+						while (fgets(line, sizeof(line), file) != NULL && countLine <= 1) {
+							countLine++;
+							printf("%s", line);
+						}
 					}
 				}
 				printf("\n\n");
