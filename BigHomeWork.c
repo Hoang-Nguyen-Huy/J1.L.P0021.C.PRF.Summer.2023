@@ -61,7 +61,7 @@ void ShowAllList(const char *filename);			// xuat tat ca cac ho so cua sinh vien
 void SearchStudent(const char *filename);
 void Sort();   // chua nghi ra
 void Update(int StudentFoundIndex);  
-void DeleteSelectedStudent(int StudentIndex);		// ?????????????????????????????????????????????????????????????
+void DeleteSelectedStudent(const char *filename);		
 void DeleteAllStudent(const char *filename);		// xoa tat ca trong  file
 bool IsExistsInFile(const char *filename, const char *code);
 void GoBackOrExit();			// thoat case de quay lai menu chinh hoac exit chuong trinh
@@ -94,6 +94,12 @@ int main () {
 			    printf("\n\n");
 			    GoBackOrExit();
 			    break;
+			case 4: 
+			    system("cls");
+			    DeleteSelectedStudent("StudentManagement.txt");
+			    printf("\n\n");
+			    GoBackOrExit();
+			    break;
 			case 5: 
 				system("cls");
 				DeleteAllStudent("StudentManagement.txt");
@@ -120,7 +126,7 @@ void Menu () {   // menu nguoi dung
 	printf("\t\t[1] Add a new student to the list.\n");
 	printf("\t\t[2] Show all list of profile.\n");
 	printf("\t\t[3] Update student.\n");			//???
-	printf("\t\t[4] Delete a student.\n");          //???
+	printf("\t\t[4] Delete a student.\n");          
 	printf("\t\t[5] Delete all student.\n");
 	printf("\t\t[6] Find a student.\n");
 	printf("\t\t[7] Sort all list.\n");				//???
@@ -446,7 +452,7 @@ void SearchStudent(const char *filename) {			// tim kiem
 	char Option;			// lua chon de nhap ten hoac id
 	char Name[40];			// ten
 	char ID[20];			// ma sinh vien			
-	char line[500];			// bien dung de tim kiem bang ten
+	char line[500];			// bien dung de tim kiem bang ten va id
 	
 	// kiem tra file co rong hay khong
 	file = fopen(filename, "r");	
@@ -547,7 +553,83 @@ void SearchStudent(const char *filename) {			// tim kiem
 	
 }
 
-
+void DeleteSelectedStudent (const char *filename) {   // xoa hoc sinh duoc chon, xoa bang ten hoac bang ma sinh vien
+	char Option;		// lua chon de nhap ten hoac id
+	char Name[50];		// bien de nhap ten
+	char ID[20];		// bien de nhap ma sinh vien
+	char line[200];
+	
+	// kiem tra file co rong hay khong
+	file = fopen(filename, "r");	
+	fseek(file, 0, SEEK_END);	// di chuyen con tro toi cuoi file
+	if (ftell(file) == 0) {
+		printf(" EMPTY file.\n\n");
+		fclose(file);
+		return;		// neu file rong thi return 
+	}
+	fclose(file);
+	//kiem tra xong
+	
+	
+	int IsDeleting = 0;
+	while (!IsDeleting) {
+		printf(" Delete by Name[N] ? or by ID[I]? ");
+		printf(" Your choices: ");
+		scanf(" %c", &Option);
+		printf("\n");
+		if (Option == 'N' || Option == 'n') {
+			printf(" Enter the name: ");
+			scanf(" %[^\n]s", &Name);
+			printf("\n\n");
+			if (IsExistsInFile(filename, Name) == false) {
+				printf(" The '%s' is not found.\n\n", Name);
+				printf(" Do you want to continue ? [Y/N]. Your answer: ");
+				char Choices;									// bien de nguoi dung nhap yes/no
+				scanf(" %c", &Choices);
+				printf("\n");	
+				if (Choices == 'Y' || Choices == 'y') {			
+					IsDeleting = 0;
+				} else if (Choices == 'N' || Choices == 'n') {
+					IsDeleting = 1;
+				}
+			} else {
+				char lineEl[200][200];
+				int countEl = 0;
+				int numEl = 0;  // dung de dem so luong hoc sinh muon xoa
+				char studentID[20];
+				// tim bang ten
+				file = fopen(filename, "r");
+				while (fgets(line, sizeof(line), file) != NULL) {
+					int countLine = 0;
+					if (strstr(line, Name) != NULL) {
+						numEl++;
+						printf("%s", line);	
+						while (fgets(line, sizeof(line), file) != NULL && countLine <= 1) {
+							countLine++;
+							printf("%s", line);
+						}
+					}
+				}
+				printf("\n\n");
+				fclose(file);
+				// end 			
+				if (numEl < 2) {
+					printf(" There is %d student. \n\n", numEl);
+				} else {
+					printf(" There are %d students. \n\n", numEl);
+				}
+				printf(" Enter the student's ID that you want to delete: ");
+				scanf(" %s", &studentID);
+				// dem so dong trong file
+				while (fgets(lineEl[countEl], sizeof(lineEl[countEl]), file) != NULL) {
+					countEl++;
+				}
+				// end
+				
+			}
+		}
+	}
+}
 
 void DeleteAllStudent(const char *filename) {		// xoa tat ca trong file
 	
@@ -602,7 +684,6 @@ void ExitProject() {      // thoat chuong trinh
     }
     exit(0);	
 }
-
 
 
 
