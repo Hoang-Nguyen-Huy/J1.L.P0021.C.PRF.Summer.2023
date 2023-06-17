@@ -550,22 +550,24 @@ void SearchStudent(const char *filename) {			// tim kiem
 }
 
 void DeleteSelectedStudent (const char *filename) {   // xoa hoc sinh duoc chon, xoa bang ten hoac bang ma sinh vien
-	char Option;		// lua chon de nhap ten hoac id
-	char Name[50];		// bien de nhap ten
-	char ID[20];		// bien de nhap ma sinh vien
+	FILE *inputFile;
+	FILE *tempFile;
 	char line[200];
+	int found = 0;
+	char Name[40];
+	char studentID[20];
+	char Option;
 	
 	// kiem tra file co rong hay khong
-	file = fopen(filename, "r");	
-	fseek(file, 0, SEEK_END);	// di chuyen con tro toi cuoi file
-	if (ftell(file) == 0) {
+	inputFile = fopen(filename, "r");	
+	fseek(inputFile, 0, SEEK_END);	// di chuyen con tro toi cuoi file
+	if (ftell(inputFile) == 0) {
 		printf(" EMPTY file.\n\n");
-		fclose(file);
+		fclose(inputFile);
 		return;		// neu file rong thi return 
 	}
-	fclose(file);
+	fclose(inputFile);
 	//kiem tra xong
-	
 	
 	int IsDeleting = 0;
 	while (!IsDeleting) {
@@ -589,68 +591,118 @@ void DeleteSelectedStudent (const char *filename) {   // xoa hoc sinh duoc chon,
 					IsDeleting = 1;
 				}
 			} else {
-				char lineEl[200][200];
-				int countEl = 0;   //dem so dong trong file
-				int numEl = 0;  // dung de dem so luong hoc sinh muon xoa
-				char studentID[20];			//ma sinh vien dung de xoa
-				// tim bang ten
-				file = fopen(filename, "r");
-				while (fgets(line, sizeof(line), file) != NULL) {
+				int numEl = 0;
+				// tim xem ten co trong file hay khong
+				inputFile = fopen(filename, "r");
+				while (fgets(line, sizeof(line), inputFile) != NULL) {
 					while (strstr(line, Name) != NULL) {
 						numEl++;
 						int countLine = 0;
 						printf("%s", line);	
-						while (fgets(line, sizeof(line), file) && countLine < 1) {
+						while (fgets(line, sizeof(line), inputFile) && countLine < 1) {
 							countLine++;
 							printf("%s", line);
 						}
 					}
 				}
-				fclose(file);
-				// end 			
+				printf("\n\n");
+				fclose(inputFile);
+				// end
+				
 				if (numEl < 2) {
+					char Choice;
 					printf(" There is %d student. \n\n", numEl);
+					printf(" Do you want to delete the above student? [Y/N]. Your answer: ");
+					scanf(" %c", &Choice);
+					printf("\n\n");
+					if (Choice == 'Y' || Choice == 'y') {
+						// mo file goc de doc du lieu
+						inputFile = fopen(filename, "r");
+						if (inputFile == NULL) {
+							printf(" Can't access to file!!");
+							return;
+						}
+						// tao file tam thoi de luu du lieu sau khi xoa
+						tempFile = fopen("temp.txt", "w");
+						if (tempFile == NULL) {
+							printf(" Can't access to file!!\n\n");
+							fclose(inputFile);
+							return;
+						}
+						// xoa dong chua ten sinh vien
+						while (fgets(line, sizeof(line), inputFile)) {
+							if (strstr(line, Name) != NULL) {
+								found = 1;
+							} else {
+								fputs(line, tempFile);
+							}
+						}
+						// dong file goc va file tam thoi
+						fclose(inputFile);
+						fclose(tempFile);
+						if (found) {
+							// xoa file goc
+							remove(filename);
+							
+							// doi ten file tam thoi thanh ten file goc
+							rename("temp.txt", filename);
+							printf(" Delete succesfully.\n\n");
+						} else {
+							printf(" The '%s' is not found.\n\n", studentID);
+							remove("temp.txt");
+						}
+					} else if (Choice == 'N' || Choice == 'n') {
+						IsDeleting = 1;
+					}
 				} else {
 					printf(" There are %d students. \n\n", numEl);
-				}
-				printf(" Enter the student's ID that you want to delete: ");
-				scanf(" %s", &studentID);
-				
-				file = fopen(filename, "w+");
-				// dem so dong trong file
-				while (fgets(lineEl[countEl], sizeof(lineEl[countEl]), file) != NULL) {
-					countEl++;
-				}
-				// end
-				
-				// tim vi tri muon xoa
-				int indexEl; //vi tri muon xoa
-				for (i = 0; i < countEl; i++) {
-					if (strstr(lineEl[i], studentID) != NULL) {
-						indexEl = i;
-						continue;
+					printf(" Enter the student's ID that you want to delete: ");
+					scanf(" %s", &studentID);
+					printf("\n\n");
+					// mo file goc de doc du lieu
+					inputFile = fopen(filename, "r");
+					if (inputFile == NULL) {
+						printf(" Can't access to file!!");
+						return;
+					}
+					
+					// tao file tam thoi de luu du lieu sau khi xoa
+					tempFile = fopen("temp.txt", "w");
+					if (tempFile == NULL) {
+						printf(" Can't access to file!!\n\n");
+						fclose(inputFile);
+						return;
+					}
+					
+					// xoa dong chua ma sinh vien nguoi dung nhap
+					while (fgets(line, sizeof(line), inputFile)) {
+						if (strstr(line, studentID) != NULL) {
+							found = 1;
+						} else {
+							fputs(line, tempFile);
+						}
+					}
+					// Dong file goc va file tam thoi
+					fclose(inputFile);
+					fclose(tempFile);
+					
+					if (found) {
+						// xoa file goc
+						remove(filename);
+						
+						// doi ten file tam thoi thanh ten file goc
+						rename("temp.txt", filename);
+						printf(" Delete succesfully.\n\n");
+					} else {
+						printf(" The '%s' is not found.\n\n", studentID);
+						remove("temp.txt");
 					}
 				}
-				printf(" dong muon xoa la: %d", indexEl);
-				// end
-				
-				if (indexEl <= 0) {
-					indexEl = 0;
-				}
-				if (indexEl >= countEl) {
-					indexEl = countEl - 1;
-				}
-				for (i = indexEl; i < countEl - 1; i++) {
-					strcpy(lineEl[i], lineEl[i + 1]);
-				}
-				countEl--;
-				fclose(file);
-				
 				printf(" Do you want to continue ? [Y/N]. Your answer: ");
-				char Choices;									// bien de nguoi dung nhap yes/no
-				scanf(" %c", &Choices);
-				printf("\n");	
-				if (Choices == 'Y' || Choices == 'y') {			
+				char Choices;								// bien de nguoi dung nhap yes/no
+				scanf(" %c", &Choices);						
+				printf("\n");
+				if (Choices == 'Y' || Choices == 'y') {
 					IsDeleting = 0;
 				} else if (Choices == 'N' || Choices == 'n') {
 					IsDeleting = 1;
@@ -658,6 +710,7 @@ void DeleteSelectedStudent (const char *filename) {   // xoa hoc sinh duoc chon,
 			}
 		}
 	}
+	
 }
 
 void DeleteAllStudent(const char *filename) {		// xoa tat ca trong file
