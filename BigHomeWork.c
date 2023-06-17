@@ -161,11 +161,7 @@ void Create () {  // tao hoc sinh
 	char Email[50];   			// email
 	char PresentAddress[200];  	// noi o hien tai
 	char Countries[50];  		// que quan
-	
-	file = fopen("StudentManagement.txt", "a");
-	fprintf(file, "\n");
-	fclose(file);
-	
+		
 	int IsValidName = 0;
 	while (!IsValidName) {				// nhap ten sinh vien
 		printf(" Enter the Name: ");
@@ -298,7 +294,7 @@ void Create () {  // tao hoc sinh
 	
 	sprintf(DateOfBirth, "%02d-%02d-%04d", day, month, year);      // tao thanh chuoi dd-mm-yy
 	file = fopen("StudentManagement.txt", "a");
-	fprintf(file, "Date of birth: %s\t", DateOfBirth);		// xuat ngay thang nam sinh vao file
+	fprintf(file,"Birthday: %s\t", DateOfBirth);		// xuat ngay thang nam sinh vao file
 	fclose(file);		
 	
 	int IsValidSex = 0;
@@ -424,10 +420,10 @@ void Create () {  // tao hoc sinh
 	TotalStudents++;
 	
 	file = fopen("StudentManagement.txt", "a");
-	fprintf(file, "-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n\n");	
-	
-	printf("\n Student Added Succesfully.\n\n");
+	fprintf(file, "\n");	
 	fclose(file);
+	printf("\n Student Added Succesfully.\n\n");
+
 }
 
 void ShowAllList (const char *filename) {			// xuat tat ca cac ho so cua sinh vien trong file
@@ -488,10 +484,10 @@ void SearchStudent(const char *filename) {			// tim kiem
 			} else {
 				file = fopen(filename, "r");
 				while (fgets(line, sizeof(line), file) != NULL) {
-					int countLine = 0;
-					if (strstr(line, Name) != NULL) {
+					while (strstr(line, Name) != NULL) {
+						int countLine = 0;
 						printf("%s", line);	
-						while (fgets(line, sizeof(line), file) != NULL && countLine <= 1) {
+						while (fgets(line, sizeof(line), file) && countLine < 1) {
 							countLine++;
 							printf("%s", line);
 						}
@@ -527,10 +523,10 @@ void SearchStudent(const char *filename) {			// tim kiem
 			} else {
 				file = fopen(filename, "r");
 				while (fgets(line, sizeof(line), file) != NULL) {
-					int countLine = 0;
-					if (strstr(line, ID) != NULL) {
+					while (strstr(line, ID) != NULL) {
+						int countLine = 0;
 						printf("%s", line);	
-						while (fgets(line, sizeof(line), file) != NULL && countLine <= 1) {
+						while (fgets(line, sizeof(line), file) && countLine < 1) {
 							countLine++;
 							printf("%s", line);
 						}
@@ -594,23 +590,22 @@ void DeleteSelectedStudent (const char *filename) {   // xoa hoc sinh duoc chon,
 				}
 			} else {
 				char lineEl[200][200];
-				int countEl = 0;
+				int countEl = 0;   //dem so dong trong file
 				int numEl = 0;  // dung de dem so luong hoc sinh muon xoa
-				char studentID[20];
+				char studentID[20];			//ma sinh vien dung de xoa
 				// tim bang ten
 				file = fopen(filename, "r");
 				while (fgets(line, sizeof(line), file) != NULL) {
-					int countLine = 0;
-					if (strstr(line, Name) != NULL) {
+					while (strstr(line, Name) != NULL) {
 						numEl++;
+						int countLine = 0;
 						printf("%s", line);	
-						while (fgets(line, sizeof(line), file) != NULL && countLine <= 1) {
+						while (fgets(line, sizeof(line), file) && countLine < 1) {
 							countLine++;
 							printf("%s", line);
 						}
 					}
 				}
-				printf("\n\n");
 				fclose(file);
 				// end 			
 				if (numEl < 2) {
@@ -620,12 +615,46 @@ void DeleteSelectedStudent (const char *filename) {   // xoa hoc sinh duoc chon,
 				}
 				printf(" Enter the student's ID that you want to delete: ");
 				scanf(" %s", &studentID);
+				
+				file = fopen(filename, "w+");
 				// dem so dong trong file
 				while (fgets(lineEl[countEl], sizeof(lineEl[countEl]), file) != NULL) {
 					countEl++;
 				}
 				// end
 				
+				// tim vi tri muon xoa
+				int indexEl; //vi tri muon xoa
+				for (i = 0; i < countEl; i++) {
+					if (strstr(lineEl[i], studentID) != NULL) {
+						indexEl = i;
+						continue;
+					}
+				}
+				printf(" dong muon xoa la: %d", indexEl);
+				// end
+				
+				if (indexEl <= 0) {
+					indexEl = 0;
+				}
+				if (indexEl >= countEl) {
+					indexEl = countEl - 1;
+				}
+				for (i = indexEl; i < countEl - 1; i++) {
+					strcpy(lineEl[i], lineEl[i + 1]);
+				}
+				countEl--;
+				fclose(file);
+				
+				printf(" Do you want to continue ? [Y/N]. Your answer: ");
+				char Choices;									// bien de nguoi dung nhap yes/no
+				scanf(" %c", &Choices);
+				printf("\n");	
+				if (Choices == 'Y' || Choices == 'y') {			
+					IsDeleting = 0;
+				} else if (Choices == 'N' || Choices == 'n') {
+					IsDeleting = 1;
+				}
 			}
 		}
 	}
