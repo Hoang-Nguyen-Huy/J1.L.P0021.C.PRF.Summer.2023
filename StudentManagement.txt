@@ -1,10 +1,12 @@
-Full name: Nguyen Huy Hoang	ID: SE180435	Birthday: 14-02-2004	Sex: Male	Email: hoang@gmail.com	  Phone number: 0234123432	Address: Vinhomes	Country: Nha Trang	
 
-Full name: Nguyen Hai Nam	ID: SE180123	Birthday: 17-05-2004	Sex: Male	Email: nam@gmail.com	  Phone number: 01243243223	Address: Vinhomes	Country: Nha Trang	
 
 Full name: Bui Phuong Mai	ID: SS180123	Birthday: 14-04-2004	Sex: Female	Email: mai@gmail.com	  Phone number: 0234123423	Address: Vinhomes	Country: Bien Hoa	
 
 Full name: Mai Xuan Hung	ID: SE180321	Birthday: 14-04-2004	Sex: Male	Email: hung@gmail.com	  Phone number: 0123423143	Address: Vinhomes	Country: Nha Trang	
 
 
+
+
+
+Full name: Nguyen Huy Hoang	ID: SE180435	Birthday: 13-02-2004	Sex: Male	Email: hoang@gmail.com	  Phone number: 03124123433	Address: Vinhomes	Country: Nha Trang	
 

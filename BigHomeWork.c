@@ -555,6 +555,7 @@ void DeleteSelectedStudent (const char *filename) {   // xoa hoc sinh duoc chon,
 	char line[200];
 	int found = 0;
 	char Name[40];
+	char ID[20];
 	char studentID[20];
 	char Option;
 	
@@ -698,6 +699,81 @@ void DeleteSelectedStudent (const char *filename) {   // xoa hoc sinh duoc chon,
 						remove("temp.txt");
 					}
 				}
+				printf(" Do you want to continue ? [Y/N]. Your answer: ");
+				char Choices;								// bien de nguoi dung nhap yes/no
+				scanf(" %c", &Choices);						
+				printf("\n");
+				if (Choices == 'Y' || Choices == 'y') {
+					IsDeleting = 0;
+				} else if (Choices == 'N' || Choices == 'n') {
+					IsDeleting = 1;
+				}
+			}
+		} else if (Option == 'I' || Option == 'i') {
+			printf(" Enter the ID: ");
+			scanf(" %s", &ID);
+			printf("\n\n");
+			if (IsExistsInFile(filename, ID) == false) {
+				printf(" The '%s' is not found.\n\n", ID);
+				printf(" Do you want to continue ? [Y/N]. Your answer: ");
+				char Choices;									// bien de nguoi dung nhap yes/no
+				scanf(" %c", &Choices);
+				printf("\n");	
+				if (Choices == 'Y' || Choices == 'y') {			
+					IsDeleting = 0;
+				} else if (Choices == 'N' || Choices == 'n') {
+					IsDeleting = 1;
+				}
+			} else {
+				int find = 0;
+				// xuat hoc sinh co ma sinh vien 
+				inputFile = fopen(filename, "r");
+				while (fgets(line, sizeof(line), inputFile) != NULL) {
+					if (strstr(line, ID) != NULL) {
+						printf("%s", line);
+					}
+				}
+				printf("\n\n");
+				fclose(inputFile);
+				//  end
+				
+				//xoa hoc sinh co ma sinh vien la ID
+				inputFile = fopen(filename, "r");
+				if (inputFile == NULL) {
+					printf(" Can't access to file!!!");
+					return;
+				}
+				
+				   // tao file tam thoi de luu du lieu sau khi xoa
+				tempFile = fopen("temp.txt", "w");
+				if (tempFile == NULL) {
+					printf(" Can't access to file !!!");
+					fclose(inputFile);
+					return;
+				}
+				// xoa dong chua ma sinh vien
+				while (fgets(line, sizeof(line), inputFile)) { 
+					if (strstr(line, ID) != NULL) {
+						find = 1;
+					} else {
+						fputs(line, tempFile);
+					}
+				}
+				// dong file goc va file tam thoi
+				fclose(inputFile);
+				fclose(tempFile);
+				if (find) {
+					// xoa file goc
+					remove(filename);
+					
+					// doi ten file tam thoi thanh file goc
+					rename("temp.txt", filename);
+					printf(" Delete successfully.\n\n");
+				} else {
+					printf(" The '%s' is not found.\n\n", ID);
+					remove("temp.txt");
+				}
+				// end
 				printf(" Do you want to continue ? [Y/N]. Your answer: ");
 				char Choices;								// bien de nguoi dung nhap yes/no
 				scanf(" %c", &Choices);						
