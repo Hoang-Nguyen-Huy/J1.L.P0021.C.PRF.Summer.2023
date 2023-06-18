@@ -60,7 +60,7 @@ void Create();
 void ShowAllList(const char *filename);			// xuat tat ca cac ho so cua sinh vien trong file
 void SearchStudent(const char *filename);
 void Sort();   // chua nghi ra
-void Update(int StudentFoundIndex);  
+void Update(const char *filename);  
 void DeleteSelectedStudent(const char *filename);		
 void DeleteAllStudent(const char *filename);		// xoa tat ca trong  file
 bool IsExistsInFile(const char *filename, const char *code);
@@ -94,6 +94,12 @@ int main () {
 			    printf("\n\n");
 			    GoBackOrExit();
 			    break;
+			case 3: 
+				system("cls");
+				printf("\n\t\t********Updating profile********\n\n");
+				Update("StudentManagement.txt");
+				printf("\n\n");
+				GoBackOrExit();
 			case 4: 
 			    system("cls");
 			    DeleteSelectedStudent("StudentManagement.txt");
@@ -547,6 +553,166 @@ void SearchStudent(const char *filename) {			// tim kiem
 		}
 	}
 	
+}
+
+void Update (const char *filename) {
+	FILE *inputFile;
+	FILE *tempFile;
+	char line[200];
+	char Option;
+	char Name[40];
+	
+	// kiem tra file co rong hay khong
+	inputFile = fopen(filename, "r");	
+	fseek(inputFile, 0, SEEK_END);	// di chuyen con tro toi cuoi file
+	if (ftell(inputFile) == 0) {
+		printf(" EMPTY file.\n\n");
+		fclose(inputFile);
+		return;		// neu file rong thi return 
+	}
+	fclose(inputFile);
+	//kiem tra xong
+	
+	int IsUpdating = 0;
+	while (IsUpdating == 0) {
+		printf(" Enter the name[N] or the id[I]: ");
+		scanf(" %c", &Option);
+		printf("\n");
+		if (Option == 'N' || Option == 'n') {
+			printf(" Enter the name: ");
+			scanf(" %[^\n]s", &Name);
+			printf("\n\n");
+			if (IsExistsInFile(filename, Name) == false) {
+				printf(" The '%s' is not found.\n\n", Name);
+				printf(" Do you want to continue ? [Y/N]. Your answer: ");
+				char Choices;									// bien de nguoi dung nhap yes/no
+				scanf(" %c", &Choices);
+				printf("\n");	
+				if (Choices == 'Y' || Choices == 'y') {			
+					IsUpdating = 0;
+				} else if (Choices == 'N' || Choices == 'n') {
+					IsUpdating = 1;
+				}
+			} else {
+				int numEl = 0;
+				// tim xem ten co trong file hay khong
+				inputFile = fopen(filename, "r");
+				while (fgets(line, sizeof(line), inputFile) != NULL) {
+					while (strstr(line, Name) != NULL) {
+						numEl++;
+						int countLine = 0;
+						printf("%s", line);	
+						while (fgets(line, sizeof(line), inputFile) && countLine < 1) {
+							countLine++;
+							printf("%s", line);
+						}
+					}
+				}
+				printf("\n\n");
+				fclose(inputFile);
+				// end
+				
+				if (numEl < 2) {
+					char Choice;
+					printf(" There is %d student. \n\n", numEl);
+					printf(" Do you want to update the above student? [Y/N]. Your answer: ");
+					scanf(" %c", &Choice);
+					printf("\n\n");
+					if (Choice == 'Y' || Choice == 'y') {
+						int found = 0;
+						//mo file goc de doc du lieu
+						inputFile = fopen(filename, "r");
+						if (inputFile == NULL) {
+							printf(" Can't access to file!!!");
+							return;
+						}
+						
+						// tao file tam thoi de luu du lieu sau khi cap nhat
+						tempFile = fopen("temp.txt", "w");
+						if (tempFile == NULL) {
+							printf(" Can't access to file!!!");
+							fclose(inputFile);
+							return;
+						}
+						
+						// tim va cap nhat dong chua thong tin nguoi dung muon cap nhat
+						while (fgets(line, sizeof(line), inputFile)) {
+							if (strstr(line, Name) != NULL) {
+								found = 1;
+								char StudentID[50];		// ma sinh vien 
+								char name[50]; 			// ten 
+								char DateOfBirth[50]; 		// ngay sinh
+								char Sex[10]; 				// gioi tinh
+								char Phone[15];  			// so dien thoai
+								char Email[50];   			// email
+								char PresentAddress[200];  	// noi o hien tai
+								char Countries[50];  		// que quan
+								
+								int IsValidName = 0;
+								while (!IsValidName) {				// nhap ten sinh vien
+									printf(" Enter the Name: ");
+									scanf(" %[^\n]s", &Name);			// co the nhap co khoang trang
+									if (strlen(Name) > 30) {
+										printf(" Error: Name can not be more than 30 characters.\n\n");
+										IsValidName = 0;
+									} else if (strlen(Name) <= 0) {
+										printf(" Error: Name can not be empty.\n\n");
+										IsValidName = 0;
+									} else {
+										file = fopen("temp.txt", "a");
+										fprintf(file, "Full name: %s\t", Name);				// nhap ten vao file
+										fclose(file);
+										IsValidName = 1;
+									}
+								}
+								
+								int IsValidID = 0;  
+								while (!IsValidID) {				// nhap ma sinh vien
+									printf(" Enter the ID: ");
+									scanf("%s", &StudentID);
+									if (IsExistsInFile("StudentManagement.txt", StudentID) == true) {
+										printf(" Error: This ID is already exists.\n\n");
+										IsValidID = 0;
+									} else if (strlen(StudentID) > 10) {
+										printf(" Error: ID can not be more than 10 characters.\n\n");
+										IsValidID = 0;
+									} else if (strlen(StudentID) <= 0) {
+										printf(" Error: ID can not be empty.\n\n");
+										IsValidID = 0;
+									} else {
+										file = fopen("temp.txt", "a");
+										fprintf(file, "ID: %s\t", StudentID);			// nhap ma sinh vien vao file
+										fclose(file);
+										IsValidID = 1;
+									}
+								}
+								
+								
+							} else {
+								fputs(line, tempFile);
+							}
+						}
+						
+						//dong file goc va file tam thoi
+						fclose(inputFile);
+						fclose(tempFile);
+						
+						if (found) {
+							// xoa file goc
+							remove(filename);
+							
+							// doi ten file tam thoi thanh ten file goc
+							rename("temp.txt", filename);
+							printf(" Update successfully\n\n");
+						} else {
+							printf(" The '%s' is not found", Name);
+							remove("temp.txt");
+						}
+					}
+				}
+			}
+		}
+	}
 }
 
 void DeleteSelectedStudent (const char *filename) {   // xoa hoc sinh duoc chon, xoa bang ten hoac bang ma sinh vien

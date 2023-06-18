@@ -10,3 +10,5 @@ Full name: Mai Xuan Hung	ID: SE180321	Birthday: 14-04-2004	Sex: Male	Email: hung
 
 Full name: Nguyen Huy Hoang	ID: SE180435	Birthday: 13-02-2004	Sex: Male	Email: hoang@gmail.com	  Phone number: 03124123433	Address: Vinhomes	Country: Nha Trang	
 
+Full name: Nguyen Minh Hoang	ID: SE180123	Birthday: 01-02-2004	Sex: Male	Email: mhoang@gmail.com	  Phone number: 0132412343	Address: Landmark	Country: DakLak	
+
