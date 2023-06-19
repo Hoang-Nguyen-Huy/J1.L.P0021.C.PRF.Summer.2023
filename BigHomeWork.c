@@ -425,9 +425,6 @@ void Create () {  // tao hoc sinh
 	strcpy(Students[TotalStudents].Countries, Countries);			// copy que quan
 	TotalStudents++;
 	
-	file = fopen("StudentManagement.txt", "a");
-	fprintf(file, "\n");	
-	fclose(file);
 	printf("\n Student Added Succesfully.\n\n");
 
 }
@@ -490,13 +487,8 @@ void SearchStudent(const char *filename) {			// tim kiem
 			} else {
 				file = fopen(filename, "r");
 				while (fgets(line, sizeof(line), file) != NULL) {
-					while (strstr(line, Name) != NULL) {
-						int countLine = 0;
+					if (strstr(line, Name) != NULL) {
 						printf("%s", line);	
-						while (fgets(line, sizeof(line), file) && countLine < 1) {
-							countLine++;
-							printf("%s", line);
-						}
 					}
 				}
 				printf("\n\n");
@@ -529,13 +521,8 @@ void SearchStudent(const char *filename) {			// tim kiem
 			} else {
 				file = fopen(filename, "r");
 				while (fgets(line, sizeof(line), file) != NULL) {
-					while (strstr(line, ID) != NULL) {
-						int countLine = 0;
+					if (strstr(line, ID) != NULL) {
 						printf("%s", line);	
-						while (fgets(line, sizeof(line), file) && countLine < 1) {
-							countLine++;
-							printf("%s", line);
-						}
 					}
 				}
 				printf("\n\n");
@@ -598,14 +585,9 @@ void Update (const char *filename) {
 				// tim xem ten co trong file hay khong
 				inputFile = fopen(filename, "r");
 				while (fgets(line, sizeof(line), inputFile) != NULL) {
-					while (strstr(line, Name) != NULL) {
+					if (strstr(line, Name) != NULL) {
 						numEl++;
-						int countLine = 0;
 						printf("%s", line);	
-						while (fgets(line, sizeof(line), inputFile) && countLine < 1) {
-							countLine++;
-							printf("%s", line);
-						}
 					}
 				}
 				printf("\n\n");
@@ -639,29 +621,27 @@ void Update (const char *filename) {
 						while (fgets(line, sizeof(line), inputFile)) {
 							if (strstr(line, Name) != NULL) {
 								found = 1;
-								char StudentID[50];		// ma sinh vien 
-								char name[50]; 			// ten 
-								char DateOfBirth[50]; 		// ngay sinh
-								char Sex[10]; 				// gioi tinh
-								char Phone[15];  			// so dien thoai
-								char Email[50];   			// email
-								char PresentAddress[200];  	// noi o hien tai
-								char Countries[50];  		// que quan
+								char newName[40];
+								char newID[20];
+								char newEmail[100];
+								char newPhone[20];
+								char newSex[10];
+								char newBirthday[50];
+								char newAddress[100];
+								char newCountry[50];
 								
 								int IsValidName = 0;
 								while (!IsValidName) {				// nhap ten sinh vien
 									printf(" Enter the Name: ");
-									scanf(" %[^\n]s", &Name);			// co the nhap co khoang trang
-									if (strlen(Name) > 30) {
+									scanf(" %[^\n]s", &newName);			// co the nhap co khoang trang
+									if (strlen(newName) > 30) {
 										printf(" Error: Name can not be more than 30 characters.\n\n");
 										IsValidName = 0;
-									} else if (strlen(Name) <= 0) {
+									} else if (strlen(newName) <= 0) {
 										printf(" Error: Name can not be empty.\n\n");
 										IsValidName = 0;
 									} else {
-										file = fopen("temp.txt", "a");
-										fprintf(file, "Full name: %s\t", Name);				// nhap ten vao file
-										fclose(file);
+										fprintf(tempFile, "Full name: %s\t", newName);				// nhap ten vao file
 										IsValidName = 1;
 									}
 								}
@@ -669,24 +649,202 @@ void Update (const char *filename) {
 								int IsValidID = 0;  
 								while (!IsValidID) {				// nhap ma sinh vien
 									printf(" Enter the ID: ");
-									scanf("%s", &StudentID);
-									if (IsExistsInFile("StudentManagement.txt", StudentID) == true) {
-										printf(" Error: This ID is already exists.\n\n");
-										IsValidID = 0;
-									} else if (strlen(StudentID) > 10) {
+									scanf("%s", &newID);
+									if (strlen(newID) > 10) {
 										printf(" Error: ID can not be more than 10 characters.\n\n");
 										IsValidID = 0;
-									} else if (strlen(StudentID) <= 0) {
+									} else if (strlen(newID) <= 0) {
 										printf(" Error: ID can not be empty.\n\n");
 										IsValidID = 0;
 									} else {
-										file = fopen("temp.txt", "a");
-										fprintf(file, "ID: %s\t", StudentID);			// nhap ma sinh vien vao file
-										fclose(file);
+										fprintf(tempFile, "ID: %s\t", newID);			// nhap ma sinh vien vao file
 										IsValidID = 1;
 									}
 								}
 								
+								char checkDay[5];					// nhap ngay sinh
+								int day; 
+								printf(" Enter the day of birth: ");
+								scanf("%s", &checkDay);
+								while (checkInt(checkDay) == false) {
+									printf(" Please enter the valid day!!\n");
+									printf(" Enter the day: ");
+									scanf("%s", &checkDay);
+								}
+								if (checkInt(checkDay) == true) {
+									day = atoi(checkDay);
+								}
+								while (day > 31 || day < 1) {
+									printf(" Please enter the valid day!!\n");
+									printf(" Enter the day: ");
+									scanf(" %s", &checkDay);
+									while (checkInt(checkDay) == false) {
+										printf(" Please enter the valid day!!\n");
+										printf(" Enter the day: ");
+										scanf(" %s", &checkDay);
+									}
+									if (checkInt(checkDay) == true) {
+										day = atoi(checkDay);
+									}
+									if (day <= 31 && day >= 1) {
+										break;
+									}
+								}								// nhap xong ngay sinh
+								
+								char checkMonth[5];			// nhap thang sinh
+								int month;
+								printf(" Enter the month of birth: ");
+								scanf("%s", &checkMonth);
+								while (checkInt(checkMonth) == false) {
+									printf(" Please enter the valid month!!\n");
+									printf(" Enter the month of birth: ");
+									scanf("%s", &checkMonth);
+								}
+								if (checkInt(checkMonth) == true) {
+									month = atoi(checkMonth);
+								}
+								while (month > 12 || month < 1) {
+									printf(" Please enter the valid month!!\n");
+									printf(" Enter the month of birth: ");
+									scanf("%s", &checkMonth);
+									while (checkInt(checkMonth) == false) {
+										printf(" Please enter the valid month!!\n");
+										printf(" Enter the month of birth: ");
+										scanf("%s", &checkMonth);
+									}
+									if (checkInt(checkMonth) == true) {
+										month = atoi(checkMonth);
+									}
+									if (month <= 12 && month >= 1) {
+										break;
+									}
+								}							// nhap xong thang sinh
+								
+								char checkYear[5];			// nhap nam sinh
+								int year;
+								printf(" Enter the year of birth: ");
+								scanf("%s", &checkYear);
+								while (checkInt(checkYear) == false) {
+									printf(" Please enter the valid year!!\n");
+									printf(" Enter the year of birth: ");
+									scanf("%s", &checkYear);
+								}
+								if (checkInt(checkYear) == true) {
+									year = atoi(checkYear);
+								}
+								while (year > 2005 || year < 1923) {
+									printf(" Please enter the valid year!!\n");
+									printf(" Enter the year of birth: ");
+									scanf("%s", &checkYear);
+									while (checkInt(checkYear) == false) {
+										printf(" Please enter the valid year!!\n");
+										printf(" Enter the year of birth: ");
+										scanf("%s", &checkYear);
+									}
+									if (checkInt(checkYear) == true) {
+										year = atoi(checkYear);
+									}
+									if (year <= 2005 && year >= 1923) {
+										break;
+									}
+								}								// nhap xong nam sinh
+								
+								sprintf(newBirthday, "%02d-%02d-%04d", day, month, year);      // tao thanh chuoi dd-mm-yy
+								fprintf(tempFile,"Birthday: %s\t", newBirthday);		// xuat ngay thang nam sinh vao file
+								
+								int IsValidSex = 0;
+								while (!IsValidSex) {				// nhap gioi tinh
+									printf(" Are you [M] Male or [F] Female? ");
+									scanf("%s", &newSex);
+									if (newSex[0] == 'M' || newSex[0] == 'm') {
+										newSex[0] = 'M';
+										newSex[1] = 'a';
+										newSex[2] = 'l';
+										newSex[3] = 'e';
+										fprintf(tempFile, "Sex: %s\t", newSex);  				// nhap gioi tinh vao file
+										IsValidSex = 1;
+									} else if (newSex[0] == 'F' || newSex[0] == 'f') {
+										newSex[0] = 'F';
+										newSex[1] = 'e';
+										newSex[2] = 'm';
+										newSex[3] = 'a';
+										newSex[4] = 'l';
+										newSex[5] = 'e';
+										fprintf(tempFile, "Sex: %s\t", newSex);  				// nhap gioi tinh vao file
+										IsValidSex = 1;
+									} else {
+										printf(" Error: Your option is not valid!!!\n");
+										IsValidSex = 0;
+									}
+								}
+								
+								int IsValidEmail = 0;		
+								while (!IsValidEmail) {			// nhap email
+									printf(" Enter the email: ");
+									scanf("%s", &newEmail);
+									
+									if (strlen(newEmail) > 30) {
+										printf(" Error: Email can not be more than 30 characters.\n\n");
+										IsValidEmail = 0;
+									} else if (strlen(newEmail) <= 0) {
+										printf(" Error: Email can not be empty.\n\n");
+										IsValidEmail = 0;
+									} else {
+										fprintf(tempFile, "Email: %s\t", newEmail);			// nhap email vao file
+										IsValidEmail = 1;
+									}
+								}
+								
+								int IsValidPhone = 0;
+								while (!IsValidPhone) {								// nhap phone
+									printf(" Enter the Phone Number: ");
+									scanf("%s", &newPhone);
+									 if (strlen(newPhone) > 11) {
+										printf(" Error: Phone can not be more than 11 characters.\n\n");
+										IsValidPhone = 0;
+									} else if (strlen(newPhone) <= 0) {
+										printf(" Error: Phone can not be empty.\n\n");
+										IsValidPhone = 0;
+									} else if (strlen(newPhone) < 10 && strlen(newPhone) > 0) {
+										printf(" Error: This is not a valid phone number.\n");
+										IsValidPhone = 0;	
+									} else { 
+										fprintf(tempFile, "  Phone number: %s\t", newPhone);			// nhap phone vao file
+										IsValidPhone = 1;
+									}
+								}
+								
+								int IsValidPresentAddress = 0;
+								while (!IsValidPresentAddress) {		// nhap dia chi hien tai
+									printf(" Enter the present address: ");
+									scanf(" %[^\n]s", &newAddress);			// nhap co khoang trang
+									if (strlen(newAddress) > 200) {
+										printf(" Error: Enter the address which has under 200 characters.\n\n");
+										IsValidPresentAddress = 0;
+									} else if (strlen(newAddress) <= 0) {
+										printf(" Error: Please enter the address.\n\n");
+										IsValidPresentAddress = 0;
+									} else {
+										fprintf(tempFile, "Address: %s\t", newAddress);		// ghi vao file
+										IsValidPresentAddress = 1;
+									}
+								}
+								
+								int IsValidCountries = 0;
+								while (!IsValidCountries) {				// nhap que quan
+									printf(" Enter the country: ");
+									scanf(" %[^\n]s", &newCountry);		// nhap co khoang trang
+									if (strlen(newCountry) > 50) {
+										printf(" Error: This is not valid!\n\n");
+										IsValidCountries = 0;
+									} else if (strlen(newCountry) <= 0) {
+										printf(" Error: Please enter the conutry.\n\n");
+										IsValidCountries = 0;
+									} else {
+										fprintf(tempFile, "Country: %s\t\n", newCountry);		// ghi vao file
+										IsValidCountries = 1;
+									}
+								}
 								
 							} else {
 								fputs(line, tempFile);
@@ -708,6 +866,18 @@ void Update (const char *filename) {
 							printf(" The '%s' is not found", Name);
 							remove("temp.txt");
 						}
+					} else if (Choice == 'N' || Choice == 'n') {
+						IsUpdating = 1;
+					}
+				} else {
+					printf(" Do you want to continue ? [Y/N]. Your answer: ");
+					char Choices;									// bien de nguoi dung nhap yes/no
+					scanf(" %c", &Choices);
+					printf("\n");	
+					if (Choices == 'Y' || Choices == 'y') {			
+						IsUpdating = 0;
+					} else if (Choices == 'N' || Choices == 'n') {
+						IsUpdating = 1;
 					}
 				}
 			}
@@ -762,14 +932,9 @@ void DeleteSelectedStudent (const char *filename) {   // xoa hoc sinh duoc chon,
 				// tim xem ten co trong file hay khong
 				inputFile = fopen(filename, "r");
 				while (fgets(line, sizeof(line), inputFile) != NULL) {
-					while (strstr(line, Name) != NULL) {
+					if (strstr(line, Name) != NULL) {
 						numEl++;
-						int countLine = 0;
 						printf("%s", line);	
-						while (fgets(line, sizeof(line), inputFile) && countLine < 1) {
-							countLine++;
-							printf("%s", line);
-						}
 					}
 				}
 				printf("\n\n");
