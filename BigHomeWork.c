@@ -543,7 +543,9 @@ void SearchStudent(const char *filename) {			// tim kiem
 	
 }
 
-void Update (const char *filename) {
+
+
+void Update (const char *filename) {   // cap nhat thong tin 
 	FILE *inputFile;
 	FILE *tempFile;
 	char line[200];
@@ -787,8 +789,10 @@ void Update (const char *filename) {
 								while (!IsValidEmail) {			// nhap email
 									printf(" Enter the email: ");
 									scanf("%s", &newEmail);
-									
-									if (strlen(newEmail) > 30) {
+									if (IsExistsInFile("StudentManagement.txt", newEmail) == true) {
+										printf(" Error: This email has already been used.\n\n");
+										IsValidEmail = 0;
+									} else if (strlen(newEmail) > 30) {
 										printf(" Error: Email can not be more than 30 characters.\n\n");
 										IsValidEmail = 0;
 									} else if (strlen(newEmail) <= 0) {
@@ -804,7 +808,10 @@ void Update (const char *filename) {
 								while (!IsValidPhone) {								// nhap phone
 									printf(" Enter the Phone Number: ");
 									scanf("%s", &newPhone);
-									 if (strlen(newPhone) > 11) {
+									if (IsExistsInFile("StudentManagement.txt", newPhone) == true) {
+										printf(" Error: This phone number has already been used.\n\n");
+										IsValidPhone = 0;
+									} else if (strlen(newPhone) > 11) {
 										printf(" Error: Phone can not be more than 11 characters.\n\n");
 										IsValidPhone = 0;
 									} else if (strlen(newPhone) <= 0) {
@@ -866,7 +873,7 @@ void Update (const char *filename) {
 							
 							// doi ten file tam thoi thanh ten file goc
 							rename("temp.txt", filename);
-							printf(" Update successfully\n\n");
+							printf(" \n\nUpdate successfully\n\n");
 						} else {
 							printf(" The '%s' is not found", Name);
 							remove("temp.txt");
@@ -1082,7 +1089,10 @@ void Update (const char *filename) {
 								while (!IsValidPhone) {								// nhap phone
 									printf(" Enter the Phone Number: ");
 									scanf("%s", &newPhone);
-									 if (strlen(newPhone) > 11) {
+									if (IsExistsInFile("StudentManagement.txt", newPhone) == true) {
+										printf(" Error: This phone number has already been used.\n\n");
+										IsValidPhone = 0;
+									} else if (strlen(newPhone) > 11) {
 										printf(" Error: Phone can not be more than 11 characters.\n\n");
 										IsValidPhone = 0;
 									} else if (strlen(newPhone) <= 0) {
@@ -1143,7 +1153,7 @@ void Update (const char *filename) {
 							
 							// doi ten file tam thoi thanh ten file goc
 							rename("temp.txt", filename);
-							printf(" Update successfully\n\n");
+							printf(" \n\nUpdate successfully\n\n");
 						} else {
 							printf(" The '%s' is not found", Name);
 							remove("temp.txt");
@@ -1176,6 +1186,16 @@ void Update (const char *filename) {
 				}
 			} else {
 				int found = 0;
+				// tim xem ten co trong file hay khong
+				inputFile = fopen(filename, "r");
+				while (fgets(line, sizeof(line), inputFile) != NULL) {
+					if (strstr(line, ID) != NULL) {
+						printf("%s", line);	
+					}
+				}
+				printf("\n\n");
+				fclose(inputFile);
+				// end
 				//mo file goc de doc du lieu
 					inputFile = fopen(filename, "r");
 					if (inputFile == NULL) {
@@ -1359,8 +1379,10 @@ void Update (const char *filename) {
 								while (!IsValidEmail) {			// nhap email
 									printf(" Enter the email: ");
 									scanf("%s", &newEmail);
-									
-									if (strlen(newEmail) > 30) {
+									if (IsExistsInFile("StudentManagement.txt", newEmail) == true) {
+										printf(" Error: This email has already been used.\n\n");
+										IsValidEmail = 0;
+									} else if (strlen(newEmail) > 30) {
 										printf(" Error: Email can not be more than 30 characters.\n\n");
 										IsValidEmail = 0;
 									} else if (strlen(newEmail) <= 0) {
@@ -1376,7 +1398,10 @@ void Update (const char *filename) {
 								while (!IsValidPhone) {								// nhap phone
 									printf(" Enter the Phone Number: ");
 									scanf("%s", &newPhone);
-									 if (strlen(newPhone) > 11) {
+									if (IsExistsInFile("StudentManagement.txt", newPhone) == true) {
+										printf(" Error: This phone number has already been used.\n\n");
+										IsValidPhone = 0;
+									} else if (strlen(newPhone) > 11) {
 										printf(" Error: Phone can not be more than 11 characters.\n\n");
 										IsValidPhone = 0;
 									} else if (strlen(newPhone) <= 0) {
