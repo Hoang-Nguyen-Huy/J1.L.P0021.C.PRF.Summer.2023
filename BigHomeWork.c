@@ -12,6 +12,7 @@ Class: SE1809
 #include <unistd.h>
 
 struct StudentInfo {
+	char FirstName[20]; 		// dung de sap xep
 	char Name[30];			// ten
 	char ID[10];			// ma sinh vien
 	char Email[100];		// email
@@ -174,10 +175,28 @@ void Create () {  // tao hoc sinh
 	char Email[50];   			// email
 	char PresentAddress[200];  	// noi o hien tai
 	char Countries[50];  		// que quan
-		
+	char FirstName[20];		// dung de sap xep
+	
+	
+	int IsValidFirstName = 0;
+	while (!IsValidFirstName) {
+		printf(" Enter the First Name: ");
+		scanf(" %s", &FirstName);
+		if (strlen(FirstName) > 10) {
+			printf(" Error: First name can not be more than 10 characters.\n\n");
+			IsValidFirstName = 0;
+		} else if (strlen(FirstName) <= 0) {
+			printf(" Error: First name can not be empty.\n\n");
+			IsValidFirstName = 0;
+		} else {
+			IsValidFirstName = 1;
+		}
+	}
+	
+	
 	int IsValidName = 0;
 	while (!IsValidName) {				// nhap ten sinh vien
-		printf(" Enter the Name: ");
+		printf(" Enter the Full Name: ");
 		scanf(" %[^\n]s", &Name);			// co the nhap co khoang trang
 		if (strlen(Name) > 30) {
 			printf(" Error: Name can not be more than 30 characters.\n\n");
@@ -422,6 +441,7 @@ void Create () {  // tao hoc sinh
 			IsValidCountries = 1;
 		}
 	}
+	strcpy(Students[TotalStudents].FirstName, FirstName);		// copy first name de sap xep
 	strcpy(Students[TotalStudents].Name, Name);   					// copy lai Name
 	strcpy(Students[TotalStudents].ID, StudentID);  				// copy lai ID
 	strcpy(Students[TotalStudents].DateOfBirth, DateOfBirth);		// copy ngay thang nam sinh
@@ -552,7 +572,7 @@ void SearchStudent(const char *filename) {			// tim kiem
 int compareNames(const void* a, const void* b) {
 	const struct StudentInfo* StudentsA = (const struct StudentInfo*)a;
 	const struct StudentInfo* StudentsB = (const struct StudentInfo*)b;
-	return strcmp(StudentsA->Name, StudentsB->Name);
+	return strcmp(StudentsA->FirstName, StudentsB->FirstName);
 }
 
 void Sort (const char *filename) {
