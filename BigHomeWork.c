@@ -59,7 +59,8 @@ void Menu();
 void Create();
 void ShowAllList(const char *filename);			// xuat tat ca cac ho so cua sinh vien trong file
 void SearchStudent(const char *filename);
-void Sort();   // chua nghi ra
+int compareNames(const void* a, const void* b);
+void Sort(const char *filename);   // chua nghi ra
 void Update(const char *filename);  
 void DeleteSelectedStudent(const char *filename);		
 void DeleteAllStudent(const char *filename);		// xoa tat ca trong  file
@@ -115,6 +116,11 @@ int main () {
 			case 6: 
 				system("cls");
 				SearchStudent("StudentManagement.txt");
+				GoBackOrExit();
+				break;
+			case 7: 
+				system("cls");
+				Sort("StudentManagement.txt");
 				GoBackOrExit();
 				break;
 			case 0: 
@@ -543,7 +549,30 @@ void SearchStudent(const char *filename) {			// tim kiem
 	
 }
 
+int compareNames(const void* a, const void* b) {
+	const struct StudentInfo* StudentsA = (const struct StudentInfo*)a;
+	const struct StudentInfo* StudentsB = (const struct StudentInfo*)b;
+	return strcmp(StudentsA->Name, StudentsB->Name);
+}
 
+void Sort (const char *filename) {
+	qsort(Students, TotalStudents, sizeof(struct StudentInfo), compareNames);
+	file = fopen(filename, "w");
+	
+	for (i = 0; i < TotalStudents; i++) {
+		fprintf(file, "Full name: %s\t", Students[i].Name);				// nhap ten vao file		
+		fprintf(file, "ID: %s\t", Students[i].ID);			// nhap ma sinh vien vao file
+		fprintf(file,"Birthday: %s\t", Students[i].DateOfBirth);		// xuat ngay thang nam sinh vao file
+		fprintf(file, "Sex: %s\t", Students[i].Sex);  				// nhap gioi tinh vao file
+		fprintf(file, "Email: %s\t", Students[i].Email);			// nhap email vao file
+		fprintf(file, "  Phone number: %s\t", Students[i].PhoneNumber);			// nhap phone vao file
+		fprintf(file, "Address: %s\t", Students[i].PresentAddress);		// ghi vao file
+		fprintf(file, "Country: %s\t\n", Students[i].Countries);		// ghi vao file
+	}
+	fclose(file);
+	printf("\n\n Sort successfully\n\n");
+	
+}
 
 void Update (const char *filename) {   // cap nhat thong tin 
 	FILE *inputFile;
