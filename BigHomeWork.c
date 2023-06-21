@@ -91,7 +91,6 @@ int main () {
 			case 2: 
 			    system("cls");
 			    printf("\n\t\t********List of all profile********\n\n");
-			    printf("        Full name       |    ID   |  Birthday |  Sex  |          Email         | Phone number |       Address     |    Country   |\n\n");
 			    ShowAllList("StudentManagement.txt");
 			    printf("\n\n");
 			    GoBackOrExit();
@@ -189,7 +188,7 @@ void Create () {  // tao hoc sinh
 			IsValidName = 0;
 		} else {
 			file = fopen("StudentManagement.txt", "a");
-			fprintf(file, "%s", Name);
+			fprintf(file, " %s", Name);
 			for (i = 1; i <= 25 - strlen(Name); i++) {
 				fprintf(file, " ");
 			}
@@ -206,8 +205,8 @@ void Create () {  // tao hoc sinh
 		if (IsExistsInFile("StudentManagement.txt", StudentID) == true) {
 			printf(" Error: This ID is already exists.\n\n");
 			IsValidID = 0;
-		} else if (strlen(StudentID) > 10) {
-			printf(" Error: ID can not be more than 10 characters.\n\n");
+		} else if (strlen(StudentID) > 8) {
+			printf(" Error: ID can not be more than 8 characters.\n\n");
 			IsValidID = 0;
 		} else if (strlen(StudentID) <= 0) {
 			printf(" Error: ID can not be empty.\n\n");
@@ -215,7 +214,7 @@ void Create () {  // tao hoc sinh
 		} else {
 			file = fopen("StudentManagement.txt", "a");
 			fprintf(file, "%s", StudentID);			// nhap ma sinh vien vao file
-			for (i = 1; i <= 10 - strlen(StudentID); i++) {
+			for (i = 1; i <= 11 - strlen(StudentID); i++) {
 				fprintf(file, " ");
 			}
 			fclose(file);
@@ -316,7 +315,7 @@ void Create () {  // tao hoc sinh
 	sprintf(DateOfBirth, "%02d-%02d-%04d", day, month, year);      // tao thanh chuoi dd-mm-yy
 	file = fopen("StudentManagement.txt", "a");
 	fprintf(file,"%s", DateOfBirth);		// xuat ngay thang nam sinh vao file
-	for (i = 1; i <= 12 - strlen(DateOfBirth); i++) {
+	for (i = 1; i <= 16 - strlen(DateOfBirth); i++) {
 		fprintf(file, " ");
 	}
 	fclose(file);		
@@ -332,7 +331,7 @@ void Create () {  // tao hoc sinh
 			Sex[3] = 'e';
 			file = fopen("StudentManagement.txt", "a");
 			fprintf(file, "%s", Sex);  				// nhap gioi tinh vao file
-			for (i = 1; i <=8 - strlen(Sex); i++) {
+			for (i = 1; i <= 10 - strlen(Sex); i++) {
 				fprintf(file, " ");
 			}
 			fclose(file);
@@ -346,7 +345,7 @@ void Create () {  // tao hoc sinh
 			Sex[5] = 'e';
 			file = fopen("StudentManagement.txt", "a");
 			fprintf(file, "%s", Sex);  				// nhap gioi tinh vao file
-			for (i = 1; i <= 8 - strlen(Sex); i++) {
+			for (i = 1; i <= 10 - strlen(Sex); i++) {
 				fprintf(file, " ");
 			}
 			fclose(file);
@@ -443,7 +442,7 @@ void Create () {  // tao hoc sinh
 			IsValidCountries = 0;
 		} else {
 			file = fopen("StudentManagement.txt", "a");
-			fprintf(file, "%s\n", Countries);		// ghi vao file
+			fprintf(file, "%s", Countries);		// ghi vao file
 			for (i = 1; i <= 15 - strlen(Countries); i++) {
 				fprintf(file, " ");
 			}
@@ -467,21 +466,28 @@ void Create () {  // tao hoc sinh
 }
 
 void ShowAllList (const char *filename) {			// xuat tat ca cac ho so cua sinh vien trong file
+	// kiem tra file co rong hay khong
+	file = fopen(filename, "r");	
+	fseek(file, 0, SEEK_END);	// di chuyen con tro toi cuoi file
+	if (ftell(file) == 0) {
+		printf(" EMPTY file.\n\n");
+		fclose(file);
+		return;		// neu file rong thi return 
+	}
+	fclose(file);
+	//kiem tra xong
+	
+	printf("        Full name       |    ID    |    Birthday   |   Sex   |          Email         | Phone number |       Address     |    Country   |\n\n");
 	file = fopen(filename, "r");
 	if (file == NULL) {
 		printf(" There are no profile of any students.\n\n");
 		return;
 	}
-	int IsEmpty = 1;
 	char ch;
 	while ((ch = fgetc(file)) != EOF) {
 		putchar(ch);
-		IsEmpty = 0;
 	}
 	fclose(file);
-	if (IsEmpty == 1) {
-		printf(" EMPTY file.\n\n");
-	}
 }
 
 void SearchStudent(const char *filename) {			// tim kiem
