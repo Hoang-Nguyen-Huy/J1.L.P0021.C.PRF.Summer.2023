@@ -12,7 +12,6 @@ Class: SE1809
 #include <unistd.h>
 
 struct StudentInfo {
-	char FirstName[20]; 		// dung de sap xep
 	char Name[30];			// ten
 	char ID[10];			// ma sinh vien
 	char Email[100];		// email
@@ -92,6 +91,7 @@ int main () {
 			case 2: 
 			    system("cls");
 			    printf("\n\t\t********List of all profile********\n\n");
+			    printf("        Full name       |    ID   |  Birthday |  Sex  |          Email         | Phone number |       Address     |    Country   |\n\n");
 			    ShowAllList("StudentManagement.txt");
 			    printf("\n\n");
 			    GoBackOrExit();
@@ -175,23 +175,6 @@ void Create () {  // tao hoc sinh
 	char Email[50];   			// email
 	char PresentAddress[200];  	// noi o hien tai
 	char Countries[50];  		// que quan
-	char FirstName[20];		// dung de sap xep
-	
-	
-	int IsValidFirstName = 0;
-	while (!IsValidFirstName) {
-		printf(" Enter the First Name: ");
-		scanf(" %s", &FirstName);
-		if (strlen(FirstName) > 10) {
-			printf(" Error: First name can not be more than 10 characters.\n\n");
-			IsValidFirstName = 0;
-		} else if (strlen(FirstName) <= 0) {
-			printf(" Error: First name can not be empty.\n\n");
-			IsValidFirstName = 0;
-		} else {
-			IsValidFirstName = 1;
-		}
-	}
 	
 	
 	int IsValidName = 0;
@@ -206,7 +189,10 @@ void Create () {  // tao hoc sinh
 			IsValidName = 0;
 		} else {
 			file = fopen("StudentManagement.txt", "a");
-			fprintf(file, "Full name: %s\t", Name);				// nhap ten vao file
+			fprintf(file, "%s", Name);
+			for (i = 1; i <= 25 - strlen(Name); i++) {
+				fprintf(file, " ");
+			}
 			fclose(file);
 			IsValidName = 1;
 		}
@@ -228,7 +214,10 @@ void Create () {  // tao hoc sinh
 			IsValidID = 0;
 		} else {
 			file = fopen("StudentManagement.txt", "a");
-			fprintf(file, "ID: %s\t", StudentID);			// nhap ma sinh vien vao file
+			fprintf(file, "%s", StudentID);			// nhap ma sinh vien vao file
+			for (i = 1; i <= 10 - strlen(StudentID); i++) {
+				fprintf(file, " ");
+			}
 			fclose(file);
 			IsValidID = 1;
 		}
@@ -326,7 +315,10 @@ void Create () {  // tao hoc sinh
 	
 	sprintf(DateOfBirth, "%02d-%02d-%04d", day, month, year);      // tao thanh chuoi dd-mm-yy
 	file = fopen("StudentManagement.txt", "a");
-	fprintf(file,"Birthday: %s\t", DateOfBirth);		// xuat ngay thang nam sinh vao file
+	fprintf(file,"%s", DateOfBirth);		// xuat ngay thang nam sinh vao file
+	for (i = 1; i <= 12 - strlen(DateOfBirth); i++) {
+		fprintf(file, " ");
+	}
 	fclose(file);		
 	
 	int IsValidSex = 0;
@@ -339,7 +331,10 @@ void Create () {  // tao hoc sinh
 			Sex[2] = 'l';
 			Sex[3] = 'e';
 			file = fopen("StudentManagement.txt", "a");
-			fprintf(file, "Sex: %s\t", Sex);  				// nhap gioi tinh vao file
+			fprintf(file, "%s", Sex);  				// nhap gioi tinh vao file
+			for (i = 1; i <=8 - strlen(Sex); i++) {
+				fprintf(file, " ");
+			}
 			fclose(file);
 			IsValidSex = 1;
 		} else if (Sex[0] == 'F' || Sex[0] == 'f') {
@@ -350,7 +345,10 @@ void Create () {  // tao hoc sinh
 			Sex[4] = 'l';
 			Sex[5] = 'e';
 			file = fopen("StudentManagement.txt", "a");
-			fprintf(file, "Sex: %s\t", Sex);  				// nhap gioi tinh vao file
+			fprintf(file, "%s", Sex);  				// nhap gioi tinh vao file
+			for (i = 1; i <= 8 - strlen(Sex); i++) {
+				fprintf(file, " ");
+			}
 			fclose(file);
 			IsValidSex = 1;
 		} else {
@@ -375,7 +373,10 @@ void Create () {  // tao hoc sinh
 			IsValidEmail = 0;
 		} else {
 			file = fopen("StudentManagement.txt", "a");
-			fprintf(file, "Email: %s\t", Email);			// nhap email vao file
+			fprintf(file, "%s", Email);			// nhap email vao file
+			for (i = 1; i <= 25 - strlen(Email); i++) {
+				fprintf(file, " ");
+			}
 			fclose(file);
 			IsValidEmail = 1;
 		}
@@ -400,7 +401,10 @@ void Create () {  // tao hoc sinh
 			IsValidPhone = 0;	
 		} else { 
 			file = fopen("StudentManagement.txt", "a");
-			fprintf(file, "  Phone number: %s\t", Phone);			// nhap phone vao file
+			fprintf(file, "%s", Phone);			// nhap phone vao file
+			for (i = 1; i <= 15 - strlen(Phone); i++) {
+				fprintf(file, " ");
+			}
 			fclose(file);
 			IsValidPhone = 1;
 		}
@@ -418,7 +422,10 @@ void Create () {  // tao hoc sinh
 			IsValidPresentAddress = 0;
 		} else {
 			file = fopen("StudentManagement.txt", "a");
-			fprintf(file, "Address: %s\t", PresentAddress);		// ghi vao file
+			fprintf(file, "%s", PresentAddress);		// ghi vao file
+			for (i = 1; i <= 20 - strlen(PresentAddress); i++) {
+				fprintf(file, " ");
+			}
 			fclose(file);
 			IsValidPresentAddress = 1;
 		}
@@ -436,12 +443,15 @@ void Create () {  // tao hoc sinh
 			IsValidCountries = 0;
 		} else {
 			file = fopen("StudentManagement.txt", "a");
-			fprintf(file, "Country: %s\t\n", Countries);		// ghi vao file
+			fprintf(file, "%s\n", Countries);		// ghi vao file
+			for (i = 1; i <= 15 - strlen(Countries); i++) {
+				fprintf(file, " ");
+			}
+			fprintf(file, "\n");
 			fclose(file);
 			IsValidCountries = 1;
 		}
 	}
-	strcpy(Students[TotalStudents].FirstName, FirstName);		// copy first name de sap xep
 	strcpy(Students[TotalStudents].Name, Name);   					// copy lai Name
 	strcpy(Students[TotalStudents].ID, StudentID);  				// copy lai ID
 	strcpy(Students[TotalStudents].DateOfBirth, DateOfBirth);		// copy ngay thang nam sinh
@@ -572,7 +582,7 @@ void SearchStudent(const char *filename) {			// tim kiem
 int compareNames(const void* a, const void* b) {
 	const struct StudentInfo* StudentsA = (const struct StudentInfo*)a;
 	const struct StudentInfo* StudentsB = (const struct StudentInfo*)b;
-	return strcmp(StudentsA->FirstName, StudentsB->FirstName);
+	return strcmp(StudentsA->Name, StudentsB->Name);
 }
 
 void Sort (const char *filename) {
