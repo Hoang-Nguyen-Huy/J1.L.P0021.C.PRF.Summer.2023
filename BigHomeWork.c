@@ -488,6 +488,7 @@ void ShowAllList (const char *filename) {			// xuat tat ca cac ho so cua sinh vi
 		putchar(ch);
 	}
 	fclose(file);
+	printf("\n-----------------------------------------------------------------------------------------------------------------------------------------\n\n");
 }
 
 void SearchStudent(const char *filename) {			// tim kiem
@@ -610,31 +611,51 @@ void Sort (const char *filename) {
 	
 }
 
-void Update (const char *filename) {   // cap nhat thong tin 
-	FILE *inputFile;
-	FILE *tempFile;
-	char line[200];
-	char Option;
-	char Name[40];
-	char ID[20];
+void Update(const char *filename) {
+	int countLine = 0; // dung de dem so dong trong file
+	char lineToCount[200][200];	// bien nay dung de duyet file de DEM SO Dong trong file
+	char Option;			// lua chon de nhap ten hoac id
+	char Name[40];			// ten
+	char ID[20];			// ma sinh vien	
+	char line[200];   // bien nay dung de duyet file va tim kiem
+	int indexUpdating = 0; // dia chi cua dong can cap nhat
+	char LastName[10];
+	char MiddleName[10];
+	char FirstName[10];
+	char FullName[40]
+	char IDfromFile[10];
+	char DateOfBirth[30];
+	char Sex[10];
+	char Email[40];
+	char PhoneNumber[20];
+	char Address[30];
+	char Country[30];
 	
 	// kiem tra file co rong hay khong
-	inputFile = fopen(filename, "r");	
-	fseek(inputFile, 0, SEEK_END);	// di chuyen con tro toi cuoi file
-	if (ftell(inputFile) == 0) {
+	file = fopen(filename, "r");	
+	fseek(file, 0, SEEK_END);	// di chuyen con tro toi cuoi file
+	if (ftell(file) == 0) {
 		printf(" EMPTY file.\n\n");
-		fclose(inputFile);
+		fclose(file);
 		return;		// neu file rong thi return 
 	}
-	fclose(inputFile);
+	fclose(file);
 	//kiem tra xong
 	
-	int IsUpdating = 0;
-	while (IsUpdating == 0) {
-		printf(" Enter the name[N] or the id[I]: ");
+	// dem so dong trong file
+	file = fopen(filename, "r");
+	while (fgets(lineToCount[countLine], sizeof(lineToCount[countLine]), file) != NULL) {
+		countLine++;
+	}
+	fclose(file);
+	// dem xong
+	
+	int IsSearching = 0;
+	while (!IsSearching) {
+		printf(" Search by name[N]? or by ID[I]?: ");
 		scanf(" %c", &Option);
 		printf("\n");
-		if (Option == 'N' || Option == 'n') {
+		if (Option == 'N' || Option == 'n') {		// tim kiem bang ten
 			printf(" Enter the name: ");
 			scanf(" %[^\n]s", &Name);
 			printf("\n\n");
@@ -645,906 +666,131 @@ void Update (const char *filename) {   // cap nhat thong tin
 				scanf(" %c", &Choices);
 				printf("\n");	
 				if (Choices == 'Y' || Choices == 'y') {			
-					IsUpdating = 0;
+					IsSearching = 0;
 				} else if (Choices == 'N' || Choices == 'n') {
-					IsUpdating = 1;
+					IsSearching = 1;
 				}
 			} else {
-				int numEl = 0;
-				// tim xem ten co trong file hay khong
-				inputFile = fopen(filename, "r");
-				while (fgets(line, sizeof(line), inputFile) != NULL) {
+				char CopiedLine[200]; // copy lai dong can cap nhat
+				char EndOfFile[200];  // dong cuoi cua file
+				file = fopen(filename, "r");
+				while (fgets(line, sizeof(line), file) != NULL) {
 					if (strstr(line, Name) != NULL) {
-						numEl++;
 						printf("%s", line);	
 					}
 				}
-				printf("\n\n");
-				fclose(inputFile);
-				// end
-				
-				if (numEl < 2) {
-					char Choice;
-					printf(" There is %d student. \n\n", numEl);
-					printf(" Do you want to update the above student? [Y/N]. Your answer: ");
-					scanf(" %c", &Choice);
-					printf("\n\n");
-					if (Choice == 'Y' || Choice == 'y') {
-						int found = 0;
-						//mo file goc de doc du lieu
-						inputFile = fopen(filename, "r");
-						if (inputFile == NULL) {
-							printf(" Can't access to file!!!");
-							return;
-						}
-						
-						// tao file tam thoi de luu du lieu sau khi cap nhat
-						tempFile = fopen("temp.txt", "w");
-						if (tempFile == NULL) {
-							printf(" Can't access to file!!!");
-							fclose(inputFile);
-							return;
-						}
-						
-						// tim va cap nhat dong chua thong tin nguoi dung muon cap nhat
-						while (fgets(line, sizeof(line), inputFile)) {
-							if (strstr(line, Name) != NULL) {
-								found = 1;
-								char newName[40];
-								char newID[20];
-								char newEmail[100];
-								char newPhone[20];
-								char newSex[10];
-								char newBirthday[50];
-								char newAddress[100];
-								char newCountry[50];
-								
-								int IsValidName = 0;
-								while (!IsValidName) {				// nhap ten sinh vien
-									printf(" Enter the Name: ");
-									scanf(" %[^\n]s", &newName);			// co the nhap co khoang trang
-									if (strlen(newName) > 30) {
-										printf(" Error: Name can not be more than 30 characters.\n\n");
-										IsValidName = 0;
-									} else if (strlen(newName) <= 0) {
-										printf(" Error: Name can not be empty.\n\n");
-										IsValidName = 0;
-									} else {
-										fprintf(tempFile, "Full name: %s\t", newName);				// nhap ten vao file
-										IsValidName = 1;
-									}
-								}
-								
-								int IsValidID = 0;  
-								while (!IsValidID) {				// nhap ma sinh vien
-									printf(" Enter the ID: ");
-									scanf("%s", &newID);
-									if (IsExistsInFile("StudentManagement.txt", newID) == true) {
-										printf(" Error: This ID has been used.\n");
-										IsValidID = 0;
-									} else if (strlen(newID) > 10) {
-										printf(" Error: ID can not be more than 10 characters.\n\n");
-										IsValidID = 0;
-									} else if (strlen(newID) <= 0) {
-										printf(" Error: ID can not be empty.\n\n");
-										IsValidID = 0;
-									} else {
-										fprintf(tempFile, "ID: %s\t", newID);			// nhap ma sinh vien vao file
-										IsValidID = 1;
-									}
-								}
-								
-								char checkDay[5];					// nhap ngay sinh
-								int day; 
-								printf(" Enter the day of birth: ");
-								scanf("%s", &checkDay);
-								while (checkInt(checkDay) == false) {
-									printf(" Please enter the valid day!!\n");
-									printf(" Enter the day: ");
-									scanf("%s", &checkDay);
-								}
-								if (checkInt(checkDay) == true) {
-									day = atoi(checkDay);
-								}
-								while (day > 31 || day < 1) {
-									printf(" Please enter the valid day!!\n");
-									printf(" Enter the day: ");
-									scanf(" %s", &checkDay);
-									while (checkInt(checkDay) == false) {
-										printf(" Please enter the valid day!!\n");
-										printf(" Enter the day: ");
-										scanf(" %s", &checkDay);
-									}
-									if (checkInt(checkDay) == true) {
-										day = atoi(checkDay);
-									}
-									if (day <= 31 && day >= 1) {
-										break;
-									}
-								}								// nhap xong ngay sinh
-								
-								char checkMonth[5];			// nhap thang sinh
-								int month;
-								printf(" Enter the month of birth: ");
-								scanf("%s", &checkMonth);
-								while (checkInt(checkMonth) == false) {
-									printf(" Please enter the valid month!!\n");
-									printf(" Enter the month of birth: ");
-									scanf("%s", &checkMonth);
-								}
-								if (checkInt(checkMonth) == true) {
-									month = atoi(checkMonth);
-								}
-								while (month > 12 || month < 1) {
-									printf(" Please enter the valid month!!\n");
-									printf(" Enter the month of birth: ");
-									scanf("%s", &checkMonth);
-									while (checkInt(checkMonth) == false) {
-										printf(" Please enter the valid month!!\n");
-										printf(" Enter the month of birth: ");
-										scanf("%s", &checkMonth);
-									}
-									if (checkInt(checkMonth) == true) {
-										month = atoi(checkMonth);
-									}
-									if (month <= 12 && month >= 1) {
-										break;
-									}
-								}							// nhap xong thang sinh
-								
-								char checkYear[5];			// nhap nam sinh
-								int year;
-								printf(" Enter the year of birth: ");
-								scanf("%s", &checkYear);
-								while (checkInt(checkYear) == false) {
-									printf(" Please enter the valid year!!\n");
-									printf(" Enter the year of birth: ");
-									scanf("%s", &checkYear);
-								}
-								if (checkInt(checkYear) == true) {
-									year = atoi(checkYear);
-								}
-								while (year > 2005 || year < 1923) {
-									printf(" Please enter the valid year!!\n");
-									printf(" Enter the year of birth: ");
-									scanf("%s", &checkYear);
-									while (checkInt(checkYear) == false) {
-										printf(" Please enter the valid year!!\n");
-										printf(" Enter the year of birth: ");
-										scanf("%s", &checkYear);
-									}
-									if (checkInt(checkYear) == true) {
-										year = atoi(checkYear);
-									}
-									if (year <= 2005 && year >= 1923) {
-										break;
-									}
-								}								// nhap xong nam sinh
-								
-								sprintf(newBirthday, "%02d-%02d-%04d", day, month, year);      // tao thanh chuoi dd-mm-yy
-								fprintf(tempFile,"Birthday: %s\t", newBirthday);		// xuat ngay thang nam sinh vao file
-								
-								int IsValidSex = 0;
-								while (!IsValidSex) {				// nhap gioi tinh
-									printf(" Are you [M] Male or [F] Female? ");
-									scanf("%s", &newSex);
-									if (newSex[0] == 'M' || newSex[0] == 'm') {
-										newSex[0] = 'M';
-										newSex[1] = 'a';
-										newSex[2] = 'l';
-										newSex[3] = 'e';
-										fprintf(tempFile, "Sex: %s\t", newSex);  				// nhap gioi tinh vao file
-										IsValidSex = 1;
-									} else if (newSex[0] == 'F' || newSex[0] == 'f') {
-										newSex[0] = 'F';
-										newSex[1] = 'e';
-										newSex[2] = 'm';
-										newSex[3] = 'a';
-										newSex[4] = 'l';
-										newSex[5] = 'e';
-										fprintf(tempFile, "Sex: %s\t", newSex);  				// nhap gioi tinh vao file
-										IsValidSex = 1;
-									} else {
-										printf(" Error: Your option is not valid!!!\n");
-										IsValidSex = 0;
-									}
-								}
-								
-								int IsValidEmail = 0;		
-								while (!IsValidEmail) {			// nhap email
-									printf(" Enter the email: ");
-									scanf("%s", &newEmail);
-									if (IsExistsInFile("StudentManagement.txt", newEmail) == true) {
-										printf(" Error: This email has already been used.\n\n");
-										IsValidEmail = 0;
-									} else if (strlen(newEmail) > 30) {
-										printf(" Error: Email can not be more than 30 characters.\n\n");
-										IsValidEmail = 0;
-									} else if (strlen(newEmail) <= 0) {
-										printf(" Error: Email can not be empty.\n\n");
-										IsValidEmail = 0;
-									} else {
-										fprintf(tempFile, "Email: %s\t", newEmail);			// nhap email vao file
-										IsValidEmail = 1;
-									}
-								}
-								
-								int IsValidPhone = 0;
-								while (!IsValidPhone) {								// nhap phone
-									printf(" Enter the Phone Number: ");
-									scanf("%s", &newPhone);
-									if (IsExistsInFile("StudentManagement.txt", newPhone) == true) {
-										printf(" Error: This phone number has already been used.\n\n");
-										IsValidPhone = 0;
-									} else if (strlen(newPhone) > 11) {
-										printf(" Error: Phone can not be more than 11 characters.\n\n");
-										IsValidPhone = 0;
-									} else if (strlen(newPhone) <= 0) {
-										printf(" Error: Phone can not be empty.\n\n");
-										IsValidPhone = 0;
-									} else if (strlen(newPhone) < 10 && strlen(newPhone) > 0) {
-										printf(" Error: This is not a valid phone number.\n");
-										IsValidPhone = 0;	
-									} else { 
-										fprintf(tempFile, "  Phone number: %s\t", newPhone);			// nhap phone vao file
-										IsValidPhone = 1;
-									}
-								}
-								
-								int IsValidPresentAddress = 0;
-								while (!IsValidPresentAddress) {		// nhap dia chi hien tai
-									printf(" Enter the present address: ");
-									scanf(" %[^\n]s", &newAddress);			// nhap co khoang trang
-									if (strlen(newAddress) > 200) {
-										printf(" Error: Enter the address which has under 200 characters.\n\n");
-										IsValidPresentAddress = 0;
-									} else if (strlen(newAddress) <= 0) {
-										printf(" Error: Please enter the address.\n\n");
-										IsValidPresentAddress = 0;
-									} else {
-										fprintf(tempFile, "Address: %s\t", newAddress);		// ghi vao file
-										IsValidPresentAddress = 1;
-									}
-								}
-								
-								int IsValidCountries = 0;
-								while (!IsValidCountries) {				// nhap que quan
-									printf(" Enter the country: ");
-									scanf(" %[^\n]s", &newCountry);		// nhap co khoang trang
-									if (strlen(newCountry) > 50) {
-										printf(" Error: This is not valid!\n\n");
-										IsValidCountries = 0;
-									} else if (strlen(newCountry) <= 0) {
-										printf(" Error: Please enter the conutry.\n\n");
-										IsValidCountries = 0;
-									} else {
-										fprintf(tempFile, "Country: %s\t\n", newCountry);		// ghi vao file
-										IsValidCountries = 1;
-									}
-								}
-								
-							} else {
-								fputs(line, tempFile);
-							}
-						}
-						
-						//dong file goc va file tam thoi
-						fclose(inputFile);
-						fclose(tempFile);
-						
-						if (found) {
-							// xoa file goc
-							remove(filename);
-							
-							// doi ten file tam thoi thanh ten file goc
-							rename("temp.txt", filename);
-							printf(" \n\nUpdate successfully\n\n");
-						} else {
-							printf(" The '%s' is not found", Name);
-							remove("temp.txt");
-						}
-					} else if (Choice == 'N' || Choice == 'n') {
-						IsUpdating = 1;
+				for (i = 0; i < countLine; i++) {
+					if (strstr(lineToCount[i], Name) != NULL) {
+						indexUpdating = i;
 					}
-				} else {
-					char studentID[20];
-					printf(" There are %d students.\n\n", numEl);
-					printf(" Enter the student's ID that you want to update: ");
-					scanf(" %s", &studentID);
-					int found = 0;
-					//mo file goc de doc du lieu
-					inputFile = fopen(filename, "r");
-					if (inputFile == NULL) {
-						printf(" Can't access to file!!!");
-						return;
-					}
-						
-					// tao file tam thoi de luu du lieu sau khi cap nhat
-					tempFile = fopen("temp.txt", "w");
-					if (tempFile == NULL) {
-						printf(" Can't access to file!!!");
-						fclose(inputFile);
-						return;
-					}
-					
-					// tim va cap nhat dong chua thong tin nguoi dung muon cap nhat
-						while (fgets(line, sizeof(line), inputFile)) {
-							if (strstr(line, studentID) != NULL) {
-								found = 1;
-								char newName[40];
-								char newID[20];
-								char newEmail[100];
-								char newPhone[20];
-								char newSex[10];
-								char newBirthday[50];
-								char newAddress[100];
-								char newCountry[50];
-								
-								int IsValidName = 0;
-								while (!IsValidName) {				// nhap ten sinh vien
-									printf(" Enter the Name: ");
-									scanf(" %[^\n]s", &newName);			// co the nhap co khoang trang
-									if (strlen(newName) > 30) {
-										printf(" Error: Name can not be more than 30 characters.\n\n");
-										IsValidName = 0;
-									} else if (strlen(newName) <= 0) {
-										printf(" Error: Name can not be empty.\n\n");
-										IsValidName = 0;
-									} else {
-										fprintf(tempFile, "Full name: %s\t", newName);				// nhap ten vao file
-										IsValidName = 1;
-									}
-								}
-								
-								int IsValidID = 0;  
-								while (!IsValidID) {				// nhap ma sinh vien
-									printf(" Enter the ID: ");
-									scanf("%s", &newID);
-									if (IsExistsInFile("StudentManagement.txt", newID) == true) {
-										printf(" Error: This ID has been used.\n");
-										IsValidID = 0;
-									} else if (strlen(newID) > 10) {
-										printf(" Error: ID can not be more than 10 characters.\n\n");
-										IsValidID = 0;
-									} else if (strlen(newID) <= 0) {
-										printf(" Error: ID can not be empty.\n\n");
-										IsValidID = 0;
-									} else {
-										fprintf(tempFile, "ID: %s\t", newID);			// nhap ma sinh vien vao file
-										IsValidID = 1;
-									}
-								}
-								
-								char checkDay[5];					// nhap ngay sinh
-								int day; 
-								printf(" Enter the day of birth: ");
-								scanf("%s", &checkDay);
-								while (checkInt(checkDay) == false) {
-									printf(" Please enter the valid day!!\n");
-									printf(" Enter the day: ");
-									scanf("%s", &checkDay);
-								}
-								if (checkInt(checkDay) == true) {
-									day = atoi(checkDay);
-								}
-								while (day > 31 || day < 1) {
-									printf(" Please enter the valid day!!\n");
-									printf(" Enter the day: ");
-									scanf(" %s", &checkDay);
-									while (checkInt(checkDay) == false) {
-										printf(" Please enter the valid day!!\n");
-										printf(" Enter the day: ");
-										scanf(" %s", &checkDay);
-									}
-									if (checkInt(checkDay) == true) {
-										day = atoi(checkDay);
-									}
-									if (day <= 31 && day >= 1) {
-										break;
-									}
-								}								// nhap xong ngay sinh
-								
-								char checkMonth[5];			// nhap thang sinh
-								int month;
-								printf(" Enter the month of birth: ");
-								scanf("%s", &checkMonth);
-								while (checkInt(checkMonth) == false) {
-									printf(" Please enter the valid month!!\n");
-									printf(" Enter the month of birth: ");
-									scanf("%s", &checkMonth);
-								}
-								if (checkInt(checkMonth) == true) {
-									month = atoi(checkMonth);
-								}
-								while (month > 12 || month < 1) {
-									printf(" Please enter the valid month!!\n");
-									printf(" Enter the month of birth: ");
-									scanf("%s", &checkMonth);
-									while (checkInt(checkMonth) == false) {
-										printf(" Please enter the valid month!!\n");
-										printf(" Enter the month of birth: ");
-										scanf("%s", &checkMonth);
-									}
-									if (checkInt(checkMonth) == true) {
-										month = atoi(checkMonth);
-									}
-									if (month <= 12 && month >= 1) {
-										break;
-									}
-								}							// nhap xong thang sinh
-								
-								char checkYear[5];			// nhap nam sinh
-								int year;
-								printf(" Enter the year of birth: ");
-								scanf("%s", &checkYear);
-								while (checkInt(checkYear) == false) {
-									printf(" Please enter the valid year!!\n");
-									printf(" Enter the year of birth: ");
-									scanf("%s", &checkYear);
-								}
-								if (checkInt(checkYear) == true) {
-									year = atoi(checkYear);
-								}
-								while (year > 2005 || year < 1923) {
-									printf(" Please enter the valid year!!\n");
-									printf(" Enter the year of birth: ");
-									scanf("%s", &checkYear);
-									while (checkInt(checkYear) == false) {
-										printf(" Please enter the valid year!!\n");
-										printf(" Enter the year of birth: ");
-										scanf("%s", &checkYear);
-									}
-									if (checkInt(checkYear) == true) {
-										year = atoi(checkYear);
-									}
-									if (year <= 2005 && year >= 1923) {
-										break;
-									}
-								}								// nhap xong nam sinh
-								
-								sprintf(newBirthday, "%02d-%02d-%04d", day, month, year);      // tao thanh chuoi dd-mm-yy
-								fprintf(tempFile,"Birthday: %s\t", newBirthday);		// xuat ngay thang nam sinh vao file
-								
-								int IsValidSex = 0;
-								while (!IsValidSex) {				// nhap gioi tinh
-									printf(" Are you [M] Male or [F] Female? ");
-									scanf("%s", &newSex);
-									if (newSex[0] == 'M' || newSex[0] == 'm') {
-										newSex[0] = 'M';
-										newSex[1] = 'a';
-										newSex[2] = 'l';
-										newSex[3] = 'e';
-										fprintf(tempFile, "Sex: %s\t", newSex);  				// nhap gioi tinh vao file
-										IsValidSex = 1;
-									} else if (newSex[0] == 'F' || newSex[0] == 'f') {
-										newSex[0] = 'F';
-										newSex[1] = 'e';
-										newSex[2] = 'm';
-										newSex[3] = 'a';
-										newSex[4] = 'l';
-										newSex[5] = 'e';
-										fprintf(tempFile, "Sex: %s\t", newSex);  				// nhap gioi tinh vao file
-										IsValidSex = 1;
-									} else {
-										printf(" Error: Your option is not valid!!!\n");
-										IsValidSex = 0;
-									}
-								}
-								
-								int IsValidEmail = 0;		
-								while (!IsValidEmail) {			// nhap email
-									printf(" Enter the email: ");
-									scanf("%s", &newEmail);
-									if (IsExistsInFile("StudentManagement.txt", newEmail) == true) {
-										printf(" Error: This email has already been used.\n\n");
-										IsValidEmail = 0;	
-									} else if (strlen(newEmail) > 30) {
-										printf(" Error: Email can not be more than 30 characters.\n\n");
-										IsValidEmail = 0;
-									} else if (strlen(newEmail) <= 0) {
-										printf(" Error: Email can not be empty.\n\n");
-										IsValidEmail = 0;
-									} else {
-										fprintf(tempFile, "Email: %s\t", newEmail);			// nhap email vao file
-										IsValidEmail = 1;
-									}
-								}
-								
-								int IsValidPhone = 0;
-								while (!IsValidPhone) {								// nhap phone
-									printf(" Enter the Phone Number: ");
-									scanf("%s", &newPhone);
-									if (IsExistsInFile("StudentManagement.txt", newPhone) == true) {
-										printf(" Error: This phone number has already been used.\n\n");
-										IsValidPhone = 0;
-									} else if (strlen(newPhone) > 11) {
-										printf(" Error: Phone can not be more than 11 characters.\n\n");
-										IsValidPhone = 0;
-									} else if (strlen(newPhone) <= 0) {
-										printf(" Error: Phone can not be empty.\n\n");
-										IsValidPhone = 0;
-									} else if (strlen(newPhone) < 10 && strlen(newPhone) > 0) {
-										printf(" Error: This is not a valid phone number.\n");
-										IsValidPhone = 0;	
-									} else { 
-										fprintf(tempFile, "  Phone number: %s\t", newPhone);			// nhap phone vao file
-										IsValidPhone = 1;
-									}
-								}
-								
-								int IsValidPresentAddress = 0;
-								while (!IsValidPresentAddress) {		// nhap dia chi hien tai
-									printf(" Enter the present address: ");
-									scanf(" %[^\n]s", &newAddress);			// nhap co khoang trang
-									if (strlen(newAddress) > 200) {
-										printf(" Error: Enter the address which has under 200 characters.\n\n");
-										IsValidPresentAddress = 0;
-									} else if (strlen(newAddress) <= 0) {
-										printf(" Error: Please enter the address.\n\n");
-										IsValidPresentAddress = 0;
-									} else {
-										fprintf(tempFile, "Address: %s\t", newAddress);		// ghi vao file
-										IsValidPresentAddress = 1;
-									}
-								}
-								
-								int IsValidCountries = 0;
-								while (!IsValidCountries) {				// nhap que quan
-									printf(" Enter the country: ");
-									scanf(" %[^\n]s", &newCountry);		// nhap co khoang trang
-									if (strlen(newCountry) > 50) {
-										printf(" Error: This is not valid!\n\n");
-										IsValidCountries = 0;
-									} else if (strlen(newCountry) <= 0) {
-										printf(" Error: Please enter the conutry.\n\n");
-										IsValidCountries = 0;
-									} else {
-										fprintf(tempFile, "Country: %s\t\n", newCountry);		// ghi vao file
-										IsValidCountries = 1;
-									}
-								}
-								
-							} else {
-								fputs(line, tempFile);
-							}
-						}
-						//dong file goc va file tam thoi
-						fclose(inputFile);
-						fclose(tempFile);
-						
-						if (found) {
-							// xoa file goc
-							remove(filename);
-							
-							// doi ten file tam thoi thanh ten file goc
-							rename("temp.txt", filename);
-							printf(" \n\nUpdate successfully\n\n");
-						} else {
-							printf(" The '%s' is not found", Name);
-							remove("temp.txt");
-						}
 				}
+				while (fgets(line, sizeof(line), file) != NULL) {
+					if (strstr(line, Name) != NULL) {
+						fseek(file, -140, SEEK_CUR);
+						fscanf(file, "%s", LastName);
+						fscanf(file, "%s", MiddleName);
+						fscanf(file, "%s", FirstName);
+						fscanf(file, "%s", IDfromFile);
+						fscanf(file, "%s", DateOfBirth);
+						fscanf(file, "%s", Sex);
+						fscanf(file, "%s", Email);
+						fscanf(file, "%s", PhoneNumber);
+						fscanf(file, "%s", Address);
+						fscanf(file, "%s", Country);
+					}
+				}
+				// doi cho dong can cap nhat va dong cuoi
+				char SwapLine[200];
+				strcpy(SwapLine, lineToCount[indexUpdating]);
+				strcpy(lineToCount[indexUpdating], lineToCount[countLine - 1]);
+				strcpy(lineToCount[countLine - 1], SwapLine);
+				// doi cho xong
+				
+				printf("\n\n");
+				fclose(file);
+				
+				int IsUpdating = 0;
+				while (!IsUpdating) {
+					char CheckchooseUpdating;
+					int chooseUpdating;
+					printf("[1]. Name");
+					printf("[2]. ID");
+					printf("[3]. Birthday");
+					printf("[4]. Sex");
+					printf("[5]. Email");
+					printf("[6]. Phone");
+					printf("[7]. Address");
+					printf("[8]. Country");
+					printf("[9]. Update all");
+					printf("Enter your choices: ");
+					scanf(" %c", &CheckchooseUpdating);
+					while (checkInt(CheckchooseUpdating) == false) {
+						printf(" Error: Your answer is not valid!!!\n");
+						printf(" Enter your choices: ");
+						scanf(" %c", &CheckchooseUpdating);
+					}
+					if (checkInt(CheckchooseUpdating) == true) {
+						chooseUpdating = atoi(CheckchooseUpdating);
+					}
+					switch(chooseUpdating) {
+						case 1: 
+							printf("")
+							
+							
+							
+							
+							
+							
+					}
+				}
+				
 				printf(" Do you want to continue ? [Y/N]. Your answer: ");
 				char Choices;								// bien de nguoi dung nhap yes/no
 				scanf(" %c", &Choices);						
 				printf("\n");
 				if (Choices == 'Y' || Choices == 'y') {
-					IsUpdating = 0;
+					IsSearching = 0;
 				} else if (Choices == 'N' || Choices == 'n') {
-					IsUpdating = 1;
+					IsSearching = 1;
 				}
 			}
-		} else if (Option == 'I' || Option == 'i') {
-			printf(" Enter the ID: ");
+		} else if (Option == 'I' || Option == 'i') {			// tim kien bang ma sinh vien 
+			printf(" Enter the ID: ");				
 			scanf(" %s", &ID);
 			printf("\n\n");
-			if (IsExistsInFile("StudentManagement.txt", ID) == false) {
-				printf(" The '%s' is not found.\n\n", ID);
+			if (IsExistsInFile(filename, ID) == false) {
+				printf(" The ID: '%s' is not found.\n\n", ID);
 				printf(" Do you want to continue ? [Y/N]. Your answer: ");
-				char Choices;									// bien de nguoi dung nhap yes/no
+				char Choices;						// bien de nguoi dung nhap yes/no
 				scanf(" %c", &Choices);
-				printf("\n");	
-				if (Choices == 'Y' || Choices == 'y') {			
-					IsUpdating = 0;
+				printf("\n");
+				if (Choices == 'Y' || Choices == 'y') {
+					IsSearching = 0;
 				} else if (Choices == 'N' || Choices == 'n') {
-					IsUpdating = 1;
+					IsSearching = 1;
 				}
 			} else {
-				int found = 0;
-				// tim xem ten co trong file hay khong
-				inputFile = fopen(filename, "r");
-				while (fgets(line, sizeof(line), inputFile) != NULL) {
+				file = fopen(filename, "r");
+				while (fgets(line, sizeof(line), file) != NULL) {
 					if (strstr(line, ID) != NULL) {
 						printf("%s", line);	
 					}
 				}
 				printf("\n\n");
-				fclose(inputFile);
-				// end
-				//mo file goc de doc du lieu
-					inputFile = fopen(filename, "r");
-					if (inputFile == NULL) {
-						printf(" Can't access to file!!!");
-						return;
-					}
-						
-					// tao file tam thoi de luu du lieu sau khi cap nhat
-					tempFile = fopen("temp.txt", "w");
-					if (tempFile == NULL) {
-						printf(" Can't access to file!!!");
-						fclose(inputFile);
-						return;
-					}
-					
-				// tim va cap nhat dong chua thong tin nguoi dung muon cap nhat
-						while (fgets(line, sizeof(line), inputFile)) {
-							if (strstr(line, ID) != NULL) {
-								found = 1;
-								char newName[40];
-								char newID[20];
-								char newEmail[100];
-								char newPhone[20];
-								char newSex[10];
-								char newBirthday[50];
-								char newAddress[100];
-								char newCountry[50];
-								
-								int IsValidName = 0;
-								while (!IsValidName) {				// nhap ten sinh vien
-									printf(" Enter the Name: ");
-									scanf(" %[^\n]s", &newName);			// co the nhap co khoang trang
-									if (strlen(newName) > 30) {
-										printf(" Error: Name can not be more than 30 characters.\n\n");
-										IsValidName = 0;
-									} else if (strlen(newName) <= 0) {
-										printf(" Error: Name can not be empty.\n\n");
-										IsValidName = 0;
-									} else {
-										fprintf(tempFile, "Full name: %s\t", newName);				// nhap ten vao file
-										IsValidName = 1;
-									}
-								}
-								
-								int IsValidID = 0;  
-								while (!IsValidID) {				// nhap ma sinh vien
-									printf(" Enter the ID: ");
-									scanf("%s", &newID);
-									if (IsExistsInFile("StudentManagement.txt", newID) == true) {
-										printf(" Error: This ID has been used.\n");
-										IsValidID = 0;
-									} else if (strlen(newID) > 10) {
-										printf(" Error: ID can not be more than 10 characters.\n\n");
-										IsValidID = 0;
-									} else if (strlen(newID) <= 0) {
-										printf(" Error: ID can not be empty.\n\n");
-										IsValidID = 0;
-									} else {
-										fprintf(tempFile, "ID: %s\t", newID);			// nhap ma sinh vien vao file
-										IsValidID = 1;
-									}
-								}
-								
-								char checkDay[5];					// nhap ngay sinh
-								int day; 
-								printf(" Enter the day of birth: ");
-								scanf("%s", &checkDay);
-								while (checkInt(checkDay) == false) {
-									printf(" Please enter the valid day!!\n");
-									printf(" Enter the day: ");
-									scanf("%s", &checkDay);
-								}
-								if (checkInt(checkDay) == true) {
-									day = atoi(checkDay);
-								}
-								while (day > 31 || day < 1) {
-									printf(" Please enter the valid day!!\n");
-									printf(" Enter the day: ");
-									scanf(" %s", &checkDay);
-									while (checkInt(checkDay) == false) {
-										printf(" Please enter the valid day!!\n");
-										printf(" Enter the day: ");
-										scanf(" %s", &checkDay);
-									}
-									if (checkInt(checkDay) == true) {
-										day = atoi(checkDay);
-									}
-									if (day <= 31 && day >= 1) {
-										break;
-									}
-								}								// nhap xong ngay sinh
-								
-								char checkMonth[5];			// nhap thang sinh
-								int month;
-								printf(" Enter the month of birth: ");
-								scanf("%s", &checkMonth);
-								while (checkInt(checkMonth) == false) {
-									printf(" Please enter the valid month!!\n");
-									printf(" Enter the month of birth: ");
-									scanf("%s", &checkMonth);
-								}
-								if (checkInt(checkMonth) == true) {
-									month = atoi(checkMonth);
-								}
-								while (month > 12 || month < 1) {
-									printf(" Please enter the valid month!!\n");
-									printf(" Enter the month of birth: ");
-									scanf("%s", &checkMonth);
-									while (checkInt(checkMonth) == false) {
-										printf(" Please enter the valid month!!\n");
-										printf(" Enter the month of birth: ");
-										scanf("%s", &checkMonth);
-									}
-									if (checkInt(checkMonth) == true) {
-										month = atoi(checkMonth);
-									}
-									if (month <= 12 && month >= 1) {
-										break;
-									}
-								}							// nhap xong thang sinh
-								
-								char checkYear[5];			// nhap nam sinh
-								int year;
-								printf(" Enter the year of birth: ");
-								scanf("%s", &checkYear);
-								while (checkInt(checkYear) == false) {
-									printf(" Please enter the valid year!!\n");
-									printf(" Enter the year of birth: ");
-									scanf("%s", &checkYear);
-								}
-								if (checkInt(checkYear) == true) {
-									year = atoi(checkYear);
-								}
-								while (year > 2005 || year < 1923) {
-									printf(" Please enter the valid year!!\n");
-									printf(" Enter the year of birth: ");
-									scanf("%s", &checkYear);
-									while (checkInt(checkYear) == false) {
-										printf(" Please enter the valid year!!\n");
-										printf(" Enter the year of birth: ");
-										scanf("%s", &checkYear);
-									}
-									if (checkInt(checkYear) == true) {
-										year = atoi(checkYear);
-									}
-									if (year <= 2005 && year >= 1923) {
-										break;
-									}
-								}								// nhap xong nam sinh
-								
-								sprintf(newBirthday, "%02d-%02d-%04d", day, month, year);      // tao thanh chuoi dd-mm-yy
-								fprintf(tempFile,"Birthday: %s\t", newBirthday);		// xuat ngay thang nam sinh vao file
-								
-								int IsValidSex = 0;
-								while (!IsValidSex) {				// nhap gioi tinh
-									printf(" Are you [M] Male or [F] Female? ");
-									scanf("%s", &newSex);
-									if (newSex[0] == 'M' || newSex[0] == 'm') {
-										newSex[0] = 'M';
-										newSex[1] = 'a';
-										newSex[2] = 'l';
-										newSex[3] = 'e';
-										fprintf(tempFile, "Sex: %s\t", newSex);  				// nhap gioi tinh vao file
-										IsValidSex = 1;
-									} else if (newSex[0] == 'F' || newSex[0] == 'f') {
-										newSex[0] = 'F';
-										newSex[1] = 'e';
-										newSex[2] = 'm';
-										newSex[3] = 'a';
-										newSex[4] = 'l';
-										newSex[5] = 'e';
-										fprintf(tempFile, "Sex: %s\t", newSex);  				// nhap gioi tinh vao file
-										IsValidSex = 1;
-									} else {
-										printf(" Error: Your option is not valid!!!\n");
-										IsValidSex = 0;
-									}
-								}
-								
-								int IsValidEmail = 0;		
-								while (!IsValidEmail) {			// nhap email
-									printf(" Enter the email: ");
-									scanf("%s", &newEmail);
-									if (IsExistsInFile("StudentManagement.txt", newEmail) == true) {
-										printf(" Error: This email has already been used.\n\n");
-										IsValidEmail = 0;
-									} else if (strlen(newEmail) > 30) {
-										printf(" Error: Email can not be more than 30 characters.\n\n");
-										IsValidEmail = 0;
-									} else if (strlen(newEmail) <= 0) {
-										printf(" Error: Email can not be empty.\n\n");
-										IsValidEmail = 0;
-									} else {
-										fprintf(tempFile, "Email: %s\t", newEmail);			// nhap email vao file
-										IsValidEmail = 1;
-									}
-								}
-								
-								int IsValidPhone = 0;
-								while (!IsValidPhone) {								// nhap phone
-									printf(" Enter the Phone Number: ");
-									scanf("%s", &newPhone);
-									if (IsExistsInFile("StudentManagement.txt", newPhone) == true) {
-										printf(" Error: This phone number has already been used.\n\n");
-										IsValidPhone = 0;
-									} else if (strlen(newPhone) > 11) {
-										printf(" Error: Phone can not be more than 11 characters.\n\n");
-										IsValidPhone = 0;
-									} else if (strlen(newPhone) <= 0) {
-										printf(" Error: Phone can not be empty.\n\n");
-										IsValidPhone = 0;
-									} else if (strlen(newPhone) < 10 && strlen(newPhone) > 0) {
-										printf(" Error: This is not a valid phone number.\n");
-										IsValidPhone = 0;	
-									} else { 
-										fprintf(tempFile, "  Phone number: %s\t", newPhone);			// nhap phone vao file
-										IsValidPhone = 1;
-									}
-								}
-								
-								int IsValidPresentAddress = 0;
-								while (!IsValidPresentAddress) {		// nhap dia chi hien tai
-									printf(" Enter the present address: ");
-									scanf(" %[^\n]s", &newAddress);			// nhap co khoang trang
-									if (strlen(newAddress) > 200) {
-										printf(" Error: Enter the address which has under 200 characters.\n\n");
-										IsValidPresentAddress = 0;
-									} else if (strlen(newAddress) <= 0) {
-										printf(" Error: Please enter the address.\n\n");
-										IsValidPresentAddress = 0;
-									} else {
-										fprintf(tempFile, "Address: %s\t", newAddress);		// ghi vao file
-										IsValidPresentAddress = 1;
-									}
-								}
-								
-								int IsValidCountries = 0;
-								while (!IsValidCountries) {				// nhap que quan
-									printf(" Enter the country: ");
-									scanf(" %[^\n]s", &newCountry);		// nhap co khoang trang
-									if (strlen(newCountry) > 50) {
-										printf(" Error: This is not valid!\n\n");
-										IsValidCountries = 0;
-									} else if (strlen(newCountry) <= 0) {
-										printf(" Error: Please enter the conutry.\n\n");
-										IsValidCountries = 0;
-									} else {
-										fprintf(tempFile, "Country: %s\t\n", newCountry);		// ghi vao file
-										IsValidCountries = 1;
-									}
-								}
-								
-							} else {
-								fputs(line, tempFile);
-							}
-						}
-				
-				//dong file goc va file tam thoi
-						fclose(inputFile);
-						fclose(tempFile);
-						
-						if (found) {
-							// xoa file goc
-							remove(filename);
-							
-							// doi ten file tam thoi thanh ten file goc
-							rename("temp.txt", filename);
-							printf(" \n\nUpdate successfully\n\n");
-						} else {
-							printf(" The '%s' is not found", Name);
-							remove("temp.txt");
-						}
+				fclose(file);
 				printf(" Do you want to continue ? [Y/N]. Your answer: ");
-				char Choices;								// bien de nguoi dung nhap yes/no
-				scanf(" %c", &Choices);						
+				char Choices;							// bien de nguoi dung nhap yes/no
+				scanf(" %c", &Choices);
 				printf("\n");
 				if (Choices == 'Y' || Choices == 'y') {
-					IsUpdating = 0;
+					IsSearching = 0;
 				} else if (Choices == 'N' || Choices == 'n') {
-					IsUpdating = 1;
-				}	
-			}	
+					IsSearching = 1;
+				}
+			}
 		}
 	}
+	
 }
 
 void DeleteSelectedStudent (const char *filename) {   // xoa hoc sinh duoc chon, xoa bang ten hoac bang ma sinh vien
