@@ -127,6 +127,10 @@ int main () {
 				IsRunning = false;
 				ExitProject();
 				break;
+			default: 
+				system("cls");
+				printf(" Error: Please enter a valid option\n\n");
+				break;
 		}
 	}
 	return 0;
@@ -622,7 +626,7 @@ void Update(const char *filename) {
 	char LastName[10];
 	char MiddleName[10];
 	char FirstName[10];
-	char FullName[40]
+	char FullName[40];
 	char IDfromFile[10];
 	char DateOfBirth[30];
 	char Sex[10];
@@ -630,6 +634,12 @@ void Update(const char *filename) {
 	char PhoneNumber[20];
 	char Address[30];
 	char Country[30];
+	char checkDay[5];					// nhap ngay sinh
+	int day; 
+	char checkMonth[5];			// nhap thang sinh
+	int month;
+	char checkYear[5];			// nhap nam sinh
+	int year;
 	
 	// kiem tra file co rong hay khong
 	file = fopen(filename, "r");	
@@ -650,8 +660,8 @@ void Update(const char *filename) {
 	fclose(file);
 	// dem xong
 	
-	int IsSearching = 0;
-	while (!IsSearching) {
+	int IsUpdating = 0;
+	while (!IsUpdating) {
 		printf(" Search by name[N]? or by ID[I]?: ");
 		scanf(" %c", &Option);
 		printf("\n");
@@ -666,27 +676,32 @@ void Update(const char *filename) {
 				scanf(" %c", &Choices);
 				printf("\n");	
 				if (Choices == 'Y' || Choices == 'y') {			
-					IsSearching = 0;
+					IsUpdating = 0;
 				} else if (Choices == 'N' || Choices == 'n') {
-					IsSearching = 1;
+					IsUpdating = 1;
 				}
 			} else {
 				char CopiedLine[200]; // copy lai dong can cap nhat
 				char EndOfFile[200];  // dong cuoi cua file
+				
 				file = fopen(filename, "r");
 				while (fgets(line, sizeof(line), file) != NULL) {
 					if (strstr(line, Name) != NULL) {
 						printf("%s", line);	
 					}
 				}
+				
+				// lay dia chi cua dong muon cap nhat
 				for (i = 0; i < countLine; i++) {
 					if (strstr(lineToCount[i], Name) != NULL) {
 						indexUpdating = i;
 					}
-				}
+				} // end
+				
+				// lay tung thanh phan trong 1 dong
 				while (fgets(line, sizeof(line), file) != NULL) {
 					if (strstr(line, Name) != NULL) {
-						fseek(file, -140, SEEK_CUR);
+						fseek(file, -139, SEEK_CUR);
 						fscanf(file, "%s", LastName);
 						fscanf(file, "%s", MiddleName);
 						fscanf(file, "%s", FirstName);
@@ -698,32 +713,27 @@ void Update(const char *filename) {
 						fscanf(file, "%s", Address);
 						fscanf(file, "%s", Country);
 					}
-				}
-				// doi cho dong can cap nhat va dong cuoi
-				char SwapLine[200];
-				strcpy(SwapLine, lineToCount[indexUpdating]);
-				strcpy(lineToCount[indexUpdating], lineToCount[countLine - 1]);
-				strcpy(lineToCount[countLine - 1], SwapLine);
-				// doi cho xong
-				
-				printf("\n\n");
+				}// end
+				sprintf(FullName, "%s %s %s", LastName, MiddleName, FirstName);  // tao thanh full name
 				fclose(file);
 				
-				int IsUpdating = 0;
-				while (!IsUpdating) {
-					char CheckchooseUpdating;
-					int chooseUpdating;
-					printf("[1]. Name");
-					printf("[2]. ID");
-					printf("[3]. Birthday");
-					printf("[4]. Sex");
-					printf("[5]. Email");
-					printf("[6]. Phone");
-					printf("[7]. Address");
-					printf("[8]. Country");
-					printf("[9]. Update all");
+				char CheckchooseUpdating[10];
+				int chooseUpdating;
+				int IschoosingUpdating = 0;
+				
+				while (!IschoosingUpdating) {	
+					printf("[1]. Name\n");
+					printf("[2]. ID\n");
+					printf("[3]. Birthday\n");
+					printf("[4]. Sex\n");
+					printf("[5]. Email\n");
+					printf("[6]. Phone\n");
+					printf("[7]. Address\n");
+					printf("[8]. Country\n");
+					printf("[0]. Exit\n");
 					printf("Enter your choices: ");
-					scanf(" %c", &CheckchooseUpdating);
+					scanf(" %s", &CheckchooseUpdating);
+					printf("\n\n");
 					while (checkInt(CheckchooseUpdating) == false) {
 						printf(" Error: Your answer is not valid!!!\n");
 						printf(" Enter your choices: ");
@@ -732,26 +742,212 @@ void Update(const char *filename) {
 					if (checkInt(CheckchooseUpdating) == true) {
 						chooseUpdating = atoi(CheckchooseUpdating);
 					}
-					switch(chooseUpdating) {
-						case 1: 
-							printf("")
-							
-							
-							
-							
-							
-							
+					if (chooseUpdating == 1) {
+						// nhap ten sinh vien
+						printf(" Enter new Name: ");
+						scanf(" %[^\n]s", &FullName);			// co the nhap co khoang trang
 					}
+					if (chooseUpdating == 2) {
+						printf(" Enter new ID: ");
+						scanf("%s", &IDfromFile);
+					} 
+					if (chooseUpdating == 3) {
+						printf(" Enter the day of birth: ");
+							scanf("%s", &checkDay);
+							while (checkInt(checkDay) == false) {
+								printf(" Please enter the valid day!!\n");
+								printf(" Enter the day: ");
+								scanf("%s", &checkDay);
+							}
+							if (checkInt(checkDay) == true) {
+								day = atoi(checkDay);
+							}
+							while (day > 31 || day < 1) {
+								printf(" Please enter the valid day!!\n");
+								printf(" Enter the day: ");
+								scanf(" %s", &checkDay);
+								while (checkInt(checkDay) == false) {
+									printf(" Please enter the valid day!!\n");
+									printf(" Enter the day: ");
+									scanf(" %s", &checkDay);
+								}
+								if (checkInt(checkDay) == true) {
+									day = atoi(checkDay);
+								}
+								if (day <= 31 && day >= 1) {
+									break;
+								}
+							}								// nhap xong ngay sinh
+						
+							printf(" Enter the month of birth: ");
+							scanf("%s", &checkMonth);
+							while (checkInt(checkMonth) == false) {
+								printf(" Please enter the valid month!!\n");
+								printf(" Enter the month of birth: ");
+								scanf("%s", &checkMonth);
+							}
+							if (checkInt(checkMonth) == true) {
+								month = atoi(checkMonth);
+							}
+							while (month > 12 || month < 1) {
+								printf(" Please enter the valid month!!\n");
+								printf(" Enter the month of birth: ");
+								scanf("%s", &checkMonth);
+								while (checkInt(checkMonth) == false) {
+									printf(" Please enter the valid month!!\n");
+									printf(" Enter the month of birth: ");
+									scanf("%s", &checkMonth);
+								}
+								if (checkInt(checkMonth) == true) {
+									month = atoi(checkMonth);
+								}
+								if (month <= 12 && month >= 1) {
+									break;
+								}
+							}							// nhap xong thang sinh	
+							
+							printf(" Enter the year of birth: ");
+							scanf("%s", &checkYear);
+							while (checkInt(checkYear) == false) {
+								printf(" Please enter the valid year!!\n");
+								printf(" Enter the year of birth: ");
+								scanf("%s", &checkYear);
+							}
+							if (checkInt(checkYear) == true) {
+								year = atoi(checkYear);
+							}
+							while (year > 2005 || year < 1923) {
+								printf(" Please enter the valid year!!\n");
+								printf(" Enter the year of birth: ");
+								scanf("%s", &checkYear);
+								while (checkInt(checkYear) == false) {
+									printf(" Please enter the valid year!!\n");
+									printf(" Enter the year of birth: ");
+									scanf("%s", &checkYear);
+								}
+								if (checkInt(checkYear) == true) {
+									year = atoi(checkYear);
+								}
+								if (year <= 2005 && year >= 1923) {
+									break;
+								}
+							}								// nhap xong nam sinh
+							sprintf(DateOfBirth, "%02d-%02d-%04d", day, month, year);      // tao thanh chuoi dd-mm-yy
+					}
+					if (chooseUpdating == 4) {
+						printf(" [M] Male or [F] Female? ");
+							scanf("%s", &Sex);
+							if (Sex[0] == 'M' || Sex[0] == 'm') {
+								Sex[0] = 'M';
+								Sex[1] = 'a';
+								Sex[2] = 'l';
+								Sex[3] = 'e';
+							} else if (Sex[0] == 'F' || Sex[0] == 'f') {
+								Sex[0] = 'F';
+								Sex[1] = 'e';
+								Sex[2] = 'm';
+								Sex[3] = 'a';
+								Sex[4] = 'l';
+								Sex[5] = 'e';	
+							} else {
+								printf(" Error: Your option is not valid!!!\n");
+							}
+					}
+					if (chooseUpdating == 5) {
+						printf(" Enter the new email: ");
+						scanf("%s", &Email);
+					}
+					if (chooseUpdating == 6) {
+						printf(" Enter the new Phone Number: ");
+						scanf("%s", &PhoneNumber);
+					}
+					if (chooseUpdating == 7) {
+						printf(" Enter the new address: ");
+						scanf(" %[^\n]s", &Address);			// nhap co khoang trang
+					}
+					if (chooseUpdating == 8) {
+						printf(" Enter the new country: ");
+						scanf(" %[^\n]s", &Country);		// nhap co khoang trang
+					}
+					if (chooseUpdating == 0) {
+						IschoosingUpdating = 1;
+					}
+							
+				}	// end chooseUpdating				
+				// nhap vao file
+				file = fopen(filename, "a");
+				
+				fprintf(file, " %s", FullName);  // nhap ten
+				for (i = 1; i <= 25 - strlen(FullName); i++) {
+					fprintf(file, " ");
 				}
+				
+				fprintf(file, "%s", IDfromFile);			// nhap ma sinh vien vao file
+				for (i = 1; i <= 11 - strlen(IDfromFile); i++) {
+					fprintf(file, " ");
+				}
+				
+				fprintf(file,"%s", DateOfBirth);		// xuat ngay thang nam sinh vao file
+				for (i = 1; i <= 16 - strlen(DateOfBirth); i++) {
+					fprintf(file, " ");
+				}
+				
+				fprintf(file, "%s", Sex);  				// nhap gioi tinh vao file
+				for (i = 1; i <= 10 - strlen(Sex); i++) {
+					fprintf(file, " ");
+				}
+				
+				fprintf(file, "%s", Email);			// nhap email vao file
+				for (i = 1; i <= 25 - strlen(Email); i++) {
+					fprintf(file, " ");
+				}
+				
+				fprintf(file, "%s", PhoneNumber);			// nhap phone vao file
+				for (i = 1; i <= 15 - strlen(PhoneNumber); i++) {
+					fprintf(file, " ");
+				}
+				
+				fprintf(file, "%s", Address);		// ghi vao file
+				for (i = 1; i <= 20 - strlen(Address); i++) {
+					fprintf(file, " ");
+				}
+				
+				fprintf(file, "%s", Country);		// ghi vao file
+				for (i = 1; i <= 15 - strlen(Country); i++) {
+					fprintf(file, " ");
+				}
+				fprintf(file, "\n");
+				
+				fclose(file);
+				// end
+				
+				file = fopen(filename, "r");
+				char NONE[10] = "";
+				countLine = 1;
+				while (fgets(lineToCount[countLine], sizeof(lineToCount[countLine]), file) != NULL) {
+					countLine++;
+				}
+				countLine--;
+				strcpy(lineToCount[indexUpdating], line[countLine]);
+				strcpy(line[countLine], NONE);
+				countLine--;
+				fclose(file);
+				
+				file = fopen(filename, "w");
+				for (i = 1; i <= countLine; i++) {
+					fprintf(file, "%s", lineToCount[i]);
+				}
+				fclose(file);
+				printf("\n\n Update successfully.\n\n");
 				
 				printf(" Do you want to continue ? [Y/N]. Your answer: ");
 				char Choices;								// bien de nguoi dung nhap yes/no
 				scanf(" %c", &Choices);						
 				printf("\n");
 				if (Choices == 'Y' || Choices == 'y') {
-					IsSearching = 0;
+					IsUpdating = 0;
 				} else if (Choices == 'N' || Choices == 'n') {
-					IsSearching = 1;
+					IsUpdating = 1;
 				}
 			}
 		} else if (Option == 'I' || Option == 'i') {			// tim kien bang ma sinh vien 
@@ -765,9 +961,9 @@ void Update(const char *filename) {
 				scanf(" %c", &Choices);
 				printf("\n");
 				if (Choices == 'Y' || Choices == 'y') {
-					IsSearching = 0;
+					IsUpdating = 0;
 				} else if (Choices == 'N' || Choices == 'n') {
-					IsSearching = 1;
+					IsUpdating = 1;
 				}
 			} else {
 				file = fopen(filename, "r");
@@ -783,9 +979,9 @@ void Update(const char *filename) {
 				scanf(" %c", &Choices);
 				printf("\n");
 				if (Choices == 'Y' || Choices == 'y') {
-					IsSearching = 0;
+					IsUpdating = 0;
 				} else if (Choices == 'N' || Choices == 'n') {
-					IsSearching = 1;
+					IsUpdating = 1;
 				}
 			}
 		}
