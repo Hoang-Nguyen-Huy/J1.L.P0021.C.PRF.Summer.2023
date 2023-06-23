@@ -28,6 +28,7 @@ struct StudentInfo Students[100];
 
 // bien toan cuc
 int i, j, z;
+char IsNone[200];
 int TotalStudents = 0;
 bool IsRunning = true;
 FILE *file;
@@ -633,6 +634,8 @@ void Update(const char *filename) {
 	char Email[40];
 	char PhoneNumber[20];
 	char Address[30];
+	char Country1[30];
+	char Country2[30];
 	char Country[30];
 	char checkDay[5];					// nhap ngay sinh
 	int day; 
@@ -640,6 +643,7 @@ void Update(const char *filename) {
 	int month;
 	char checkYear[5];			// nhap nam sinh
 	int year;
+	
 	
 	// kiem tra file co rong hay khong
 	file = fopen(filename, "r");	
@@ -684,24 +688,21 @@ void Update(const char *filename) {
 				char CopiedLine[200]; // copy lai dong can cap nhat
 				char EndOfFile[200];  // dong cuoi cua file
 				
+				// in ra dong muon cap nhat
 				file = fopen(filename, "r");
 				while (fgets(line, sizeof(line), file) != NULL) {
 					if (strstr(line, Name) != NULL) {
 						printf("%s", line);	
 					}
 				}
-				
-				// lay dia chi cua dong muon cap nhat
-				for (i = 0; i < countLine; i++) {
-					if (strstr(lineToCount[i], Name) != NULL) {
-						indexUpdating = i;
-					}
-				} // end
-				
-				// lay tung thanh phan trong 1 dong
-				while (fgets(line, sizeof(line), file) != NULL) {
-					if (strstr(line, Name) != NULL) {
-						fseek(file, -139, SEEK_CUR);
+				fclose(file);
+				// end
+				file = fopen(filename, "r");
+				countLine = 1;
+				while (fgets(lineToCount[countLine], sizeof(lineToCount[countLine]), file) != NULL) {
+					if (strstr(lineToCount[countLine], Name) != NULL) {
+						indexUpdating = countLine;
+						fseek(file, -147, SEEK_CUR);
 						fscanf(file, "%s", LastName);
 						fscanf(file, "%s", MiddleName);
 						fscanf(file, "%s", FirstName);
@@ -711,17 +712,20 @@ void Update(const char *filename) {
 						fscanf(file, "%s", Email);
 						fscanf(file, "%s", PhoneNumber);
 						fscanf(file, "%s", Address);
-						fscanf(file, "%s", Country);
+						fscanf(file, "%s", Country1);
+						fscanf(file, "%s", Country2);
 					}
-				}// end
+					countLine++;
+				}
 				sprintf(FullName, "%s %s %s", LastName, MiddleName, FirstName);  // tao thanh full name
+				sprintf(Country, "%s %s", Country1, Country2);
 				fclose(file);
 				
 				char CheckchooseUpdating[10];
 				int chooseUpdating;
 				int IschoosingUpdating = 0;
 				
-				while (!IschoosingUpdating) {	
+				while (IschoosingUpdating == 0) {	
 					printf("[1]. Name\n");
 					printf("[2]. ID\n");
 					printf("[3]. Birthday\n");
@@ -870,7 +874,7 @@ void Update(const char *filename) {
 						scanf(" %[^\n]s", &Country);		// nhap co khoang trang
 					}
 					if (chooseUpdating == 0) {
-						IschoosingUpdating = 1;
+						break;
 					}
 							
 				}	// end chooseUpdating				
@@ -921,23 +925,30 @@ void Update(const char *filename) {
 				fclose(file);
 				// end
 				
+				
+				printf("%d", indexUpdating);
+				
 				file = fopen(filename, "r");
-				char NONE[10] = "";
 				countLine = 1;
 				while (fgets(lineToCount[countLine], sizeof(lineToCount[countLine]), file) != NULL) {
 					countLine++;
 				}
+				
 				countLine--;
-				strcpy(lineToCount[indexUpdating], line[countLine]);
-				strcpy(line[countLine], NONE);
+				strcpy(lineToCount[indexUpdating], lineToCount[countLine]);
+				strcpy(lineToCount[countLine], IsNone);
 				countLine--;
+				
 				fclose(file);
+				
+				printf("\n\ntoi day roi");
 				
 				file = fopen(filename, "w");
 				for (i = 1; i <= countLine; i++) {
 					fprintf(file, "%s", lineToCount[i]);
 				}
 				fclose(file);
+				
 				printf("\n\n Update successfully.\n\n");
 				
 				printf(" Do you want to continue ? [Y/N]. Your answer: ");
