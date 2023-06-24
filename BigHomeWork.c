@@ -330,10 +330,7 @@ void Create () {  // tao hoc sinh
 		printf(" Are you [M] Male or [F] Female? ");
 		scanf("%s", &Sex);
 		if (Sex[0] == 'M' || Sex[0] == 'm') {
-			Sex[0] = 'M';
-			Sex[1] = 'a';
-			Sex[2] = 'l';
-			Sex[3] = 'e';
+			strcpy(Sex, "Male");
 			file = fopen("StudentManagement.txt", "a");
 			fprintf(file, "%s", Sex);  				// nhap gioi tinh vao file
 			for (i = 1; i <= 10 - strlen(Sex); i++) {
@@ -342,12 +339,7 @@ void Create () {  // tao hoc sinh
 			fclose(file);
 			IsValidSex = 1;
 		} else if (Sex[0] == 'F' || Sex[0] == 'f') {
-			Sex[0] = 'F';
-			Sex[1] = 'e';
-			Sex[2] = 'm';
-			Sex[3] = 'a';
-			Sex[4] = 'l';
-			Sex[5] = 'e';
+			strcpy(Sex, "Female");
 			file = fopen("StudentManagement.txt", "a");
 			fprintf(file, "%s", Sex);  				// nhap gioi tinh vao file
 			for (i = 1; i <= 10 - strlen(Sex); i++) {
@@ -702,7 +694,7 @@ void Update(const char *filename) {
 				while (fgets(lineToCount[countLine], sizeof(lineToCount[countLine]), file) != NULL) {
 					if (strstr(lineToCount[countLine], Name) != NULL) {
 						indexUpdating = countLine;
-						fseek(file, -147, SEEK_CUR);
+						fseek(file, -139, SEEK_CUR);
 						fscanf(file, "%s", LastName);
 						fscanf(file, "%s", MiddleName);
 						fscanf(file, "%s", FirstName);
@@ -842,17 +834,9 @@ void Update(const char *filename) {
 						printf(" [M] Male or [F] Female? ");
 							scanf("%s", &Sex);
 							if (Sex[0] == 'M' || Sex[0] == 'm') {
-								Sex[0] = 'M';
-								Sex[1] = 'a';
-								Sex[2] = 'l';
-								Sex[3] = 'e';
+								strcpy(Sex, "Male");
 							} else if (Sex[0] == 'F' || Sex[0] == 'f') {
-								Sex[0] = 'F';
-								Sex[1] = 'e';
-								Sex[2] = 'm';
-								Sex[3] = 'a';
-								Sex[4] = 'l';
-								Sex[5] = 'e';	
+								strcpy(Sex, "Female");	
 							} else {
 								printf(" Error: Your option is not valid!!!\n");
 							}
@@ -925,9 +909,6 @@ void Update(const char *filename) {
 				fclose(file);
 				// end
 				
-				
-				printf("%d", indexUpdating);
-				
 				file = fopen(filename, "r");
 				countLine = 1;
 				while (fgets(lineToCount[countLine], sizeof(lineToCount[countLine]), file) != NULL) {
@@ -940,8 +921,7 @@ void Update(const char *filename) {
 				countLine--;
 				
 				fclose(file);
-				
-				printf("\n\ntoi day roi");
+			
 				
 				file = fopen(filename, "w");
 				for (i = 1; i <= countLine; i++) {
