@@ -1,5 +1,5 @@
  Nguyen Huy Hoang         SE180435   13-02-2004      Male      hoang@gmail.com          0123213123     Vinhomes            Nha Trang      
- Nguyen Tuong An          SE180321   02-02-2002      Female    tan@gmail.com            0123412343     Vinhomes            Ha Noi         
+ Nguyen Tuong An          SE180321   02-02-2004      Female    tan@gmail.com            0123412343     Vinhomes            Ha Noi         
  Bui Phuong Mai           SS180321   14-04-2004      Female    mai@gmail.com            03214123434    Vinhomes            Bien Hoa       
- Nguyen Hai Nam           SE180123   17-05-2004      Male      nam@gmail.com            0321432433     Vinhomes            Nha Trang      
+ Nguyen Hai Nam           SE180295   17-05-2004      Male      nam@gmail.com            0321432433     Vinhomes            Nha Trang      
  Nguyen Minh Hoang        SE180345   12-02-2004      Male      mhoang@gmail.com         04312432143    Vinhomes            Da Nang        

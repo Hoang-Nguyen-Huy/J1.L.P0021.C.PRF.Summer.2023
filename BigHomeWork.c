@@ -12,6 +12,7 @@ Class: SE1809
 #include <unistd.h>
 
 struct StudentInfo {
+	char FirstName[10];
 	char Name[30];			// ten
 	char ID[10];			// ma sinh vien
 	char Email[100];		// email
@@ -448,16 +449,6 @@ void Create () {  // tao hoc sinh
 			IsValidCountries = 1;
 		}
 	}
-	strcpy(Students[TotalStudents].Name, Name);   					// copy lai Name
-	strcpy(Students[TotalStudents].ID, StudentID);  				// copy lai ID
-	strcpy(Students[TotalStudents].DateOfBirth, DateOfBirth);		// copy ngay thang nam sinh
-	strcpy(Students[TotalStudents].Sex, Sex);						// copy gioi tinh
-	strcpy(Students[TotalStudents].Email, Email);					// copy email
-	strcpy(Students[TotalStudents].PhoneNumber, Phone); 			// copy dien thoai
-	strcpy(Students[TotalStudents].PresentAddress, PresentAddress); // copy dia chi
-	strcpy(Students[TotalStudents].Countries, Countries);			// copy que quan
-	TotalStudents++;
-	
 	printf("\n Student Added Succesfully.\n\n");
 
 }
@@ -586,10 +577,118 @@ void SearchStudent(const char *filename) {			// tim kiem
 int compareNames(const void* a, const void* b) { // kho deo chiu duoc
 	const struct StudentInfo* StudentsA = (const struct StudentInfo*)a;
 	const struct StudentInfo* StudentsB = (const struct StudentInfo*)b;
-	return strcmp(StudentsA->Name, StudentsB->Name);
+	return strcmp(StudentsA->FirstName, StudentsB->FirstName);
 }
 
 void Sort (const char *filename) {   // kho vai lon
+	char line[200][200];
+	char FullName[25];
+	char LastName[20];
+	char MiddleName[20];
+	char FirstName[20];
+	char IDfromFile[10];
+	char DateOfBirth[20];
+	char Sex[10];
+	char Email[20];
+	char PhoneNumber[15];
+	char Address[20];
+	char Country1[20];
+	char Country2[20];
+	char Country[20];
+	
+	// kiem tra file co rong hay khong
+	file = fopen(filename, "r");	
+	fseek(file, 0, SEEK_END);	// di chuyen con tro toi cuoi file
+	if (ftell(file) == 0) {
+		printf(" EMPTY file.\n\n");
+		fclose(file);
+		return;		// neu file rong thi return 
+	}
+	fclose(file);
+	//kiem tra xong
+	
+	
+	file = fopen(filename, "r");
+	TotalStudents = 1;
+	while (fgets(line[TotalStudents], sizeof(line[TotalStudents]), file) != NULL) {		// lay thong tin hoc sinh dep sap xep
+		fseek(file, -139, SEEK_CUR);
+		fscanf(file, "%s", LastName);
+		fscanf(file, "%s", MiddleName);
+		fscanf(file, "%s", FirstName);
+		fscanf(file, "%s", IDfromFile);
+		fscanf(file, "%s", DateOfBirth);
+		fscanf(file, "%s", Sex);
+		fscanf(file, "%s", Email);
+		fscanf(file, "%s", PhoneNumber);
+		fscanf(file, "%s", Address);
+		fscanf(file, "%s", Country1);
+		fscanf(file, "%s", Country2);
+			
+		strcpy(Students[TotalStudents].FirstName, FirstName);   					
+		sprintf(FullName, "%s %s %s", LastName, MiddleName, FirstName);			// copy lai Name
+		strcpy(Students[TotalStudents].Name, FullName);   					// copy lai Name
+		strcpy(Students[TotalStudents].ID, IDfromFile);  				// copy lai ID
+		strcpy(Students[TotalStudents].DateOfBirth, DateOfBirth);		// copy ngay thang nam sinh
+		strcpy(Students[TotalStudents].Sex, Sex);						// copy gioi tinh
+		strcpy(Students[TotalStudents].Email, Email);					// copy email
+		strcpy(Students[TotalStudents].PhoneNumber, PhoneNumber); 			// copy dien thoai
+		strcpy(Students[TotalStudents].PresentAddress, Address); // copy dia chi
+		sprintf(Country, "%s %s", Country1, Country2);
+		strcpy(Students[TotalStudents].Countries, Country);
+		TotalStudents++;
+	}
+	fclose(file);
+	
+
+	qsort(Students, TotalStudents, sizeof(struct StudentInfo), compareNames);
+	
+	file = fopen(filename, "w");
+	for (j = 1; j <= TotalStudents; j++) {
+		fprintf(file, " %s", Students[j].Name);  // nhap ten
+		for (i = 1; i <= 25 - strlen(Students[j].Name); i++) {
+			fprintf(file, " ");
+		}
+					
+		fprintf(file, "%s", Students[j].ID);			// nhap ma sinh vien vao file
+		for (i = 1; i <= 11 - strlen(Students[j].ID); i++) {
+			fprintf(file, " ");
+		}
+					
+		fprintf(file, "%s", Students[j].DateOfBirth);		// xuat ngay thang nam sinh vao file
+		for (i = 1; i <= 16 - strlen(Students[j].DateOfBirth); i++) {
+			fprintf(file, " ");
+		}
+					
+		fprintf(file, "%s", Students[j].Sex);  				// nhap gioi tinh vao file
+		for (i = 1; i <= 10 - strlen(Students[j].Sex); i++) {
+			fprintf(file, " ");
+		}
+					
+		fprintf(file, "%s", Students[j].Email);			// nhap email vao file
+		for (i = 1; i <= 25 - strlen(Students[j].Email); i++) {
+			fprintf(file, " ");
+		}
+					
+		fprintf(file, "%s", Students[j].PhoneNumber);			// nhap phone vao file
+		for (i = 1; i <= 15 - strlen(Students[j].PhoneNumber); i++) {
+			fprintf(file, " ");
+		}
+					
+		fprintf(file, "%s", Students[j].PresentAddress);		// ghi vao file
+		for (i = 1; i <= 20 - strlen(Students[j].PresentAddress); i++) {
+			fprintf(file, " ");
+		}
+					
+		fprintf(file, "%s", Students[j].Countries);		// ghi vao file
+		for (i = 1; i <= 15 - strlen(Students[j].Countries); i++) {
+			fprintf(file, " ");
+		}
+	}
+	fprintf(file, "\n");
+	fclose(file);
+	
+	printf("\n\n Sort successfully\n\n");
+	/*
 	qsort(Students, TotalStudents, sizeof(struct StudentInfo), compareNames);
 	file = fopen(filename, "w");
 	
@@ -604,7 +703,8 @@ void Sort (const char *filename) {   // kho vai lon
 		fprintf(file, "Country: %s\t\n", Students[i].Countries);		// ghi vao file
 	}
 	fclose(file);
-	printf("\n\n Sort successfully\n\n");
+	
+	*/
 	
 }
 
