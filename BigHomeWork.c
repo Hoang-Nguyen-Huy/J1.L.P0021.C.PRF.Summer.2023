@@ -12,6 +12,8 @@ Class: SE1809
 #include <unistd.h>
 
 struct StudentInfo {
+	char LastName[10];
+	char MiddleName[10];
 	char FirstName[10];
 	char Name[30];			// ten
 	char ID[10];			// ma sinh vien
@@ -575,9 +577,9 @@ void SearchStudent(const char *filename) {			// tim kiem
 }
 
 int compareNames(const void* a, const void* b) { // kho deo chiu duoc
-	const struct StudentInfo* StudentsA = (const struct StudentInfo*)a;
-	const struct StudentInfo* StudentsB = (const struct StudentInfo*)b;
-	return strcmp(StudentsA->FirstName, StudentsB->FirstName);
+	const struct StudentInfo* studentA = (const struct StudentInfo*)a;
+	const struct StudentInfo* studentB = (const struct StudentInfo*)b;
+	return strcmp(studentA->FirstName, studentB->FirstName);
 }
 
 void Sort (const char *filename) {   // kho vai lon
@@ -607,34 +609,29 @@ void Sort (const char *filename) {   // kho vai lon
 	fclose(file);
 	//kiem tra xong
 	
-	
-	file = fopen(filename, "r");
 	TotalStudents = 1;
+	file = fopen(filename, "r");
 	while (fgets(line[TotalStudents], sizeof(line[TotalStudents]), file) != NULL) {		// lay thong tin hoc sinh dep sap xep
 		fseek(file, -139, SEEK_CUR);
-		fscanf(file, "%s", LastName);
-		fscanf(file, "%s", MiddleName);
-		fscanf(file, "%s", FirstName);
-		fscanf(file, "%s", IDfromFile);
-		fscanf(file, "%s", DateOfBirth);
-		fscanf(file, "%s", Sex);
-		fscanf(file, "%s", Email);
-		fscanf(file, "%s", PhoneNumber);
-		fscanf(file, "%s", Address);
-		fscanf(file, "%s", Country1);
-		fscanf(file, "%s", Country2);
-			
-		strcpy(Students[TotalStudents].FirstName, FirstName);   					
+		fscanf(file, "%s", Students[TotalStudents].LastName);
+		fscanf(file, "%s", Students[TotalStudents].MiddleName);
+		fscanf(file, "%s", Students[TotalStudents].FirstName);
+		
 		sprintf(FullName, "%s %s %s", LastName, MiddleName, FirstName);			// copy lai Name
 		strcpy(Students[TotalStudents].Name, FullName);   					// copy lai Name
-		strcpy(Students[TotalStudents].ID, IDfromFile);  				// copy lai ID
-		strcpy(Students[TotalStudents].DateOfBirth, DateOfBirth);		// copy ngay thang nam sinh
-		strcpy(Students[TotalStudents].Sex, Sex);						// copy gioi tinh
-		strcpy(Students[TotalStudents].Email, Email);					// copy email
-		strcpy(Students[TotalStudents].PhoneNumber, PhoneNumber); 			// copy dien thoai
-		strcpy(Students[TotalStudents].PresentAddress, Address); // copy dia chi
+		
+		fscanf(file, "%s", Students[TotalStudents].ID);
+		fscanf(file, "%s", Students[TotalStudents].DateOfBirth);
+		fscanf(file, "%s", Students[TotalStudents].Sex);
+		fscanf(file, "%s", Students[TotalStudents].Email);
+		fscanf(file, "%s", Students[TotalStudents].PhoneNumber);
+		fscanf(file, "%s", Students[TotalStudents].PresentAddress);
+		fscanf(file, "%s", Country1);
+		fscanf(file, "%s", Country2);
+		
 		sprintf(Country, "%s %s", Country1, Country2);
-		strcpy(Students[TotalStudents].Countries, Country);
+		strcpy(Students[TotalStudents].Countries, Country);	
+		
 		TotalStudents++;
 	}
 	fclose(file);
@@ -688,23 +685,6 @@ void Sort (const char *filename) {   // kho vai lon
 	fclose(file);
 	
 	printf("\n\n Sort successfully\n\n");
-	/*
-	qsort(Students, TotalStudents, sizeof(struct StudentInfo), compareNames);
-	file = fopen(filename, "w");
-	
-	for (i = 0; i < TotalStudents; i++) {
-		fprintf(file, "Full name: %s\t", Students[i].Name);				// nhap ten vao file		
-		fprintf(file, "ID: %s\t", Students[i].ID);			// nhap ma sinh vien vao file
-		fprintf(file,"Birthday: %s\t", Students[i].DateOfBirth);		// xuat ngay thang nam sinh vao file
-		fprintf(file, "Sex: %s\t", Students[i].Sex);  				// nhap gioi tinh vao file
-		fprintf(file, "Email: %s\t", Students[i].Email);			// nhap email vao file
-		fprintf(file, "  Phone number: %s\t", Students[i].PhoneNumber);			// nhap phone vao file
-		fprintf(file, "Address: %s\t", Students[i].PresentAddress);		// ghi vao file
-		fprintf(file, "Country: %s\t\n", Students[i].Countries);		// ghi vao file
-	}
-	fclose(file);
-	
-	*/
 	
 }
 
