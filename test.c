@@ -1,29 +1,22 @@
-
-/*
-van bi mat 1 dong dau file
-*/
-
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 struct StudentInfo {
-	char LastName[10];
-	char MiddleName[10];
-	char FirstName[10];
-	char Name[30];			// ten
-	char ID[10];			// ma sinh vien
-	char Email[100];		// email
-	char PhoneNumber[15];	// so dien thoai
-	char Sex[10];		// gioi tinh
-	char DateOfBirth[50];	// ngay sinh
-	char PresentAddress[100];	// noi o hien tai
-	char Countries[100];		// que quan
+    char LastName[10];
+    char MiddleName[10];
+    char FirstName[10];
+    char Name[30];             // ten
+    char ID[10];               // ma sinh vien
+    char Email[100];           // email
+    char PhoneNumber[15];      // so dien thoai
+    char Sex[10];              // gioi tinh
+    char DateOfBirth[50];      // ngay sinh
+    char PresentAddress[100];  // noi o hien tai
+    char Countries[100];       // que quan
 };
-
-
-int j, i;
+int i,j;
+struct StudentInfo Students[200];
 int compareNames(const void* a, const void* b) {
     const struct StudentInfo* studentA = (const struct StudentInfo*)a;
     const struct StudentInfo* studentB = (const struct StudentInfo*)b;
@@ -34,16 +27,25 @@ void Sort(const char* filename) {
 	char Country1[10];
 	char Country2[10];
 	char Country[20];
-    FILE* file = fopen(filename, "r");
+	char line[200][200];
+	// kiem tra file co rong hay khong
+	FILE *file = fopen(filename, "r");	
+	fseek(file, 0, SEEK_END);	// di chuyen con tro toi cuoi file
+	if (ftell(file) == 0) {
+		printf(" EMPTY file.\n\n");
+		fclose(file);
+		return;		// neu file rong thi return 
+	}
+	fclose(file);
+	//kiem tra xong
+	
+	
+    file = fopen(filename, "r");
     if (file == NULL) {
         printf("Cannot open file.\n");
         return;
     }
-    
-    struct StudentInfo Students[200];
-    char line[200][200];
-
-    int TotalStudents = 1;
+    int TotalStudents = 0;
     while (fgets(line[TotalStudents], sizeof(line[TotalStudents]), file) != NULL) {
         fscanf(file, "%s", Students[TotalStudents].LastName);
         fscanf(file, "%s", Students[TotalStudents].MiddleName);
@@ -60,15 +62,17 @@ void Sort(const char* filename) {
         sprintf(Country, "%s %s", Country1, Country2);
 		strcpy(Students[TotalStudents].Countries, Country);	
 
-        sprintf(Students[TotalStudents].Name, "%s %s %s",
-                Students[TotalStudents].LastName,
-                Students[TotalStudents].MiddleName,
-                Students[TotalStudents].FirstName);
+        sprintf(Students[TotalStudents].Name, "%s %s %s", Students[TotalStudents].LastName, Students[TotalStudents].MiddleName, Students[TotalStudents].FirstName);
 
         TotalStudents++;
     }
     fclose(file);
-
+	
+	printf("%d\n\n", TotalStudents);
+	for (i = 0; i <= TotalStudents; i++) {
+		printf("%s\n", Students[i].FirstName);
+	}
+	
     qsort(Students, TotalStudents, sizeof(struct StudentInfo), compareNames);
 
     file = fopen(filename, "w");
@@ -122,10 +126,10 @@ void Sort(const char* filename) {
     fclose(file);
 
     printf("\n\nSort successfully.\n\n");
+
 }
 
 int main() {
-	
     const char* filename = "test.txt";
     Sort(filename);
 

@@ -576,27 +576,17 @@ void SearchStudent(const char *filename) {			// tim kiem
 	
 }
 
-int compareNames(const void* a, const void* b) { // kho deo chiu duoc
-	const struct StudentInfo* studentA = (const struct StudentInfo*)a;
-	const struct StudentInfo* studentB = (const struct StudentInfo*)b;
-	return strcmp(studentA->FirstName, studentB->FirstName);
+int compareNames(const void* a, const void* b) {
+    const struct StudentInfo* studentA = (const struct StudentInfo*)a;
+    const struct StudentInfo* studentB = (const struct StudentInfo*)b;
+    return strcmp(studentA->FirstName, studentB->FirstName);
 }
 
-void Sort (const char *filename) {   // kho vai lon
-	char line[200][200];
-	char FullName[25];
-	char LastName[20];
-	char MiddleName[20];
-	char FirstName[20];
-	char IDfromFile[10];
-	char DateOfBirth[20];
-	char Sex[10];
-	char Email[20];
-	char PhoneNumber[15];
-	char Address[20];
-	char Country1[20];
-	char Country2[20];
+void Sort(const char* filename) {
+	char Country1[10];
+	char Country2[10];
 	char Country[20];
+	char line[200][200];
 	
 	// kiem tra file co rong hay khong
 	file = fopen(filename, "r");	
@@ -609,38 +599,43 @@ void Sort (const char *filename) {   // kho vai lon
 	fclose(file);
 	//kiem tra xong
 	
-	TotalStudents = 1;
-	file = fopen(filename, "r");
-	while (fgets(line[TotalStudents], sizeof(line[TotalStudents]), file) != NULL) {		// lay thong tin hoc sinh dep sap xep
-		fseek(file, -139, SEEK_CUR);
-		fscanf(file, "%s", Students[TotalStudents].LastName);
-		fscanf(file, "%s", Students[TotalStudents].MiddleName);
-		fscanf(file, "%s", Students[TotalStudents].FirstName);
-		
-		sprintf(FullName, "%s %s %s", LastName, MiddleName, FirstName);			// copy lai Name
-		strcpy(Students[TotalStudents].Name, FullName);   					// copy lai Name
-		
-		fscanf(file, "%s", Students[TotalStudents].ID);
-		fscanf(file, "%s", Students[TotalStudents].DateOfBirth);
-		fscanf(file, "%s", Students[TotalStudents].Sex);
-		fscanf(file, "%s", Students[TotalStudents].Email);
-		fscanf(file, "%s", Students[TotalStudents].PhoneNumber);
-		fscanf(file, "%s", Students[TotalStudents].PresentAddress);
-		fscanf(file, "%s", Country1);
-		fscanf(file, "%s", Country2);
-		
-		sprintf(Country, "%s %s", Country1, Country2);
+	
+    file = fopen(filename, "r");
+    if (file == NULL) {
+        printf("Cannot open file.\n");
+        return;
+    }
+    TotalStudents = 0;
+    while (fgets(line[TotalStudents], sizeof(line[TotalStudents]), file) != NULL) {
+        fscanf(file, "%s", Students[TotalStudents].LastName);
+        fscanf(file, "%s", Students[TotalStudents].MiddleName);
+        fscanf(file, "%s", Students[TotalStudents].FirstName);
+        fscanf(file, "%s", Students[TotalStudents].ID);
+        fscanf(file, "%s", Students[TotalStudents].DateOfBirth);
+        fscanf(file, "%s", Students[TotalStudents].Sex);
+        fscanf(file, "%s", Students[TotalStudents].Email);
+        fscanf(file, "%s", Students[TotalStudents].PhoneNumber);
+        fscanf(file, "%s", Students[TotalStudents].PresentAddress);
+        fscanf(file, "%s", Country1);
+        fscanf(file, "%s", Country2);
+        
+        sprintf(Country, "%s %s", Country1, Country2);
 		strcpy(Students[TotalStudents].Countries, Country);	
-		
-		TotalStudents++;
-	}
-	fclose(file);
-	
 
-	qsort(Students, TotalStudents, sizeof(struct StudentInfo), compareNames);
-	
-	file = fopen(filename, "w");
-	for (j = 1; j <= TotalStudents; j++) {
+        sprintf(Students[TotalStudents].Name, "%s %s %s", Students[TotalStudents].LastName, Students[TotalStudents].MiddleName, Students[TotalStudents].FirstName);
+
+        TotalStudents++;
+    }
+    fclose(file);
+
+    qsort(Students, TotalStudents, sizeof(struct StudentInfo), compareNames);
+
+    file = fopen(filename, "w");
+    if (file == NULL) {
+        printf("Cannot open file.\n");
+        return;
+    }
+   for (j = 0; j <= TotalStudents; j++) {
 		fprintf(file, " %s", Students[j].Name);  // nhap ten
 		for (i = 1; i <= 25 - strlen(Students[j].Name); i++) {
 			fprintf(file, " ");
@@ -680,13 +675,14 @@ void Sort (const char *filename) {   // kho vai lon
 		for (i = 1; i <= 15 - strlen(Students[j].Countries); i++) {
 			fprintf(file, " ");
 		}
+		fprintf(file, "\n");
 	}
-	fprintf(file, "\n");
-	fclose(file);
 	
-	printf("\n\n Sort successfully\n\n");
-	
+    fclose(file);
+
+    printf("\n\nSort successfully.\n\n");
 }
+
 
 void Update(const char *filename) {    //cap nhat thong tin hoc sinh
 	int countLine = 0; // dung de dem so dong trong file
