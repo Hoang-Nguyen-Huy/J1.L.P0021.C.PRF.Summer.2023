@@ -1,6 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
+#include <stdbool.h>
+#include <windows.h>
+#include <unistd.h>
 FILE *file;
 struct StudentInfo {
     char LastName[10];
@@ -24,8 +28,15 @@ struct StudentInfo Students[200];
 int compareNames(const void* a, const void* b) {
     const struct StudentInfo* studentA = (const struct StudentInfo*)a;
     const struct StudentInfo* studentB = (const struct StudentInfo*)b;
-    return strcmp(studentA->FirstName, studentB->FirstName);
+
+    int result = strcmp(studentA->FirstName, studentB->FirstName);
+    if (result == 0) {  // FirstName is equal, compare MiddleName
+        result = strcmp(studentA->MiddleName, studentB->MiddleName);
+    }
+
+    return result;
 }
+
 
 void Sort(const char* filename) {
 	char Country1[10];
@@ -55,213 +66,51 @@ void Sort(const char* filename) {
 
     TotalStudents = 0;
    
-	    fgets(line[TotalStudents], sizeof(line[TotalStudents]), file);
-     	char* p;
+   
+	while (fgets(line, sizeof(line), file) != NULL) {
+        char* p = strtok(line, " ");
+        strcpy(Students[TotalStudents].LastName, p);
 
-	    p = strtok(line[TotalStudents], " ");
-	    strcpy(Students[TotalStudents].LastName, p);
-	
-	    p = strtok(NULL, " ");
-	    strcpy(Students[TotalStudents].MiddleName, p);
-	
-	    p = strtok(NULL, " ");
-	    strcpy(Students[TotalStudents].FirstName, p);
-	
-	    sprintf(Students[TotalStudents].Name, "%s %s %s", Students[TotalStudents].LastName, Students[TotalStudents].MiddleName, Students[TotalStudents].FirstName);
-	
-	    p = strtok(NULL, " ");
-	    strcpy(Students[TotalStudents].ID, p);
-	
-	    p = strtok(NULL, " ");
-	    strcpy(Students[TotalStudents].DateOfBirth, p);
-	
-	    p = strtok(NULL, " ");
-	    strcpy(Students[TotalStudents].Sex, p);
-	
-	    p = strtok(NULL, " ");
-	    strcpy(Students[TotalStudents].Email, p);
-	
-	    p = strtok(NULL, " ");
-	    strcpy(Students[TotalStudents].PhoneNumber, p);
-	
-	    p = strtok(NULL, " ");
-	    strcpy(Students[TotalStudents].PresentAddress, p);
-	
-	    p = strtok(NULL, " ");
-	    strcpy(Country1, p);
-	
-	    p = strtok(NULL, " ");
-	    strcpy(Country2, p);
-	
-	    sprintf(Students[TotalStudents].Countries, "%s %s", Country1, Country2);
-	    
-	TotalStudents++; //1
-	
-	fgets(line[TotalStudents], sizeof(line[TotalStudents]), file);
-	    
+        p = strtok(NULL, " ");
+        strcpy(Students[TotalStudents].MiddleName, p);
 
-	    p = strtok(line[TotalStudents], " ");
-	    strcpy(Students[TotalStudents].LastName, p);
-	
-	    p = strtok(NULL, " ");
-	    strcpy(Students[TotalStudents].MiddleName, p);
-	
-	    p = strtok(NULL, " ");
-	    strcpy(Students[TotalStudents].FirstName, p);
-	
-	    sprintf(Students[TotalStudents].Name, "%s %s %s", Students[TotalStudents].LastName, Students[TotalStudents].MiddleName, Students[TotalStudents].FirstName);
-	
-	    p = strtok(NULL, " ");
-	    strcpy(Students[TotalStudents].ID, p);
-	
-	    p = strtok(NULL, " ");
-	    strcpy(Students[TotalStudents].DateOfBirth, p);
-	
-	    p = strtok(NULL, " ");
-	    strcpy(Students[TotalStudents].Sex, p);
-	
-	    p = strtok(NULL, " ");
-	    strcpy(Students[TotalStudents].Email, p);
-	
-	    p = strtok(NULL, " ");
-	    strcpy(Students[TotalStudents].PhoneNumber, p);
-	
-	    p = strtok(NULL, " ");
-	    strcpy(Students[TotalStudents].PresentAddress, p);
-	
-	    p = strtok(NULL, " ");
-	    strcpy(Country1, p);
-	
-	    p = strtok(NULL, " ");
-	    strcpy(Country2, p);
-	
-	    sprintf(Students[TotalStudents].Countries, "%s %s", Country1, Country2);
-	
-	TotalStudents++;//2
-	
-	fgets(line[TotalStudents], sizeof(line[TotalStudents]), file);
-	    
+        p = strtok(NULL, " ");
+        strcpy(Students[TotalStudents].FirstName, p);
 
-	    p = strtok(line[TotalStudents], " ");
-	    strcpy(Students[TotalStudents].LastName, p);
-	
-	    p = strtok(NULL, " ");
-	    strcpy(Students[TotalStudents].MiddleName, p);
-	
-	    p = strtok(NULL, " ");
-	    strcpy(Students[TotalStudents].FirstName, p);
-	
-	    sprintf(Students[TotalStudents].Name, "%s %s %s", Students[TotalStudents].LastName, Students[TotalStudents].MiddleName, Students[TotalStudents].FirstName);
-	
-	    p = strtok(NULL, " ");
-	    strcpy(Students[TotalStudents].ID, p);
-	
-	    p = strtok(NULL, " ");
-	    strcpy(Students[TotalStudents].DateOfBirth, p);
-	
-	    p = strtok(NULL, " ");
-	    strcpy(Students[TotalStudents].Sex, p);
-	
-	    p = strtok(NULL, " ");
-	    strcpy(Students[TotalStudents].Email, p);
-	
-	    p = strtok(NULL, " ");
-	    strcpy(Students[TotalStudents].PhoneNumber, p);
-	
-	    p = strtok(NULL, " ");
-	    strcpy(Students[TotalStudents].PresentAddress, p);
-	
-	    p = strtok(NULL, " ");
-	    strcpy(Country1, p);
-	
-	    p = strtok(NULL, " ");
-	    strcpy(Country2, p);
-	
-	    sprintf(Students[TotalStudents].Countries, "%s %s", Country1, Country2);
-	    
-	TotalStudents++;//3
-	
-	fgets(line[TotalStudents], sizeof(line[TotalStudents]), file);
-	    
+        sprintf(Students[TotalStudents].Name, "%s %s %s", Students[TotalStudents].LastName, Students[TotalStudents].MiddleName, Students[TotalStudents].FirstName);
 
-	    p = strtok(line[TotalStudents], " ");
-	    strcpy(Students[TotalStudents].LastName, p);
+        p = strtok(NULL, " ");
+        strcpy(Students[TotalStudents].ID, p);
+
+        p = strtok(NULL, " ");
+        strcpy(Students[TotalStudents].DateOfBirth, p);
+
+        p = strtok(NULL, " ");
+        strcpy(Students[TotalStudents].Sex, p);
+
+        p = strtok(NULL, " ");
+        strcpy(Students[TotalStudents].Email, p);
+
+        p = strtok(NULL, " ");
+        strcpy(Students[TotalStudents].PhoneNumber, p);
+
+        p = strtok(NULL, " ");
+        strcpy(Students[TotalStudents].PresentAddress, p);
+
+        p = strtok(NULL, " ");
+        
+        strcpy(Country1, p);
+
+        p = strtok(NULL, " ");
+    
+        strcpy(Country2, p);
+
+        sprintf(Students[TotalStudents].Countries, "%s %s", Country1, Country2);
+
+        TotalStudents++;
+    }
 	
-	    p = strtok(NULL, " ");
-	    strcpy(Students[TotalStudents].MiddleName, p);
 	
-	    p = strtok(NULL, " ");
-	    strcpy(Students[TotalStudents].FirstName, p);
-	
-	    sprintf(Students[TotalStudents].Name, "%s %s %s", Students[TotalStudents].LastName, Students[TotalStudents].MiddleName, Students[TotalStudents].FirstName);
-	
-	    p = strtok(NULL, " ");
-	    strcpy(Students[TotalStudents].ID, p);
-	
-	    p = strtok(NULL, " ");
-	    strcpy(Students[TotalStudents].DateOfBirth, p);
-	
-	    p = strtok(NULL, " ");
-	    strcpy(Students[TotalStudents].Sex, p);
-	
-	    p = strtok(NULL, " ");
-	    strcpy(Students[TotalStudents].Email, p);
-	
-	    p = strtok(NULL, " ");
-	    strcpy(Students[TotalStudents].PhoneNumber, p);
-	
-	    p = strtok(NULL, " ");
-	    strcpy(Students[TotalStudents].PresentAddress, p);
-	
-	    p = strtok(NULL, " ");
-	    strcpy(Country1, p);
-	
-	    p = strtok(NULL, " ");
-	    strcpy(Country2, p);
-	
-	    sprintf(Students[TotalStudents].Countries, "%s %s", Country1, Country2);
-	TotalStudents++; //4
-	
-	fgets(line[TotalStudents], sizeof(line[TotalStudents]), file);
-	    
-	    p = strtok(line[TotalStudents], " ");
-	    strcpy(Students[TotalStudents].LastName, p);
-	
-	    p = strtok(NULL, " ");
-	    strcpy(Students[TotalStudents].MiddleName, p);
-	
-	    p = strtok(NULL, " ");
-	    strcpy(Students[TotalStudents].FirstName, p);
-	
-	    sprintf(Students[TotalStudents].Name, "%s %s %s", Students[TotalStudents].LastName, Students[TotalStudents].MiddleName, Students[TotalStudents].FirstName);
-	
-	    p = strtok(NULL, " ");
-	    strcpy(Students[TotalStudents].ID, p);
-	
-	    p = strtok(NULL, " ");
-	    strcpy(Students[TotalStudents].DateOfBirth, p);
-	
-	    p = strtok(NULL, " ");
-	    strcpy(Students[TotalStudents].Sex, p);
-	
-	    p = strtok(NULL, " ");
-	    strcpy(Students[TotalStudents].Email, p);
-	
-	    p = strtok(NULL, " ");
-	    strcpy(Students[TotalStudents].PhoneNumber, p);
-	
-	    p = strtok(NULL, " ");
-	    strcpy(Students[TotalStudents].PresentAddress, p);
-	
-	    p = strtok(NULL, " ");
-	    strcpy(Country1, p);
-	
-	    p = strtok(NULL, " ");
-	    strcpy(Country2, p);
-	
-	    sprintf(Students[TotalStudents].Countries, "%s %s", Country1, Country2);
-	    
-	TotalStudents++; //5
 
  
 

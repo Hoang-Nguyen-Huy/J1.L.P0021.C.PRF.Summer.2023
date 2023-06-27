@@ -579,7 +579,13 @@ void SearchStudent(const char *filename) {			// tim kiem
 int compareNames(const void* a, const void* b) {
     const struct StudentInfo* studentA = (const struct StudentInfo*)a;
     const struct StudentInfo* studentB = (const struct StudentInfo*)b;
-    return strcmp(studentA->FirstName, studentB->FirstName);
+
+    int result = strcmp(studentA->FirstName, studentB->FirstName);
+    if (result == 0) {  // FirstName is equal, compare MiddleName
+        result = strcmp(studentA->MiddleName, studentB->MiddleName);
+    }
+
+    return result;
 }
 
 void Sort(const char* filename) {
@@ -606,23 +612,43 @@ void Sort(const char* filename) {
         return;
     }
     TotalStudents = 0;
-    while (fgets(line[TotalStudents], sizeof(line[TotalStudents]), file) != NULL) {
-        fscanf(file, "%s", Students[TotalStudents].LastName);
-        fscanf(file, "%s", Students[TotalStudents].MiddleName);
-        fscanf(file, "%s", Students[TotalStudents].FirstName);
-        fscanf(file, "%s", Students[TotalStudents].ID);
-        fscanf(file, "%s", Students[TotalStudents].DateOfBirth);
-        fscanf(file, "%s", Students[TotalStudents].Sex);
-        fscanf(file, "%s", Students[TotalStudents].Email);
-        fscanf(file, "%s", Students[TotalStudents].PhoneNumber);
-        fscanf(file, "%s", Students[TotalStudents].PresentAddress);
-        fscanf(file, "%s", Country1);
-        fscanf(file, "%s", Country2);
-        
-        sprintf(Country, "%s %s", Country1, Country2);
-		strcpy(Students[TotalStudents].Countries, Country);	
+    while (fgets(line, sizeof(line), file) != NULL) {
+        char* p = strtok(line, " ");
+        strcpy(Students[TotalStudents].LastName, p);
+
+        p = strtok(NULL, " ");
+        strcpy(Students[TotalStudents].MiddleName, p);
+
+        p = strtok(NULL, " ");
+        strcpy(Students[TotalStudents].FirstName, p);
 
         sprintf(Students[TotalStudents].Name, "%s %s %s", Students[TotalStudents].LastName, Students[TotalStudents].MiddleName, Students[TotalStudents].FirstName);
+
+        p = strtok(NULL, " ");
+        strcpy(Students[TotalStudents].ID, p);
+
+        p = strtok(NULL, " ");
+        strcpy(Students[TotalStudents].DateOfBirth, p);
+
+        p = strtok(NULL, " ");
+        strcpy(Students[TotalStudents].Sex, p);
+
+        p = strtok(NULL, " ");
+        strcpy(Students[TotalStudents].Email, p);
+
+        p = strtok(NULL, " ");
+        strcpy(Students[TotalStudents].PhoneNumber, p);
+
+        p = strtok(NULL, " ");
+        strcpy(Students[TotalStudents].PresentAddress, p);
+
+        p = strtok(NULL, " ");
+        strcpy(Country1, p);
+
+        p = strtok(NULL, " ");
+        strcpy(Country2, p);
+
+        sprintf(Students[TotalStudents].Countries, "%s %s", Country1, Country2);
 
         TotalStudents++;
     }
@@ -682,7 +708,6 @@ void Sort(const char* filename) {
 
     printf("\n\nSort successfully.\n\n");
 }
-
 
 void Update(const char *filename) {    //cap nhat thong tin hoc sinh
 	int countLine = 0; // dung de dem so dong trong file
