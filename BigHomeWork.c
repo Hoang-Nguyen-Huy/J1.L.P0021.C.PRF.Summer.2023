@@ -10,6 +10,8 @@ Class: SE1809
 #include <stdbool.h>
 #include <windows.h>
 #include <unistd.h>
+#include <conio.h>
+
 
 struct StudentInfo {
 	char LastName[10];
@@ -25,18 +27,43 @@ struct StudentInfo {
 	char Countries[100];		// que quan
 };
 
+struct UserInfo {
+	char NickName[20];
+	char password[20];
+};
 
 struct StudentInfo Students[100];
-
+struct UserInfo Users[100];
 
 // bien toan cuc
 int i, j, z;
 char IsNone[200];
 int TotalStudents = 0;
+int TotalUsers = 0;
 bool IsRunning = true;
 FILE *file;
 //
 
+/*
+StudentManagement.txt 		file de quan ly hoc sinh
+SignUp.txt					file de luu cac thong tin nguoi dung sau khi dang ky
+SignIn.txt					file de luu cac thong tin nguoi dung sau khi dang nhap
+Admin.txt					file chua tai khoan cua admin
+*/
+
+// cac ham de dang nhap, dang ki
+void takePassword(char pwd[50]);  // bien mat khau thanh***
+void SignIn(const char *filename);
+void SignUp(const char *filename);
+// end
+
+// cac ham menu
+void MenuForLogging();  // menu dung de dang nhap, dang ki
+void Menu();		// menu chua cac chuc nang quan ly hoc sinh
+void MenuForDeleting();	// menu de xoa hoc sinh
+//end
+
+// cac ham chuc nang
 bool checkInt (char input[]) {	// kiem tra co phai la so nguyen hay khong
 	int valid = 0;
 		while (valid == 0) {
@@ -59,77 +86,154 @@ bool checkInt (char input[]) {	// kiem tra co phai la so nguyen hay khong
 			}
 		} 
 }
-// cac ham menu
-void Menu();
-void MenuForDeleting();
-//end
-
-// cac ham chuc nang
-void Create();
+void Create();	//nhap cac thong tin hoc sinh vao file
 void ShowAllList(const char *filename);			// xuat tat ca cac ho so cua sinh vien trong file
-void SearchStudent(const char *filename);
-int compareNames(const void* a, const void* b);
-void Sort(const char *filename);   // chua nghi ra
-void Update(const char *filename);  
-void DeleteSelectedStudent(const char *filename);		
+void SearchStudent(const char *filename);  // tim kiem
+int compareNames(const void* a, const void* b);  // dung de sap xep thu tu trong file
+void Sort(const char *filename);   // sap xep
+void Update(const char *filename);   // cap nhat
+void DeleteSelectedStudent(const char *filename);		// xoa 1 hoc sinh duoc chon
 void DeleteAllStudent(const char *filename);		// xoa tat ca trong  file
-bool IsExistsInFile(const char *filename, const char *code);
+bool IsExistsInFile(const char *filename, const char *code); // kiem tra xem da xuat hien trong file hay chua
 void GoBackOrExit();			// thoat case de quay lai menu chinh hoac exit chuong trinh
-void ExitProject();
+void ExitProject();     // thoat chuong trinh
 //end
 
 int main () {
-	while (IsRunning) {
-		Menu();
-		char Option[50]; // kiem tra su lua chon cua nguoi dung
-		int chosen;   // kiem tra su lua chon cua nguoi dung
-		scanf("%s", Option);
-		while (checkInt(Option) == false) {
-			printf("\tPlease enter a valid option: ");
-			scanf("%s", Option);
+	MenuForLogging();
+	return 0;
+}
+
+bool IsExistsInFile(const char *filename, const char *code) {		// kiem tra ID, email, phone da xuat hien trong file hay chua
+	file = fopen(filename, "r");
+	if (file == NULL) {
+		printf("Canot access to file........\n");
+		return false;
+	}
+	char line[500];
+	while (fgets(line, sizeof(line), file) != NULL) {			// kiem tra tung dong
+		if (strstr(line, code) != NULL) {				// kiem tra chuoi con trong chuoi lon
+			fclose(file);
+			return true;
 		}
-		if (checkInt(Option) == true) {
-			chosen = atoi(Option);
+	}
+	fclose(file);
+	return false;
+}
+
+/*
+void takePassword(char pwd[20]) {	// bien mat khau thanh ****
+	char ch;
+	while (1) {
+		ch = getch();
+		if (ch == ENTER || ch == TAB) {
+			pwd[i] = '\0';
+			break;
+		} else if (ch == BCKSPC) {
+			if (i > 0) {
+				i--;
+				printf("\b \b");
+			}
+		} else {
+			pwd[i++] = ch;
+			printf("* \b");
 		}
-		switch(chosen) {
+	}
+}
+*/
+
+void SignUp(const char *filename) {		// dang ki
+	char nickName[50];
+	char password[20];
+	
+	int IsValidNickName = 0;
+	while (!IsValidNickName) {
+		printf("Enter your nick name: ");
+		scanf(" %[^\n]s", &nickName);
+	
+		// kiem tra xem nickName co khoang trang hay khong
+		int hasWhitespace = 0;
+		for (i = 0; i < strlen(nickName); i++) {
+			if (nickName[i] == " ") {
+				hasWhitespace = 1;
+				break;
+			}
+		}
+		if (hasWhitespace == 1) {
+			printf("Nickname cannot contain whitespace!!! Please try again.\n");
+			IsValidNickName = 0;
+		} else if (IsExistsInFile("SignUp.txt", nickName) == true) {
+			printf(" Your nick name is duplicated!!!\n\n");
+			IsValidNickName = 0;
+		} else if (strlen(nickName) > 20) {
+			printf("Your nick name is too long!!!\n\n");
+			IsValidNickName = 0;
+		} else if (strlen(nickName) <= 0) {
+			printf("Please enter your nick name!!!\n\n");
+			IsValidNickName = 0;
+		} else {
+			IsValidNickName = 1;
+		}
+	}
+	
+	int IsValidPassword = 0;
+	while (!IsValidPassword) {
+		printf("Enter your password: ");
+		scanf(" %s", &password);
+		
+		if (strlen(password) > 10) {
+			printf(" Your password is too long.\n");
+			IsValidPassword = 0;
+		} else if (strlen(password) <= 0) {
+			printf(" Please enter your password.\n");
+			IsValidPassword = 0;
+		} else {
+			IsValidPassword = 1;
+		}
+	}
+	
+	
+	
+	strcpy(Users[TotalUsers].NickName, nickName);
+	strcpy(Users[TotalUsers].password, password);
+	TotalUsers++;
+	
+	file = fopen(filename, "a");
+	fprintf(file, "%s %s\n", nickName, password);
+	fclose(file);
+
+	printf("\n\n     SIGN UP Successfully     \n");
+}
+
+void MenuForLogging() {  // menu de logging
+	int option;
+	char checkOption[50];
+	int IsLogging = 0;
+	while (!IsLogging) {
+		printf("===============Welcome to my project===============\n\n");
+		printf("               [1]. Sign in.\n");
+		printf("               [2]. Sign up.\n");
+		printf("               [0]. Exit app.\n");
+		printf(" Enter your option: ");
+		scanf("%s", checkOption);
+		while (checkInt(checkOption) == false) {
+			printf(" Your option is not valid!!!. Enter again: ");
+			scanf("%s", checkOption);
+		}
+		if (checkInt(checkOption) == true) {
+			option = atoi(checkOption);
+		}
+		switch(option) {
 			case 1: 
 				system("cls");
-				printf("\n\t\t********Add a New Student********\n\n");
-				Create();
-				GoBackOrExit();
 				break;
 			case 2: 
-			    system("cls");
-			    printf("\n\t\t********List of all profile********\n\n");
-			    ShowAllList("StudentManagement.txt");
-			    printf("\n\n");
-			    GoBackOrExit();
-			    break;
-			case 3: 
 				system("cls");
-				printf("\n\t\t********Updating profile********\n\n");
-				Update("StudentManagement.txt");
-				printf("\n\n");
-				GoBackOrExit();
-				break;
-			case 4: 
-			    system("cls");
-			    MenuForDeleting();
-			    printf("\n\n");
-			    GoBackOrExit();
-			    break;
-			case 5: 
-				system("cls");
-				SearchStudent("StudentManagement.txt");
-				GoBackOrExit();
-				break;
-			case 6: 
-				system("cls");
-				Sort("StudentManagement.txt");
-				GoBackOrExit();
+				SignUp("SignUp.txt");
 				break;
 			case 0: 
-				IsRunning = false;
+				system("cls");
+				IsLogging = 1;
 				ExitProject();
 				break;
 			default: 
@@ -138,7 +242,7 @@ int main () {
 				break;
 		}
 	}
-	return 0;
+	
 }
 
 void MenuForDeleting() {  // menu de xoa
@@ -188,36 +292,77 @@ void MenuForDeleting() {  // menu de xoa
 	
 }
 
-void Menu () {   // menu nguoi dung
-	printf("\n\n\t********Student Management System********\n\n");
-	printf("\t\t\tMAIN MENU\n");
-	printf("\t\t=========================\n");
-	printf("\t\t[1] Add a new student to the list.\n");
-	printf("\t\t[2] Show all list of profile.\n");
-	printf("\t\t[3] Update student.\n");			
-	printf("\t\t[4] Delete students.\n");          
-	printf("\t\t[5] Find a student.\n");
-	printf("\t\t[6] Sort all list.\n");				//???
-	printf("\t\t[0] Exit the Program.\n");
-	printf("\t\t=========================\n");
-	printf("\t\tEnter your Choice: ");
-}
-
-bool IsExistsInFile(const char *filename, const char *code) {		// kiem tra ID, email, phone da xuat hien trong file hay chua
-	file = fopen(filename, "r");
-	if (file == NULL) {
-		printf("Canot access to file........\n");
-		return false;
+void Menu () {   // menu cac chuc nang quan ly sinh vien
+		while (IsRunning) {
+			printf("\n\n\t********Student Management System********\n\n");
+			printf("\t\t\tMAIN MENU\n");
+			printf("\t\t=========================\n");
+			printf("\t\t[1] Add a new student to the list.\n");
+			printf("\t\t[2] Show all list of profile.\n");
+			printf("\t\t[3] Update student.\n");			
+			printf("\t\t[4] Delete students.\n");          
+			printf("\t\t[5] Find a student.\n");
+			printf("\t\t[6] Sort all list.\n");				
+			printf("\t\t[0] Exit the Program.\n");
+			printf("\t\t=========================\n");
+			printf("\t\tEnter your Choice: ");
+			char Option[50]; // kiem tra su lua chon cua nguoi dung
+			int chosen;   // kiem tra su lua chon cua nguoi dung
+			scanf("%s", Option);
+			while (checkInt(Option) == false) {
+				printf("\tPlease enter a valid option: ");
+				scanf("%s", Option);
+			}
+			if (checkInt(Option) == true) {
+				chosen = atoi(Option);
+			}
+			switch(chosen) {
+				case 1: 
+					system("cls");
+					printf("\n\t\t********Add a New Student********\n\n");
+					Create();
+					GoBackOrExit();
+					break;
+				case 2: 
+				    system("cls");
+				    printf("\n\t\t********List of all profile********\n\n");
+				    ShowAllList("StudentManagement.txt");
+				    printf("\n\n");
+				    GoBackOrExit();
+				    break;
+				case 3: 
+					system("cls");
+					printf("\n\t\t********Updating profile********\n\n");
+					Update("StudentManagement.txt");
+					printf("\n\n");
+					GoBackOrExit();
+					break;
+				case 4: 
+				    system("cls");
+				    MenuForDeleting();
+				    printf("\n\n");
+				    GoBackOrExit();
+				    break;
+				case 5: 
+					system("cls");
+					SearchStudent("StudentManagement.txt");
+					GoBackOrExit();
+					break;
+				case 6: 
+					system("cls");
+					Sort("StudentManagement.txt");
+					GoBackOrExit();
+					break;
+				case 0: 
+					IsRunning = false;
+					ExitProject();
+					break;
+				default: 
+					system("cls");
+					printf(" Error: Please enter a valid option\n\n");
+					break;
+			}
 	}
-	char line[500];
-	while (fgets(line, sizeof(line), file) != NULL) {			// kiem tra tung dong
-		if (strstr(line, code) != NULL) {				// kiem tra chuoi con trong chuoi lon
-			fclose(file);
-			return true;
-		}
-	}
-	fclose(file);
-	return false;
 }
 
 void Create () {  // tao hoc sinh
@@ -623,7 +768,7 @@ void SearchStudent(const char *filename) {			// tim kiem
 	
 }
 
-int compareNames(const void* a, const void* b) {
+int compareNames(const void* a, const void* b) {		// dung cho ham Sort
     const struct StudentInfo* studentA = (const struct StudentInfo*)a;
     const struct StudentInfo* studentB = (const struct StudentInfo*)b;
 
@@ -638,7 +783,7 @@ int compareNames(const void* a, const void* b) {
     return result;
 }
 
-void Sort(const char* filename) {
+void Sort(const char* filename) {		// sap xep
 	char Country1[10];
 	char Country2[10];
 	char Country[20];
