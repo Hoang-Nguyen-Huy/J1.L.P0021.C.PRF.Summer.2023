@@ -583,6 +583,9 @@ int compareNames(const void* a, const void* b) {
     int result = strcmp(studentA->FirstName, studentB->FirstName);
     if (result == 0) {  // FirstName is equal, compare MiddleName
         result = strcmp(studentA->MiddleName, studentB->MiddleName);
+        if (result == 0) {  // MiddleName is equal, compare LastName
+            result = strcmp(studentA->LastName, studentB->LastName);
+        }
     }
 
     return result;
