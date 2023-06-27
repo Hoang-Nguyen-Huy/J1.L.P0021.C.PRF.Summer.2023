@@ -59,7 +59,12 @@ bool checkInt (char input[]) {	// kiem tra co phai la so nguyen hay khong
 			}
 		} 
 }
+// cac ham menu
 void Menu();
+void MenuForDeleting();
+//end
+
+// cac ham chuc nang
 void Create();
 void ShowAllList(const char *filename);			// xuat tat ca cac ho so cua sinh vien trong file
 void SearchStudent(const char *filename);
@@ -71,6 +76,7 @@ void DeleteAllStudent(const char *filename);		// xoa tat ca trong  file
 bool IsExistsInFile(const char *filename, const char *code);
 void GoBackOrExit();			// thoat case de quay lai menu chinh hoac exit chuong trinh
 void ExitProject();
+//end
 
 int main () {
 	while (IsRunning) {
@@ -108,21 +114,16 @@ int main () {
 				break;
 			case 4: 
 			    system("cls");
-			    DeleteSelectedStudent("StudentManagement.txt");
+			    MenuForDeleting();
 			    printf("\n\n");
 			    GoBackOrExit();
 			    break;
 			case 5: 
 				system("cls");
-				DeleteAllStudent("StudentManagement.txt");
-				GoBackOrExit();
-				break;
-			case 6: 
-				system("cls");
 				SearchStudent("StudentManagement.txt");
 				GoBackOrExit();
 				break;
-			case 7: 
+			case 6: 
 				system("cls");
 				Sort("StudentManagement.txt");
 				GoBackOrExit();
@@ -140,6 +141,53 @@ int main () {
 	return 0;
 }
 
+void MenuForDeleting() {  // menu de xoa
+	int choice;
+	char checkChoice[50];
+	int IsRunning = 0;
+	while (!IsRunning) {
+		printf("\n\n\t********Deleting Profile********\n\n");
+		printf("\t\t=========================\n");
+		printf("\t\t[1] Delete any 1 student.\n");  // done
+		printf("\t\t[2] Delete many students.\n"); 
+		printf("\t\t[3] Delete students in 1 RANGE.\n");			
+		printf("\t\t[4] Delete students in multi RANGES.\n");          
+		printf("\t\t[5] Delete all student.\n");  // done
+		printf("\t\t[0] Stop deleting.\n");
+		printf("\t\t=========================\n");
+		printf("\t\tEnter your Choice: ");
+		scanf("%s", checkChoice);
+		
+		while (checkInt(checkChoice) == false) {
+			printf(" Your choice is not valid!!!. Enter again: ");
+			scanf("%s", checkChoice);
+		}
+		if (checkInt(checkChoice) == true) {
+			choice = atoi(checkChoice);
+		}
+		switch(choice) {
+			case 1: 
+				system("cls");
+				printf("\n\n\t********Deleting any one student********\n\n");
+				DeleteSelectedStudent("StudentManagement.txt");
+				break;
+			case 5: 
+				system("cls");
+				printf("\n\n\t********Deleting all students********\n\n");
+				DeleteAllStudent("StudentManagement.txt");
+				break;
+			case 0: 
+				IsRunning = 1;
+				break;
+			default: 
+				system("cls");
+				printf(" Error: Please enter a valid option\n\n");
+				break;
+		}
+	}
+	
+}
+
 void Menu () {   // menu nguoi dung
 	printf("\n\n\t********Student Management System********\n\n");
 	printf("\t\t\tMAIN MENU\n");
@@ -147,10 +195,9 @@ void Menu () {   // menu nguoi dung
 	printf("\t\t[1] Add a new student to the list.\n");
 	printf("\t\t[2] Show all list of profile.\n");
 	printf("\t\t[3] Update student.\n");			
-	printf("\t\t[4] Delete a student.\n");          
-	printf("\t\t[5] Delete all student.\n");
-	printf("\t\t[6] Find a student.\n");
-	printf("\t\t[7] Sort all list.\n");				//???
+	printf("\t\t[4] Delete students.\n");          
+	printf("\t\t[5] Find a student.\n");
+	printf("\t\t[6] Sort all list.\n");				//???
 	printf("\t\t[0] Exit the Program.\n");
 	printf("\t\t=========================\n");
 	printf("\t\tEnter your Choice: ");
@@ -1941,6 +1988,7 @@ void DeleteSelectedStudent (const char *filename) {   // xoa hoc sinh duoc chon,
 				if (Choices == 'Y' || Choices == 'y') {			
 					IsDeleting = 0;
 				} else if (Choices == 'N' || Choices == 'n') {
+					system("cls");
 					IsDeleting = 1;
 				}
 			} else {
@@ -2053,6 +2101,7 @@ void DeleteSelectedStudent (const char *filename) {   // xoa hoc sinh duoc chon,
 				if (Choices == 'Y' || Choices == 'y') {
 					IsDeleting = 0;
 				} else if (Choices == 'N' || Choices == 'n') {
+					system("cls");
 					IsDeleting = 1;
 				}
 			}
@@ -2128,6 +2177,7 @@ void DeleteSelectedStudent (const char *filename) {   // xoa hoc sinh duoc chon,
 				if (Choices == 'Y' || Choices == 'y') {
 					IsDeleting = 0;
 				} else if (Choices == 'N' || Choices == 'n') {
+					system("cls");
 					IsDeleting = 1;
 				}
 			}

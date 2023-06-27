@@ -1,6 +1,0 @@
- Nguyen Tuong An          SS180123   01-02-2002      Female    an@gmail.com             03214123433    quan7               Sai Gon        
- Nguyen Huy Hoang         SE180435   13-02-2003      Male      hhoang@gmail.com         01234132433    Landmark            Nha Trang      
- Vu Huy Hoang             SE180123   01-02-2003      Male      vhoang@gmail.com         01234123433    Vinhomes            Da Nang        
- Bui Phuong Mai           SS180312   14-04-2003      Female    mai@gmail.com            0123213212     Vinhomes            Bien Hoa       
- Nguyen Hai Nam           SE180295   17-05-2004      Male      nam@gmail.com            0123432433     Vinhomes            Nha Trang      
-                                                                                                                                          
