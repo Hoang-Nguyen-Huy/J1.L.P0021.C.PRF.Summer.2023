@@ -142,6 +142,85 @@ void takePassword(char pwd[20]) {	// bien mat khau thanh ****
 }
 */
 
+void SignIn(const char *filename) {   //dang nhap cho nguoi dung
+	char nickName[20];
+	char password[20];
+	int Success = 0;
+	char yesNo;
+	char line[200];
+	char checkNick[20];
+	char checkPass[20];
+	
+	int IsSignIn = 0;
+	while (!IsSignIn) {
+		printf("Enter your nick name: ");
+		scanf(" %[^\n]s", &nickName);
+		
+		// kiem tra xem nickName co khoang trang hay khong
+		int hasWhitespace = 0;
+		for (i = 0; i < strlen(nickName); i++) {
+			if (nickName[i] == ' ') {
+				hasWhitespace = 1;
+				break;
+			}
+		}
+		if (hasWhitespace == 1) {
+			printf("Nickname cannot contain whitespace!!! Please try again.\n");
+			IsSignIn = 0;
+		}
+		
+		printf("Enter your password: ");
+		scanf(" %s", &password);
+		
+		file = fopen(filename, "r");
+		while (fgets(line, sizeof(line), file)) {
+			if (strstr(line, nickName) != NULL) {
+				fseek(file, -40, SEEK_CUR);
+				fscanf(file, "%s", checkNick);
+				fscanf(file, "%s", checkPass);
+			}
+		}
+		fclose(file);
+		
+		if (strcmp(nickName, checkNick) == 0 && strcmp(password, checkPass) == 0) {
+				Success = 1;
+				IsSignIn = 1;
+		}
+		
+		if (Success == 0) {
+			printf(" Your nick name or password is incorrect\n\n");
+			printf(" You want to sign in again ? [Y/N]: ");
+			scanf(" %c", &yesNo);
+			if (yesNo == 'Y' || yesNo == 'y') {
+				IsSignIn = 0;
+			} else {
+				IsSignIn = 1;
+			}
+		}
+		
+	} // end IsSignIn
+	
+	if (Success == 1) {
+		system("cls");
+	    char SignInSuccess[100]     = " ========= Sign In successfully =========\n";
+	    char Welcome[100]   = " ========= Welcome to my project ======\n";
+	    for (i = 0; i < strlen(SignInSuccess); i++) {			// chay chu thank you
+	        printf("%c", SignInSuccess[i]);
+	        Sleep(40);
+	    }
+	    for (i = 0; i < strlen(Welcome); i++) {		// chay chu thank you
+	        printf("%c", Welcome[i]);
+	        Sleep(40);
+	    }
+	    system("cls");
+	    Menu();    // chuong trinh chay
+	} else {
+		system("cls");
+		return;
+	}
+	
+}
+
 void SignUp(const char *filename) {		// dang ki
 	char nickName[50];
 	char password[20];
@@ -154,7 +233,7 @@ void SignUp(const char *filename) {		// dang ki
 		// kiem tra xem nickName co khoang trang hay khong
 		int hasWhitespace = 0;
 		for (i = 0; i < strlen(nickName); i++) {
-			if (nickName[i] == " ") {
+			if (nickName[i] == ' ') {
 				hasWhitespace = 1;
 				break;
 			}
@@ -165,7 +244,7 @@ void SignUp(const char *filename) {		// dang ki
 		} else if (IsExistsInFile("SignUp.txt", nickName) == true) {
 			printf(" Your nick name is duplicated!!!\n\n");
 			IsValidNickName = 0;
-		} else if (strlen(nickName) > 20) {
+		} else if (strlen(nickName) > 18) {
 			printf("Your nick name is too long!!!\n\n");
 			IsValidNickName = 0;
 		} else if (strlen(nickName) <= 0) {
@@ -181,7 +260,7 @@ void SignUp(const char *filename) {		// dang ki
 		printf("Enter your password: ");
 		scanf(" %s", &password);
 		
-		if (strlen(password) > 10) {
+		if (strlen(password) > 18) {
 			printf(" Your password is too long.\n");
 			IsValidPassword = 0;
 		} else if (strlen(password) <= 0) {
@@ -192,17 +271,20 @@ void SignUp(const char *filename) {		// dang ki
 		}
 	}
 	
-	
-	
-	strcpy(Users[TotalUsers].NickName, nickName);
-	strcpy(Users[TotalUsers].password, password);
-	TotalUsers++;
-	
+		
 	file = fopen(filename, "a");
-	fprintf(file, "%s %s\n", nickName, password);
+	fprintf(file, "%s", nickName);
+	for (i = 1; i <= 19 - strlen(nickName); i++) {
+		fprintf(file, " ");
+	}
+	fprintf(file, "%s", password);
+	for (i = 1; i <= 19 - strlen(password); i++) {
+		fprintf(file, " ");
+	}
+	fprintf(file, "\n");
 	fclose(file);
 
-	printf("\n\n     SIGN UP Successfully     \n");
+	printf("\nSign up successful! Waiting for admin approval.\n\n");
 }
 
 void MenuForLogging() {  // menu de logging
@@ -226,9 +308,12 @@ void MenuForLogging() {  // menu de logging
 		switch(option) {
 			case 1: 
 				system("cls");
+				printf("===============SIGN IN===============\n\n");
+				SignIn("SignIn.txt");
 				break;
 			case 2: 
 				system("cls");
+				printf("===============SIGN UP===============\n\n");
 				SignUp("SignUp.txt");
 				break;
 			case 0: 
