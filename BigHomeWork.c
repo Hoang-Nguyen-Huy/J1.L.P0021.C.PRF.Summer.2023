@@ -61,6 +61,7 @@ void SignUp(const char *filename);
 void MenuForLogging();  // menu dung de dang nhap, dang ki
 void Menu();		// menu chua cac chuc nang quan ly hoc sinh
 void MenuForDeleting();	// menu de xoa hoc sinh
+void MenuForSignIn();  // menu de cho nguoi dung chon role
 //end
 
 // cac ham chuc nang
@@ -121,6 +122,44 @@ bool IsExistsInFile(const char *filename, const char *code) {		// kiem tra ID, e
 	return false;
 }
 
+void MenuForSignIn() {   //menu de chon role
+	int Role = 0;
+	while (!Role) {
+		int choose;
+		char checkChoose[50];
+		printf("===================================SIGN IN=====================================\n\n");
+		printf(" [1].Admin            [2].Guest            [0].Go back\n\n");
+		printf(" Enter your role: ");
+		scanf(" %s", checkChoose);
+		while (checkInt(checkChoose) == false) {
+			printf(" Your ans is not valid!!!\n\n");
+			printf(" Enter your role: ");
+			scanf("%s", checkChoose);
+		}
+		if (checkInt(checkChoose) == true) {
+			choose = atoi(checkChoose);
+		}
+		switch(choose) {
+			case 1: 
+				system("cls");
+				SignIn("Admin.txt");
+				break;
+			case 2: 
+				system("cls");
+				SignIn("SignIn.txt");
+				break;
+			case 0:
+				system("cls");
+				Role = 1;
+				break;
+			default: 
+				system("cls");
+				printf(" Error: Please enter a valid option\n\n");
+				break;
+		}
+	}
+}
+
 void SignIn(const char *filename) {   //dang nhap cho nguoi dung
 	char nickName[20];
 	char password[20];
@@ -129,9 +168,11 @@ void SignIn(const char *filename) {   //dang nhap cho nguoi dung
 	char line[200];
 	char checkNick[20];
 	char checkPass[20];
+	printf("===================================SIGN IN=====================================\n\n");
 	
 	int IsSignIn = 0;
 	while (!IsSignIn) {
+		
 		printf("Enter your nick name: ");
 		scanf(" %[^\n]s", &nickName);
 		
@@ -242,8 +283,8 @@ void SignUp(const char *filename) {		// dang ki
 		if (strlen(password) > 18) {
 			printf(" Your password is too long.\n");
 			IsValidPassword = 0;
-		} else if (strlen(password) <= 0) {
-			printf(" Please enter your password.\n");
+		} else if (strlen(password) < 8) {
+			printf(" Your password is too short.\n");
 			IsValidPassword = 0;
 		} else {
 			IsValidPassword = 1;
@@ -262,8 +303,15 @@ void SignUp(const char *filename) {		// dang ki
 	}
 	fprintf(file, "\n");
 	fclose(file);
-
-	printf("\nSign up successful! Waiting for admin approval.\n\n");
+	
+	system("cls");
+	    char SignUpSuccess[100]     = "\nSign up successful! Waiting for admin approval.\n\n";
+	    for (i = 0; i < strlen(SignUpSuccess); i++) {			// chay chu thank you
+	        printf("%c", SignUpSuccess[i]);
+	        Sleep(40);
+	    }
+	system("cls");
+	
 }
 
 void MenuForLogging() {  // menu de logging
@@ -287,8 +335,7 @@ void MenuForLogging() {  // menu de logging
 		switch(option) {
 			case 1: 
 				system("cls");
-				printf("===============SIGN IN===============\n\n");
-				SignIn("SignIn.txt");
+				MenuForSignIn();
 				break;
 			case 2: 
 				system("cls");
