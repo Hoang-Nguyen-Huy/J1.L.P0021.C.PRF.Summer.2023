@@ -121,27 +121,6 @@ bool IsExistsInFile(const char *filename, const char *code) {		// kiem tra ID, e
 	return false;
 }
 
-/*
-void takePassword(char pwd[20]) {	// bien mat khau thanh ****
-	char ch;
-	while (1) {
-		ch = getch();
-		if (ch == ENTER || ch == TAB) {
-			pwd[i] = '\0';
-			break;
-		} else if (ch == BCKSPC) {
-			if (i > 0) {
-				i--;
-				printf("\b \b");
-			}
-		} else {
-			pwd[i++] = ch;
-			printf("* \b");
-		}
-	}
-}
-*/
-
 void SignIn(const char *filename) {   //dang nhap cho nguoi dung
 	char nickName[20];
 	char password[20];
@@ -388,7 +367,7 @@ void Menu () {   // menu cac chuc nang quan ly sinh vien
 			printf("\t\t[4] Delete students.\n");          
 			printf("\t\t[5] Find a student.\n");
 			printf("\t\t[6] Sort all list.\n");				
-			printf("\t\t[0] Exit the Program.\n");
+			printf("\t\t[0] Log out.\n");
 			printf("\t\t=========================\n");
 			printf("\t\tEnter your Choice: ");
 			char Option[50]; // kiem tra su lua chon cua nguoi dung
@@ -439,8 +418,8 @@ void Menu () {   // menu cac chuc nang quan ly sinh vien
 					GoBackOrExit();
 					break;
 				case 0: 
+					system("cls");
 					IsRunning = false;
-					ExitProject();
 					break;
 				default: 
 					system("cls");
