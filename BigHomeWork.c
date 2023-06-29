@@ -94,6 +94,7 @@ int compareNames(const void* a, const void* b);  // dung de sap xep thu tu trong
 void Sort(const char *filename);   // sap xep
 void Update(const char *filename);   // cap nhat
 void DeleteSelectedStudent(const char *filename);		// xoa 1 hoc sinh duoc chon
+void DeleteInOneRange(const char *filename);		// xoa 1 khoang
 void DeleteAllStudent(const char *filename);		// xoa tat ca trong  file
 bool IsExistsInFile(const char *filename, const char *code); // kiem tra xem da xuat hien trong file hay chua
 void GoBackOrExit();			// thoat case de quay lai menu chinh hoac exit chuong trinh
@@ -315,10 +316,10 @@ void SignUp(const char *filename) {		// dang ki
 }
 
 void MenuForLogging() {  // menu de logging
-	int option;
-	char checkOption[50];
 	int IsLogging = 0;
 	while (!IsLogging) {
+		int option;
+		char checkOption[50];
 		printf("===============Welcome to my project===============\n\n");
 		printf("               [1]. Sign in.\n");
 		printf("               [2]. Sign up.\n");
@@ -357,18 +358,18 @@ void MenuForLogging() {  // menu de logging
 }
 
 void MenuForDeleting() {  // menu de xoa
-	int choice;
-	char checkChoice[50];
 	int IsRunning = 0;
 	while (!IsRunning) {
+		int choice;
+		char checkChoice[50];
 		printf("\n\n\t********Deleting Profile********\n\n");
 		printf("\t\t=========================\n");
 		printf("\t\t[1] Delete any 1 student.\n");  // done
-		printf("\t\t[2] Delete many students.\n"); 
-		printf("\t\t[3] Delete students in 1 RANGE.\n");			
+		printf("\t\t[2] Delete many students.\n"); 	
+		printf("\t\t[3] Delete students in 1 RANGE.\n");	// done			
 		printf("\t\t[4] Delete students in multi RANGES.\n");          
 		printf("\t\t[5] Delete all student.\n");  // done
-		printf("\t\t[0] Stop deleting.\n");
+		printf("\t\t[0] Stop deleting.\n");		 
 		printf("\t\t=========================\n");
 		printf("\t\tEnter your Choice: ");
 		scanf("%s", checkChoice);
@@ -385,6 +386,12 @@ void MenuForDeleting() {  // menu de xoa
 				system("cls");
 				printf("\n\n\t********Deleting any one student********\n\n");
 				DeleteSelectedStudent("StudentManagement.txt");
+				break;
+			case 3: 
+				system("cls");
+				printf("\n\n\t********Deleting in 1 range********\n\n");
+				ShowAllList("StudentManagement.txt");
+				DeleteInOneRange("StudentManagement.txt");
 				break;
 			case 5: 
 				system("cls");
@@ -2440,6 +2447,84 @@ void DeleteSelectedStudent (const char *filename) {   // xoa hoc sinh duoc chon,
 		}
 	}
 	
+}
+
+void DeleteInOneRange (const char *filename) {			// xoa 1 khoang trong file
+
+	// kiem tra file co rong hay khong
+	file = fopen(filename, "r");	
+	fseek(file, 0, SEEK_END);	// di chuyen con tro toi cuoi file
+	if (ftell(file) == 0) {
+		printf(" EMPTY file.\n\n");
+		fclose(file);
+		return;		// neu file rong thi return 
+	}
+	fclose(file);
+	//kiem tra xong
+
+
+	// M? file cho d?c
+    FILE* file = fopen(filename, "r");
+    if (file == NULL) {
+        printf("Can not access\n", filename);
+        return;
+    }
+
+    // T?o file t?m d? luu d? li?u dã l?c
+    FILE* tempFile = fopen("temp.txt", "w");
+    if (tempFile == NULL) {
+        printf("Can not access\n");
+        fclose(file);
+        return;
+    }
+	char start[20];
+	printf("Enter the 'start' ID: ");
+	scanf(" %s", &start);
+	char end[20];
+	printf("Enter the 'end' ID: ");
+	scanf(" %s", &end);
+    // Ð?c t?ng dòng trong file
+    char line[200];
+    int deleteFlag = 0; // C? xác d?nh khi nào b?t d?u và k?t thúc kho?ng c?n xóa
+
+    while (fgets(line, sizeof(line), file)) {
+        // Ki?m tra n?u dòng ch?a chu?i b?t d?u c?a kho?ng c?n xóa
+        if (strstr(line, start) != NULL) {
+            deleteFlag = 1;
+            continue; // Chuy?n d?n dòng ti?p theo
+        }
+
+        // Ki?m tra n?u dòng ch?a chu?i k?t thúc c?a kho?ng c?n xóa
+        if (strstr(line, end) != NULL) {
+            deleteFlag = 0;
+            continue; // Chuy?n d?n dòng ti?p theo
+        }
+
+        // Xóa dòng n?m trong kho?ng c?n xóa
+        if (deleteFlag == 1) {
+            continue; // Chuy?n d?n dòng ti?p theo
+        }
+
+        // Ghi dòng vào file t?m
+        fputs(line, tempFile);
+    }
+
+    // Ðóng file
+    fclose(file);
+    fclose(tempFile);
+
+    // Xóa file g?c
+    remove(filename);
+
+    // Ð?i tên file t?m thành tên file g?c
+    rename("temp.txt", filename);
+
+    char DeleteSuccess[100]   = "               Delete Successfully                       \n\n";
+    for (i = 0; i < strlen(DeleteSuccess); i++) {		// chay chu thank you
+        printf("%c", DeleteSuccess[i]);
+        Sleep(40);
+    }
+    system("cls");
 }
 
 void DeleteAllStudent(const char *filename) {		// xoa tat ca trong file
