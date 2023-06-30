@@ -94,6 +94,7 @@ int compareNames(const void* a, const void* b);  // dung de sap xep thu tu trong
 void Sort(const char *filename);   // sap xep
 void Update(const char *filename);   // cap nhat
 void DeleteSelectedStudent(const char *filename);		// xoa 1 hoc sinh duoc chon
+void DeleteManyStudents(const char *filename);		// xoa nhieu hoc sinh
 void DeleteInOneRange(const char *filename);		// xoa 1 khoang
 void DeleteAllStudent(const char *filename);		// xoa tat ca trong  file
 bool IsExistsInFile(const char *filename, const char *code); // kiem tra xem da xuat hien trong file hay chua
@@ -365,7 +366,7 @@ void MenuForDeleting() {  // menu de xoa
 		printf("\n\n\t********Deleting Profile********\n\n");
 		printf("\t\t=========================\n");
 		printf("\t\t[1] Delete any 1 student.\n");  // done
-		printf("\t\t[2] Delete many students.\n"); 	
+		printf("\t\t[2] Delete many students.\n"); 	// dang xu ly
 		printf("\t\t[3] Delete students in 1 RANGE.\n");	// done			
 		printf("\t\t[4] Delete students in multi RANGES.\n");          
 		printf("\t\t[5] Delete all student.\n");  // done
@@ -386,6 +387,11 @@ void MenuForDeleting() {  // menu de xoa
 				system("cls");
 				printf("\n\n\t********Deleting any one student********\n\n");
 				DeleteSelectedStudent("StudentManagement.txt");
+				break;
+			case 2: 
+				system("cls");
+				printf("\n\n\t********Deleting many students********\n\n");
+				DeleteManyStudents("StudentManagement.txt");
 				break;
 			case 3: 
 				system("cls");
@@ -2447,6 +2453,69 @@ void DeleteSelectedStudent (const char *filename) {   // xoa hoc sinh duoc chon,
 		}
 	}
 	
+}
+
+void DeleteManyStudents (const char *filename) {
+	char studentsID[20][200];
+	char DelId[200];
+	char *p;
+	// kiem tra file co rong hay khong
+	file = fopen(filename, "r");	
+	fseek(file, 0, SEEK_END);	// di chuyen con tro toi cuoi file
+	if (ftell(file) == 0) {
+		printf(" EMPTY file.\n\n");
+		fclose(file);
+		return;		// neu file rong thi return 
+	}
+	fclose(file);
+	//kiem tra xong
+	
+	ShowAllList(filename);
+	
+	printf(" Enter those ID that you want to delete: ");
+	scanf(" %[^\n]s", &DelId);
+
+	i = 0;
+	p = strtok(DelId, ", ");
+	while (p != NULL) {
+		strcpy(studentsID[i], p);
+		p = strtok(NULL, ", ");
+		i++;
+	}
+	printf("\n");
+	
+	file = fopen(filename, "r");
+	char line[200][200];
+	int countLine = 0;
+	while (fgets(line[countLine], sizeof(line[countLine]), file) != NULL) {
+		countLine++;
+	}
+	fclose(file);
+	
+	for (j = 0; j < i; j++) {
+		int found = 0;
+		int k;
+		for (k = 0; k < countLine; k++) {
+			if (strstr(line[k], studentsID[j]) != NULL) {
+				found = 1;
+				strcpy(line[k], "");
+				break;
+			}
+		}
+		if (!found) {
+			printf(" The '%s' is not found. \n\n", studentsID[j]);
+		}
+	}
+	
+	file = fopen(filename, "w");
+	for (j = 0; j < countLine; j++) {
+		if (strcmp(line[j], "") != 0) {
+			fprintf(file, "%s", line[j]);
+		}
+	}
+	fclose(file);
+	
+	printf(" Delete successfully.\n\n");
 }
 
 void DeleteInOneRange (const char *filename) {			// xoa 1 khoang trong file
