@@ -96,6 +96,7 @@ void Update(const char *filename);   // cap nhat
 void DeleteSelectedStudent(const char *filename);		// xoa 1 hoc sinh duoc chon
 void DeleteManyStudents(const char *filename);		// xoa nhieu hoc sinh
 void DeleteInOneRange(const char *filename);		// xoa 1 khoang
+void DeleteManyRanges(const char *filename);	// xoa nhieu khoang
 void DeleteAllStudent(const char *filename);		// xoa tat ca trong  file
 bool IsExistsInFile(const char *filename, const char *code); // kiem tra xem da xuat hien trong file hay chua
 void GoBackOrExit();			// thoat case de quay lai menu chinh hoac exit chuong trinh
@@ -398,6 +399,12 @@ void MenuForDeleting() {  // menu de xoa
 				printf("\n\n\t********Deleting in 1 range********\n\n");
 				ShowAllList("StudentManagement.txt");
 				DeleteInOneRange("StudentManagement.txt");
+				break;
+			case 4: 
+				system("cls");
+				printf("\n\n\t********Deleting in many ranges********\n\n");
+				ShowAllList("StudentManagement.txt");
+				DeleteManyRanges("StudentManagement.txt");
 				break;
 			case 5: 
 				system("cls");
@@ -2627,6 +2634,25 @@ void DeleteInOneRange (const char *filename) {			// xoa 1 khoang trong file
 		}
 	    
 	}
+}
+
+void DeleteManyRanges(const char *filename) {
+	int IsDeletingRanges = 0;
+	while (!IsDeletingRanges) {
+		
+		// kiem tra file co rong hay khong
+		file = fopen(filename, "r");	
+		fseek(file, 0, SEEK_END);	// di chuyen con tro toi cuoi file
+		if (ftell(file) == 0) {
+			printf(" EMPTY file.\n\n");
+			fclose(file);
+			return;		// neu file rong thi return 
+		}
+		fclose(file);
+		//kiem tra xong
+		
+		
+	}	
 }
 
 void DeleteAllStudent(const char *filename) {		// xoa tat ca trong file
