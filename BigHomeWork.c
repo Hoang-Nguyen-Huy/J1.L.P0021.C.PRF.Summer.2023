@@ -2481,12 +2481,14 @@ void DeleteManyStudents (const char *filename) {	// xoa nhieu hoc sinh
 		
 		ShowAllList(filename);
 		
+		printf("\n\n Eg: SE180123, SS180321, SE170433,...\n\n");
+		
 		printf(" Enter those ID that you want to delete: ");
 		scanf(" %[^\n]s", &DelId);
 	
 		i = 0;
 		p = strtok(DelId, ", ");
-		while (p != NULL) {
+		while (p != NULL) {				//lay cac ID trong mang ma nguoi dung nhap
 			strcpy(studentsID[i], p);
 			p = strtok(NULL, ", ");
 			i++;
@@ -2575,11 +2577,37 @@ void DeleteInOneRange (const char *filename) {			// xoa 1 khoang trong file
 	        return;
 	    }
 		char start[20];
-		printf("Enter the 'start' ID: ");
-		scanf(" %s", &start);
+		int IsValidStart = 0;
+		while (!IsValidStart) {
+			printf("Enter the 'start' ID: ");
+			scanf(" %s", &start);
+			if (IsExistsInFile(filename, start) == false) {
+				printf("The start ID is not found.\n\n");
+				IsValidStart = 0;
+			} else if (strlen(start) > 8) {
+				printf("The ID is not valid\n\n");
+				IsValidStart = 0;
+			} else {
+				IsValidStart = 1;
+			}
+		}
+		
 		char end[20];
-		printf("Enter the 'end' ID: ");
-		scanf(" %s", &end);
+		int IsValidEnd = 0;
+		while (!IsValidEnd) {
+			printf("Enter the 'end' ID: ");
+			scanf(" %s", &end);
+			if (IsExistsInFile(filename, end) == false) {
+				printf("The end ID is not found.\n\n");
+				IsValidEnd = 0;
+			} else if (strlen(end) > 8) {
+				printf("The end ID is not found.\n\n");
+				IsValidEnd = 0;
+			} else {
+				IsValidEnd = 1;
+			}
+		}
+		
 	    // Ð?c t?ng dòng trong file
 	    char line[200];
 	    int deleteFlag = 0; // C? xác d?nh khi nào b?t d?u và k?t thúc kho?ng c?n xóa
