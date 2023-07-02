@@ -2664,10 +2664,13 @@ void DeleteInOneRange (const char *filename) {			// xoa 1 khoang trong file
 	}
 }
 
-void DeleteManyRanges(const char *filename) {
+void DeleteManyRanges(const char *filename) {			// xoa nhieu khoang trong file
 	int IsDeletingRanges = 0;
 	while (!IsDeletingRanges) {
-		
+		char RangesOfId[200];
+		char CopyRanges[100][200];
+		char *token;
+		char *p;
 		// kiem tra file co rong hay khong
 		file = fopen(filename, "r");	
 		fseek(file, 0, SEEK_END);	// di chuyen con tro toi cuoi file
@@ -2678,9 +2681,104 @@ void DeleteManyRanges(const char *filename) {
 		}
 		fclose(file);
 		//kiem tra xong
+		printf("\n\nEnter with this format: Start-End");
+		printf(" \n\nEg: SE180123-SE180321, SS180456-SE180567, ....\n\n");
 		
+		printf(" Enter those ranges of ID that you want to delete: ");
+		scanf(" %[^\n]s", RangesOfId);
 		
-	}	
+		int i = 0;
+		token = strtok(RangesOfId, ", ");
+		while (token != NULL) {
+			strcpy(CopyRanges[i], token);
+			token = strtok(NULL, ", ");
+			i++;
+		}
+		
+		int j;
+		for (j = 0; j < i; j++) {   // bat dau xoa nhieu khoang
+			p = strtok(CopyRanges[j], "-");
+			while(p != NULL) {
+				char start[20], end[20];
+				strcpy(start, p);
+				p = strtok(NULL, "-");
+				strcpy(end, p);
+				p = strtok(NULL, "-");
+				
+				// M? file cho d?c
+			    FILE* file = fopen(filename, "r");
+			    if (file == NULL) {
+			        printf("Can not access\n", filename);
+			        return;
+			    }
+			
+			    // T?o file t?m d? luu d? li?u dã l?c
+			    FILE* tempFile = fopen("temp.txt", "w");
+			    if (tempFile == NULL) {
+			        printf("Can not access\n");
+			        fclose(file);
+			        return;
+			    }
+			    
+				// Ð?c t?ng dòng trong file
+			    char line[200];
+			    int deleteFlag = 0; // C? xác d?nh khi nào b?t d?u và k?t thúc kho?ng c?n xóa
+			
+			    while (fgets(line, sizeof(line), file)) {
+			        // Ki?m tra n?u dòng ch?a chu?i b?t d?u c?a kho?ng c?n xóa
+			        if (strstr(line, start) != NULL) {
+			            deleteFlag = 1;
+			            continue; // Chuy?n d?n dòng ti?p theo
+			        }
+			
+			        // Ki?m tra n?u dòng ch?a chu?i k?t thúc c?a kho?ng c?n xóa
+			        if (strstr(line, end) != NULL) {
+			            deleteFlag = 0;
+			            continue; // Chuy?n d?n dòng ti?p theo
+			        }
+			
+			        // Xóa dòng n?m trong kho?ng c?n xóa
+			        if (deleteFlag == 1) {
+			            continue; // Chuy?n d?n dòng ti?p theo
+			        }
+			
+			        // Ghi dòng vào file t?m
+			        fputs(line, tempFile);
+			    }
+			
+			    // Ðóng file
+			    fclose(file);
+			    fclose(tempFile);
+			
+			    // Xóa file g?c
+			    remove(filename);
+			
+			    // Ð?i tên file t?m thành tên file g?c
+			    rename("temp.txt", filename);
+			}
+		}   // xoa xong
+		printf("\n\n");
+		char DeleteSuccess[100]   = "               Delete Successfully                       \n\n";
+	    for (i = 0; i < strlen(DeleteSuccess); i++) {		// chay chu thank you
+	        printf("%c", DeleteSuccess[i]);
+	        Sleep(40);
+	    }
+		
+		for (j = 0; j < i; j++) {
+			strcpy(CopyRanges[j], "");
+		}
+		
+		printf(" Do you want to continue ? [Y/N]. Your answer: ");
+		char Choices;								// bien de nguoi dung nhap yes/no
+		scanf(" %c", &Choices);						
+		printf("\n");
+		if (Choices == 'Y' || Choices == 'y') {
+			IsDeletingRanges = 0;
+		} else if (Choices == 'N' || Choices == 'n') {
+			system("cls");
+			IsDeletingRanges = 1;
+		}
+	} // end IsDeletingRanges		
 }
 
 void DeleteAllStudent(const char *filename) {		// xoa tat ca trong file
