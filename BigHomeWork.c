@@ -63,6 +63,7 @@ void Menu();		// menu chua cac chuc nang quan ly hoc sinh
 void MenuForDeleting();	// menu de xoa hoc sinh
 void MenuForSignIn();  // menu de cho nguoi dung chon role
 void MenuForAdmin();	// ham menu danh rieng cho admin
+void AccountManager(); // ham quan ly tai khoan nguoi dung danh rieng cho admin
 //end
 
 // cac ham chuc nang
@@ -566,8 +567,50 @@ void Menu () {   // menu cac chuc nang quan ly sinh vien
 	}
 }
 
-void MenuForAdmin () {
-	
+void MenuForAdmin () {	// menu danh rieng cho admin
+	int IsAdmin = 0;
+	while (!IsAdmin) {
+		int choice;
+		char checkChoice[20];
+		printf("                    Admin                 \n\n");
+		printf("	[1]. Student Management System\n");
+		printf("	[2]. Account Management System\n");
+		printf("	[0]. Log out\n");
+		printf(" Enter your choice: ");
+		scanf(" %s", &checkChoice);
+		while (checkInt(checkChoice) == false) {
+			printf(" Your choice is not valid!!!. Please enter again: ");
+			scanf(" %s", &checkChoice);
+		}
+		if (checkInt(checkChoice) == true) {
+			choice = atoi(checkChoice);
+		}
+		switch(choice) {
+			case 1: 
+				system("cls");
+				Menu();
+				break;
+			case 2:
+				system("cls");
+				printf("da co deo dau ma chon\n");
+				break;
+			case 0: 
+				system("cls");
+				IsAdmin = 1;
+				break;
+			default:
+				system("cls");
+				printf("Your choice is not valid!!\n");
+				break;
+		}
+	} // end IsAdmin
+}
+
+void AccountManager () {  // menu quan ly tai khoan danh rieng cho admin
+	int IsManaging = 0;
+	while (!IsManaging) {
+		
+	}
 }
 
 void Create () {  // tao hoc sinh
