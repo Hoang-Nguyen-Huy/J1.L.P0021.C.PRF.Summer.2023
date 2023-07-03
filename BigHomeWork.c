@@ -62,6 +62,7 @@ void MenuForLogging();  // menu dung de dang nhap, dang ki
 void Menu();		// menu chua cac chuc nang quan ly hoc sinh
 void MenuForDeleting();	// menu de xoa hoc sinh
 void MenuForSignIn();  // menu de cho nguoi dung chon role
+void MenuForAdmin();	// ham menu danh rieng cho admin
 //end
 
 // cac ham chuc nang
@@ -131,7 +132,7 @@ void MenuForSignIn() {   //menu de chon role
 		int choose;
 		char checkChoose[50];
 		printf("===================================SIGN IN=====================================\n\n");
-		printf(" [1].Admin            [2].Guest            [0].Go back\n\n");
+		printf(" [1].Admin            [2].Employee            [0].Go back\n\n");
 		printf(" Enter your role: ");
 		scanf(" %s", checkChoose);
 		while (checkInt(checkChoose) == false) {
@@ -167,13 +168,21 @@ void SignIn(const char *filename) {   //dang nhap cho nguoi dung
 	char nickName[20];
 	char password[20];
 	int Success = 0;
+	int helloAdmin = 0;
 	char yesNo;
 	char line[200];
 	char checkNick[20];
 	char checkPass[20];
+	int IsSignIn = 1;
+	int Admin = 1;
 	printf("===================================SIGN IN=====================================\n\n");
 	
-	int IsSignIn = 0;
+	if (filename == "SignIn.txt") {
+		IsSignIn = 0;
+	} else if (filename == "Admin.txt") {
+		Admin = 0;
+	}
+	
 	while (!IsSignIn) {
 		
 		printf("Enter your nick name: ");
@@ -223,6 +232,53 @@ void SignIn(const char *filename) {   //dang nhap cho nguoi dung
 		
 	} // end IsSignIn
 	
+	while (!Admin) {
+		printf("Enter your nick name: ");
+		scanf(" %[^\n]s", &nickName);
+		
+		// kiem tra xem nickName co khoang trang hay khong
+		int hasWhitespace = 0;
+		for (i = 0; i < strlen(nickName); i++) {
+			if (nickName[i] == ' ') {
+				hasWhitespace = 1;
+				break;
+			}
+		}
+		if (hasWhitespace == 1) {
+			printf("Nickname cannot contain whitespace!!! Please try again.\n");
+			Admin = 0;
+		}
+		
+		printf("Enter your password: ");
+		scanf(" %s", &password);
+		
+		file = fopen(filename, "r");
+		while (fgets(line, sizeof(line), file)) {
+			if (strstr(line, nickName) != NULL) {
+				fseek(file, -40, SEEK_CUR);
+				fscanf(file, "%s", checkNick);
+				fscanf(file, "%s", checkPass);
+			}
+		}
+		fclose(file);
+		
+		if (strcmp(nickName, checkNick) == 0 && strcmp(password, checkPass) == 0) {
+				helloAdmin = 1;
+				Admin = 1;
+		}
+		
+		if (helloAdmin == 0) {
+			printf(" Your nick name or password is incorrect\n\n");
+			printf(" You want to sign in again ? [Y/N]: ");
+			scanf(" %c", &yesNo);
+			if (yesNo == 'Y' || yesNo == 'y') {
+				Admin = 0;
+			} else {
+				Admin = 1;
+			}
+		}
+	} // end Admin
+	
 	if (Success == 1) {
 		system("cls");
 	    char SignInSuccess[100]     = " ========= Sign In successfully =========\n";
@@ -237,6 +293,20 @@ void SignIn(const char *filename) {   //dang nhap cho nguoi dung
 	    }
 	    system("cls");
 	    Menu();    // chuong trinh chay
+	} else if (helloAdmin == 1) {
+		system("cls");
+		char SignInSuccess[100]     = " ========= Sign In successfully =========\n";
+		char Welcome[100]   = " ========= Hello Admin ======\n";
+		for (i = 0; i < strlen(SignInSuccess); i++) {			// chay chu thank you
+	        printf("%c", SignInSuccess[i]);
+	        Sleep(40);
+	    }
+	    for (i = 0; i < strlen(Welcome); i++) {		// chay chu thank you
+	        printf("%c", Welcome[i]);
+	        Sleep(40);
+	    }
+	    system("cls");
+	    MenuForAdmin();  // menu danh cho admin
 	} else {
 		system("cls");
 		return;
@@ -494,6 +564,10 @@ void Menu () {   // menu cac chuc nang quan ly sinh vien
 					break;
 			}
 	}
+}
+
+void MenuForAdmin () {
+	
 }
 
 void Create () {  // tao hoc sinh
