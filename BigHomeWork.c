@@ -40,7 +40,6 @@ int i, j, z;
 char IsNone[200];
 int TotalStudents = 0;
 int TotalUsers = 0;
-bool IsRunning = true;
 FILE *file;
 //
 
@@ -104,6 +103,10 @@ bool IsExistsInFile(const char *filename, const char *code); // kiem tra xem da 
 void GoBackOrExit();			// thoat case de quay lai menu chinh hoac exit chuong trinh
 void ExitProject();     // thoat chuong trinh
 //end
+
+// cac ham dung de quan ly tai khoan
+void ShowAllAcc(const char *filename);
+//
 
 int main () {
 	MenuForLogging();
@@ -495,6 +498,7 @@ void MenuForDeleting() {  // menu de xoa
 }
 
 void Menu () {   // menu cac chuc nang quan ly sinh vien
+		bool IsRunning = true;
 		while (IsRunning) {
 			printf("\n\n\t********Student Management System********\n\n");
 			printf("\t\t\tMAIN MENU\n");
@@ -592,7 +596,7 @@ void MenuForAdmin () {	// menu danh rieng cho admin
 				break;
 			case 2:
 				system("cls");
-				printf("da co deo dau ma chon\n");
+				AccountManager();
 				break;
 			case 0: 
 				system("cls");
@@ -609,7 +613,49 @@ void MenuForAdmin () {	// menu danh rieng cho admin
 void AccountManager () {  // menu quan ly tai khoan danh rieng cho admin
 	int IsManaging = 0;
 	while (!IsManaging) {
-		
+		int choice;
+		char checkChoice[20];
+		printf("\n\n\t********Account Management System********\n\n");
+		printf("\t\t\tMAIN MENU\n");
+		printf("\t\t=========================\n");
+		printf("\t\t[1] List of those who SIGNED UP.\n");
+		printf("\t\t[2] List of those who have right to SIGN IN.\n");
+		printf("\t\t[3] Grant permission for SIGN In.\n");							
+		printf("\t\t[0] Log out.\n");
+		printf("\t\t=========================\n");
+		printf("\t\tEnter your Choice: ");
+		scanf(" %s", &checkChoice);
+		while (checkInt(checkChoice) == false) {
+			printf("\tPlease enter a valid option: ");
+			scanf(" %s", &checkChoice);
+		}
+		if (checkInt(checkChoice) == true) {
+			choice = atoi(checkChoice);
+		}
+		switch(choice) {
+			case 1: 
+				system("cls");
+				ShowAllAcc("SignUp.txt");
+				GoBackOrExit();
+				break;
+			case 2: 
+				system("cls");
+				ShowAllAcc("SignIn.txt");
+				GoBackOrExit();
+				break;
+			case 3: 
+				system("cls");
+				printf("da co cc gi dau\n\n");
+				break;
+			case 0: 
+				system("cls");
+				IsManaging = 1;
+				break;
+			default:
+				system("cls");
+				printf(" Your choice is not valid!!!\n\n");
+				break;
+		}
 	}
 }
 
@@ -2952,6 +2998,31 @@ void ExitProject() {      // thoat chuong trinh
     exit(0);	
 }
 
+void ShowAllAcc(const char *filename) {
+	// kiem tra file co rong hay khong
+	file = fopen(filename, "r");	
+	fseek(file, 0, SEEK_END);	// di chuyen con tro toi cuoi file
+	if (ftell(file) == 0) {
+		printf(" EMPTY file.\n\n");
+		fclose(file);
+		return;		// neu file rong thi return 
+	}
+	fclose(file);
+	//kiem tra xong
+	
+	printf("     Username    |     Password    |\n\n");
+	file = fopen(filename, "r");
+	if (file == NULL) {
+		printf(" There are no profile of any students.\n\n");
+		return;
+	}
+	char ch;
+	while ((ch = fgetc(file)) != EOF) {
+		putchar(ch);
+	}
+	fclose(file);
+	printf("\n\n-------------------------------------\n\n");
+}
 
 
 
