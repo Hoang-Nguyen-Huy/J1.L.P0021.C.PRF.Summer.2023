@@ -106,6 +106,7 @@ void ExitProject();     // thoat chuong trinh
 
 // cac ham dung de quan ly tai khoan
 void ShowAllAcc(const char *filename);
+void GrantPermission(const char *filename);
 //
 
 int main () {
@@ -381,6 +382,18 @@ void SignUp(const char *filename) {		// dang ki
 	fprintf(file, "\n");
 	fclose(file);
 	
+	FILE *waitFile = fopen("Waiting.txt", "a");
+	fprintf(file, "%s", nickName);
+	for (i = 1; i <= 19 - strlen(nickName); i++) {
+		fprintf(file, " ");
+	}
+	fprintf(file, "%s", password);
+	for (i = 1; i <= 19 - strlen(password); i++) {
+		fprintf(file, " ");
+	}
+	fprintf(file, "\n");
+	fclose(waitFile);
+	
 	system("cls");
 	    char SignUpSuccess[100]     = "\nSign up successful! Waiting for admin approval.\n\n";
 	    for (i = 0; i < strlen(SignUpSuccess); i++) {			// chay chu thank you
@@ -620,7 +633,7 @@ void AccountManager () {  // menu quan ly tai khoan danh rieng cho admin
 		printf("\t\t=========================\n");
 		printf("\t\t[1] List of those who SIGNED UP.\n");
 		printf("\t\t[2] List of those who have right to SIGN IN.\n");
-		printf("\t\t[3] Grant permission for SIGN In.\n");							
+		printf("\t\t[3] Grant permission for SIGN IN.\n");							
 		printf("\t\t[0] Log out.\n");
 		printf("\t\t=========================\n");
 		printf("\t\tEnter your Choice: ");
@@ -635,17 +648,21 @@ void AccountManager () {  // menu quan ly tai khoan danh rieng cho admin
 		switch(choice) {
 			case 1: 
 				system("cls");
+				printf("		Signed Up		\n\n");
 				ShowAllAcc("SignUp.txt");
 				GoBackOrExit();
 				break;
 			case 2: 
 				system("cls");
+				printf("		Right to sign in\n\n");
 				ShowAllAcc("SignIn.txt");
 				GoBackOrExit();
 				break;
 			case 3: 
 				system("cls");
-				printf("da co cc gi dau\n\n");
+				printf("		Waiting for your permission\n\n");
+				GrantPermission("Waiting.txt");
+				GoBackOrExit();
 				break;
 			case 0: 
 				system("cls");
@@ -2998,7 +3015,7 @@ void ExitProject() {      // thoat chuong trinh
     exit(0);	
 }
 
-void ShowAllAcc(const char *filename) {
+void ShowAllAcc(const char *filename) {  // xuat cac file sign in, sign up
 	// kiem tra file co rong hay khong
 	file = fopen(filename, "r");	
 	fseek(file, 0, SEEK_END);	// di chuyen con tro toi cuoi file
@@ -3024,6 +3041,90 @@ void ShowAllAcc(const char *filename) {
 	printf("\n\n-------------------------------------\n\n");
 }
 
+void GrantPermission(const char *filename) {	//cho phep dang nhap
+	int IsGranting = 0;
+	while (!IsGranting) {
+		char username[20];
+		char accepted[20][200];
+		char *token;
+		// kiem tra file co rong hay khong
+		file = fopen(filename, "r");	
+		fseek(file, 0, SEEK_END);	// di chuyen con tro toi cuoi file
+		if (ftell(file) == 0) {
+			printf(" EMPTY file.\n\n");
+			fclose(file);
+			return;		// neu file rong thi return 
+		}
+		fclose(file);
+		//kiem tra xong
+		ShowAllAcc(filename);
+		printf(" Enter those username that you allow to sign in: ");
+		scanf(" %[^\n]s", &username);
+		
+		file = fopen(filename, "r");
+		char line[200][200];
+		int countLine = 0;
+		while (fgets(line[countLine], sizeof(line[countLine]), file) != NULL) {
+			countLine++;
+		}
+		fclose(file);
+		
+		
+		i = 0;
+		token = strtok(username, ", ");
+		while (token != NULL) {
+			strcpy(accepted[i], token);
+			token = strtok(NULL, ", ");
+			i++;
+		}
+		
+		FILE *tempFile = fopen("SignIn.txt", "a");
+		for (j = 0; j < i; j++) {
+			int found = 0;
+			int k;
+			for (k = 0; k < countLine; k++) {
+				if (strstr(line[k], accepted[j]) != NULL) {
+					found = 1;
+					fputs(line[k], tempFile);
+					strcpy(line[k], "");
+					break;
+				}
+			}
+			if (!found) {
+				printf(" The '%s' is not found. \n\n", accepted[j]);
+			}
+		}
+		fclose(tempFile);
+		
+		file = fopen(filename, "w");
+		for (j = 0; j < countLine; j++) {
+			if (strcmp(line[j], "") != 0) {
+				fprintf(file, "%s", line[j]);
+			}
+		}
+		fclose(file);
+		
+		printf("\n\n");
+		char Success[100]   = "               Granting Successfully                       \n\n";
+	    for (i = 0; i < strlen(Success); i++) {		// chay chu thank you
+	        printf("%c", Success[i]);
+	        Sleep(40);
+	    }
+		
+		for (j = 0; j < i; j++) {
+			strcpy(accepted[j], "");
+		}
+		printf(" Do you want to continue ? [Y/N]. Your answer: ");
+		char Choices;								// bien de nguoi dung nhap yes/no
+		scanf(" %c", &Choices);						
+		printf("\n");
+		if (Choices == 'Y' || Choices == 'y') {
+			IsGranting = 0;
+		} else if (Choices == 'N' || Choices == 'n') {
+			IsGranting = 1;
+		}
+	} // end IsGranting
+}
 
 
 
