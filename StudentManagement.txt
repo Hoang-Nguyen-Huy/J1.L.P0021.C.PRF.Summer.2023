@@ -1,7 +1,10 @@
- Nguyen Huy Hoang         SE180123   02-01-2002      Male      hoang@gmail.com          01234123433    Vinhomes            Nha Trang      
+ Nguyen Huy Hoang         SE180123   02-01-2004      Male      hoang@gmail.com          01234123433    Vinhomes            Nha Trang      
  Nguyen Hai Nam           SE180321   01-02-2002      Male      nam@gmail.com            01234322333    Vinhomes            Nha Trang      
  Bui Phuong Mai           SS180123   01-02-2002      Female    mai@gmail.com            0123123123     Vinhomes            Bien Hoa       
  Ho Phuong Nghi           SS180321   01-02-2002      Female    nghi@gmail.com           0102342343     Vinhoms             Ha Noi         
- Nguyen Minh Hoang        SE180433   01-02-2002      Male      mhoang@gmail.com         01234231323    Vinhomes            Nha Trang      
  Mai Xuan Hung            SE180456   14-10-2004      Male      hung@gmail.com           03214123433    Vinhomes            Nha Trang      
  Ha Thanh Cong            SE180498   30-01-2004      Male      cong@gmail.com           0123432423     quan4               Nha Trang      
+ Nguyen Thuy An           SS180111   01-02-2002      Female    an@gmail.com             03124231432    quan7               Sai Gon        
+ Ngo Thai Duong           SE180111   05-01-2004      Male      duong@gmail.com          0132432433     quan1               Nha Trang      
+ Nguyen Hoa Binh          SE180222   01-02-2003      Male      binh@gmail.com           0132423433     GoldenRiver         Hoa Binh       
+ Nguyen Minh Hoang        SE180433   01-02-2002      Male      mhoang@gmail.com         01342332232    LandMark            Dak Lak        

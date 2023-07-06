@@ -689,8 +689,12 @@ void Create () {  // tao hoc sinh
 	
 	int IsValidName = 0;
 	while (!IsValidName) {				// nhap ten sinh vien
-		printf(" Enter the Full Name: ");
+		printf(" Enter the Full Name(enter 'exit' if you want to go back to menu): ");
 		scanf(" %[^\n]s", &Name);			// co the nhap co khoang trang
+		if (strcmp(Name, "exit") == 0) {
+			printf("\n\n");
+			return;
+		}
 		if (strlen(Name) >= 22) {
 			printf(" Error: Name can not be more than 22 characters.\n\n");
 			IsValidName = 0;
@@ -1003,9 +1007,15 @@ void SearchStudent(const char *filename) {			// tim kiem
 	
 	int IsSearching = 0;
 	while (!IsSearching) {
-		printf(" Search by name[N]? or by ID[I]?: ");
+		printf(" Search by name[N]? or by ID[I]? or [E] to exit: ");
 		scanf(" %c", &Option);
 		printf("\n");
+		
+		if (Option == 'E' || Option == 'e') {
+			printf("\n\n");
+			return;
+		}
+		
 		if (Option == 'N' || Option == 'n') {		// tim kiem bang ten
 			printf(" Enter the name: ");
 			scanf(" %[^\n]s", &Name);
@@ -1265,9 +1275,13 @@ void Update(const char *filename) {    //cap nhat thong tin hoc sinh
 	
 	int IsUpdating = 0;
 	while (!IsUpdating) {
-		printf(" Search by name[N]? or by ID[I]?: ");
+		printf(" Search by name[N]? or by ID[I]?  or [E] to exit: ");
 		scanf(" %c", &Option);
 		printf("\n");
+		if (Option == 'e' || Option == 'E') {
+			printf("\n\n");
+			return;
+		}
 		if (Option == 'N' || Option == 'n') {		// tim kiem bang ten
 			printf(" Enter the name: ");
 			scanf(" %[^\n]s", &Name);
@@ -2427,10 +2441,15 @@ void DeleteSelectedStudent (const char *filename) {   // xoa hoc sinh duoc chon,
 	
 	int IsDeleting = 0;
 	while (!IsDeleting) {
-		printf(" Delete by Name[N] ? or by ID[I]? ");
+		printf(" Delete by Name[N] ? or by ID[I]? or [E] to exit");
 		printf(" Your choices: ");
 		scanf(" %c", &Option);
 		printf("\n");
+		if (Option == 'e' || Option == 'E') {
+			printf("\n\n");
+			system("cls");
+			return;
+		}
 		if (Option == 'N' || Option == 'n') {
 			printf(" Enter the name: ");
 			scanf(" %[^\n]s", &Name);
@@ -2663,8 +2682,13 @@ void DeleteManyStudents (const char *filename) {	// xoa nhieu hoc sinh
 		
 		printf("\n\n Eg: SE180123, SS180321, SE170433,...\n\n");
 		
-		printf(" Enter those ID that you want to delete: ");
+		printf(" Enter those ID that you want to delete('exit' to go back): ");
 		scanf(" %[^\n]s", &DelId);
+		
+		if (strcmp(DelId, "exit") == 0) {
+			system("cls");
+			return;
+		}
 	
 		i = 0;
 		p = strtok(DelId, ", ");
@@ -2759,8 +2783,14 @@ void DeleteInOneRange (const char *filename) {			// xoa 1 khoang trong file
 		char start[20];
 		int IsValidStart = 0;
 		while (!IsValidStart) {
-			printf("Enter the 'start' ID: ");
+			printf("Enter the 'start' ID ('exit' to go back): ");
 			scanf(" %s", &start);
+			
+			if (strcmp(start, "exit") == 0) {
+				system("cls");
+				return;
+			}
+			
 			if (IsExistsInFile(filename, start) == false) {
 				printf("The start ID is not found.\n\n");
 				IsValidStart = 0;
@@ -2864,8 +2894,13 @@ void DeleteManyRanges(const char *filename) {			// xoa nhieu khoang trong file
 		printf("\n\nEnter with this format: Start-End");
 		printf(" \n\nEg: SE180123-SE180321, SS180456-SE180567, ....\n\n");
 		
-		printf(" Enter those ranges of ID that you want to delete: ");
+		printf(" Enter those ranges of ID that you want to delete ('exit' to go back): ");
 		scanf(" %[^\n]s", RangesOfId);
+		
+		if (strcmp(RangesOfId, "exit") == 0) {
+			system("cls");
+			return;
+		}
 		
 		int i = 0;
 		token = strtok(RangesOfId, ", ");
@@ -3058,8 +3093,13 @@ void GrantPermission(const char *filename) {	//cho phep dang nhap
 		fclose(file);
 		//kiem tra xong
 		ShowAllAcc(filename);
-		printf(" Enter those username that you allow to sign in: ");
+		printf(" Enter those username that you allow to sign in (enter 'exit' if you want to go back to menu): ");
 		scanf(" %[^\n]s", &username);
+		
+		if (strcmp(username, "exit") == 0) {
+			printf("\n\n");
+			return;
+		}
 		
 		file = fopen(filename, "r");
 		char line[200][200];
