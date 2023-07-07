@@ -43,11 +43,12 @@ int TotalUsers = 0;
 FILE *file;
 //
 
-/*
+/* data
 StudentManagement.txt 		file de quan ly hoc sinh
 SignUp.txt					file de luu cac thong tin nguoi dung sau khi dang ky
 SignIn.txt					file de luu cac thong tin nguoi dung sau khi dang nhap
 Admin.txt					file chua tai khoan cua admin
+Waiting.txt					file chua cac tai khoan dang doi quyen dang nhap duoc quan li boi Admin
 */
 
 // cac ham de dang nhap, dang ki
@@ -189,7 +190,7 @@ void SignIn(const char *filename) {   //dang nhap cho nguoi dung
 	}
 	
 	while (!IsSignIn) {
-		
+		int noAcc = 0; // bien dung de kiem tra xem da sign up chua
 		printf("Enter your nick name: ");
 		scanf(" %[^\n]s", &nickName);
 		
@@ -208,7 +209,15 @@ void SignIn(const char *filename) {   //dang nhap cho nguoi dung
 		
 		printf("Enter your password: ");
 		scanf(" %s", &password);
+		//kiem tra trong file SignUp da co tai khoan hay chua
+		if (IsExistsInFile(filename, nickName) == false) {
+			printf("\n You have not signed up or the Admin has not approved you yet!!!\n\n");
+			Success = 0;
+			noAcc = 1;
+		}
+		// kiem tra xong
 		
+		// kiem tra username va mat khau
 		file = fopen(filename, "r");
 		while (fgets(line, sizeof(line), file)) {
 			if (strstr(line, nickName) != NULL) {
@@ -223,9 +232,18 @@ void SignIn(const char *filename) {   //dang nhap cho nguoi dung
 				Success = 1;
 				IsSignIn = 1;
 		}
+		// kiem tra username va mat khau xong
 		
-		if (Success == 0) {
+		if (Success == 0 && noAcc != 1) {
 			printf(" Your nick name or password is incorrect\n\n");
+			printf(" You want to sign in again ? [Y/N]: ");
+			scanf(" %c", &yesNo);
+			if (yesNo == 'Y' || yesNo == 'y') {
+				IsSignIn = 0;
+			} else {
+				IsSignIn = 1;
+			}
+		} else if (Success == 0 && noAcc == 1) {
 			printf(" You want to sign in again ? [Y/N]: ");
 			scanf(" %c", &yesNo);
 			if (yesNo == 'Y' || yesNo == 'y') {
