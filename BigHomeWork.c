@@ -735,7 +735,35 @@ void Create () {  // tao hoc sinh
 	while (!IsValidID) {				// nhap ma sinh vien
 		printf(" Enter the ID: ");
 		scanf("%s", &StudentID);
-		if (IsExistsInFile("StudentManagement.txt", StudentID) == true) {
+		//kiem tra 3 so dau tien
+		char firstThreeDigits[4];
+	    strncpy(firstThreeDigits, &StudentID[2], 3);
+	    firstThreeDigits[3] = '\0';
+	    
+	    int firstThreeDigitsInt = atoi(firstThreeDigits);
+	    
+		
+		// kiem tra 3 so cuoi
+	    char lastThreeDigits[4];
+	    strncpy(lastThreeDigits, &StudentID[5], 3);
+	    lastThreeDigits[3] = '\0';
+	    
+	    int lastThreeDigitsInt = atoi(lastThreeDigits);
+	    
+		
+		if (StudentID[0] != 'S') {
+			printf(" Error: This ID is not valid.\n\n");
+			IsValidID = 0;
+		} else if (StudentID[1] != 'S' && StudentID[1] != 'E') {
+			printf(" Error: This ID is not valid.\n\n");
+			IsValidID = 0;
+		} else if (firstThreeDigitsInt != 100 && firstThreeDigitsInt != 110 && firstThreeDigitsInt != 120 && firstThreeDigitsInt != 130 && firstThreeDigitsInt != 140 && firstThreeDigitsInt != 150 && firstThreeDigitsInt != 160 && firstThreeDigitsInt != 170 && firstThreeDigitsInt != 180 && firstThreeDigitsInt != 190) {
+	        printf(" Error: This ID is not valid.\n\n");
+			IsValidID = 0;
+	    } else if (lastThreeDigitsInt < 1 || lastThreeDigitsInt > 999) {
+	        printf(" Error: This ID is not valid.\n\n");
+			IsValidID = 0;
+	    } else if (IsExistsInFile("StudentManagement.txt", StudentID) == true) {
 			printf(" Error: This ID is already exists.\n\n");
 			IsValidID = 0;
 		} else if (strlen(StudentID) > 8) {

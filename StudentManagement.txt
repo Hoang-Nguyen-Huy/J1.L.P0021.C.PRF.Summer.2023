@@ -8,3 +8,4 @@
  Ngo Thai Duong           SE180111   05-01-2004      Male      duong@gmail.com          0132432433     quan1               Nha Trang      
  Nguyen Hoa Binh          SE180222   01-02-2003      Male      binh@gmail.com           0132423433     GoldenRiver         Hoa Binh       
  Nguyen Minh Hoang        SE180433   01-02-2002      Male      mhoang@gmail.com         01342332232    LandMark            Dak Lak        
+ Pham Hai Bang            SS180999   02-02-2002      Female    bang@gmail.com           0123423423     SilverStar          Ha Noi         
