@@ -2753,7 +2753,8 @@ void DeleteManyStudents (const char *filename) {	// xoa nhieu hoc sinh
 void DeleteInOneRange (const char *filename) {			// xoa 1 khoang trong file
 	int IsDeletingRange = 0;
 	while(!IsDeletingRange) {
-	
+		char start[20];
+		char end[20];
 		// kiem tra file co rong hay khong
 		file = fopen(filename, "r");	
 		fseek(file, 0, SEEK_END);	// di chuyen con tro toi cuoi file
@@ -2765,7 +2766,158 @@ void DeleteInOneRange (const char *filename) {			// xoa 1 khoang trong file
 		fclose(file);
 		//kiem tra xong
 	
-	
+		int IsEntering = 0;
+		while (!IsEntering) {
+			
+			int IsValidStart = 0;
+			while (!IsValidStart) {
+				printf("Enter the 'start' ID ('exit' to go back): ");
+				scanf(" %s", &start);
+				
+				if (strcmp(start, "exit") == 0) {
+					system("cls");
+					return;
+				}
+				
+				if (IsExistsInFile(filename, start) == false) {
+					printf("The start ID is not found.\n\n");
+					IsValidStart = 0;
+				} else if (strlen(start) > 8) {
+					printf("The ID is not valid\n\n");
+					IsValidStart = 0;
+				} else {
+					IsValidStart = 1;
+				}
+			}
+			
+			
+			int IsValidEnd = 0;
+			while (!IsValidEnd) {
+				printf("Enter the 'end' ID: ");
+				scanf(" %s", &end);
+				if (IsExistsInFile(filename, end) == false) {
+					printf("The end ID is not found.\n\n");
+					IsValidEnd = 0;
+				} else if (strlen(end) > 8) {
+					printf("The end ID is not found.\n\n");
+					IsValidEnd = 0;
+				} else {
+					IsValidEnd = 1;
+				}
+			}
+			
+			//kiem tra 'start' co o tren 'end' hay khong
+			file = fopen(filename, "r");
+			char checkLineStart[200];
+			char checkLineEnd[200];
+			TotalStudents = 0;
+			while(fgets(checkLineStart, sizeof(checkLineEnd), file) != NULL) {
+				if (strstr(checkLineStart, start) != NULL) {
+					char Country1[20], Country2[20];
+					char* p = strtok(checkLineStart, " ");
+			        strcpy(Students[TotalStudents].LastName, p);
+			
+			        p = strtok(NULL, " ");
+			        strcpy(Students[TotalStudents].MiddleName, p);
+			
+			        p = strtok(NULL, " ");
+			        strcpy(Students[TotalStudents].FirstName, p);
+			
+			        sprintf(Students[TotalStudents].Name, "%s %s %s", Students[TotalStudents].LastName, Students[TotalStudents].MiddleName, Students[TotalStudents].FirstName);
+			
+			        p = strtok(NULL, " ");
+			        strcpy(Students[TotalStudents].ID, p);
+			
+			        p = strtok(NULL, " ");
+			        strcpy(Students[TotalStudents].DateOfBirth, p);
+			
+			        p = strtok(NULL, " ");
+			        strcpy(Students[TotalStudents].Sex, p);
+			
+			        p = strtok(NULL, " ");
+			        strcpy(Students[TotalStudents].Email, p);
+			
+			        p = strtok(NULL, " ");
+			        strcpy(Students[TotalStudents].PhoneNumber, p);
+			
+			        p = strtok(NULL, " ");
+			        strcpy(Students[TotalStudents].PresentAddress, p);
+			
+			        p = strtok(NULL, " ");
+			        strcpy(Country1, p);
+			
+			        p = strtok(NULL, " ");
+			        strcpy(Country2, p);
+			
+			        sprintf(Students[TotalStudents].Countries, "%s %s", Country1, Country2);
+			
+			        TotalStudents++;
+				}
+			}
+			
+			while (fgets(checkLineEnd, sizeof(checkLineEnd), file) != NULL) {
+				if (strstr(checkLineEnd, end) != NULL) {
+					char Country1[20], Country2[20];
+					char* p = strtok(checkLineEnd, " ");
+			        strcpy(Students[TotalStudents].LastName, p);
+			
+			        p = strtok(NULL, " ");
+			        strcpy(Students[TotalStudents].MiddleName, p);
+			
+			        p = strtok(NULL, " ");
+			        strcpy(Students[TotalStudents].FirstName, p);
+			
+			        sprintf(Students[TotalStudents].Name, "%s %s %s", Students[TotalStudents].LastName, Students[TotalStudents].MiddleName, Students[TotalStudents].FirstName);
+			
+			        p = strtok(NULL, " ");
+			        strcpy(Students[TotalStudents].ID, p);
+			
+			        p = strtok(NULL, " ");
+			        strcpy(Students[TotalStudents].DateOfBirth, p);
+			
+			        p = strtok(NULL, " ");
+			        strcpy(Students[TotalStudents].Sex, p);
+			
+			        p = strtok(NULL, " ");
+			        strcpy(Students[TotalStudents].Email, p);
+			
+			        p = strtok(NULL, " ");
+			        strcpy(Students[TotalStudents].PhoneNumber, p);
+			
+			        p = strtok(NULL, " ");
+			        strcpy(Students[TotalStudents].PresentAddress, p);
+			
+			        p = strtok(NULL, " ");
+			        strcpy(Country1, p);
+			
+			        p = strtok(NULL, " ");
+			        strcpy(Country2, p);
+			
+			        sprintf(Students[TotalStudents].Countries, "%s %s", Country1, Country2);
+			
+				}
+			}
+			
+			int result = strcmp(Students[0].FirstName, Students[1].FirstName);
+			if (result == 0) {
+				result = strcmp(Students[0].MiddleName, Students[1].MiddleName);
+				if (result == 0) {
+					result = strcmp(Students[0].LastName, Students[1].LastName);
+				}
+			}
+			if (result > 0) {
+				printf("\n You entered the wrong order!!!\n\n");
+				IsEntering = 0;
+			} else {
+				IsEntering = 1;
+			}
+		
+		fclose(file);
+		//kiem tra xong
+		} // nhap xong
+		
+		
+		
 		// M? file cho d?c
 	    FILE* file = fopen(filename, "r");
 	    if (file == NULL) {
@@ -2780,44 +2932,7 @@ void DeleteInOneRange (const char *filename) {			// xoa 1 khoang trong file
 	        fclose(file);
 	        return;
 	    }
-		char start[20];
-		int IsValidStart = 0;
-		while (!IsValidStart) {
-			printf("Enter the 'start' ID ('exit' to go back): ");
-			scanf(" %s", &start);
 			
-			if (strcmp(start, "exit") == 0) {
-				system("cls");
-				return;
-			}
-			
-			if (IsExistsInFile(filename, start) == false) {
-				printf("The start ID is not found.\n\n");
-				IsValidStart = 0;
-			} else if (strlen(start) > 8) {
-				printf("The ID is not valid\n\n");
-				IsValidStart = 0;
-			} else {
-				IsValidStart = 1;
-			}
-		}
-		
-		char end[20];
-		int IsValidEnd = 0;
-		while (!IsValidEnd) {
-			printf("Enter the 'end' ID: ");
-			scanf(" %s", &end);
-			if (IsExistsInFile(filename, end) == false) {
-				printf("The end ID is not found.\n\n");
-				IsValidEnd = 0;
-			} else if (strlen(end) > 8) {
-				printf("The end ID is not found.\n\n");
-				IsValidEnd = 0;
-			} else {
-				IsValidEnd = 1;
-			}
-		}
-		
 	    // Ð?c t?ng dòng trong file
 	    char line[200];
 	    int deleteFlag = 0; // C? xác d?nh khi nào b?t d?u và k?t thúc kho?ng c?n xóa
