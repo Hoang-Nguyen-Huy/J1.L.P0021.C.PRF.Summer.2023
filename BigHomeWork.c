@@ -52,7 +52,6 @@ Waiting.txt					file chua cac tai khoan dang doi quyen dang nhap duoc quan li bo
 */
 
 // cac ham de dang nhap, dang ki
-void takePassword(char pwd[50]);  // bien mat khau thanh***
 void SignIn(const char *filename);
 void SignUp(const char *filename);
 // end
