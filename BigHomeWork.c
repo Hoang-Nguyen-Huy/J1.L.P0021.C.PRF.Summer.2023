@@ -429,6 +429,7 @@ void MenuForLogging() {  // menu de logging
 		printf("===============Welcome to my project===============\n\n");
 		printf("               [1]. Sign in.\n");
 		printf("               [2]. Sign up.\n");
+		printf("               [3]. Guidline.\n");
 		printf("               [0]. Exit app.\n");
 		printf(" Enter your option: ");
 		scanf("%s", checkOption);
@@ -446,8 +447,13 @@ void MenuForLogging() {  // menu de logging
 				break;
 			case 2: 
 				system("cls");
-				printf("===============SIGN UP===============\n\n");
+				printf("===================================SIGN UP=====================================\n\n");
 				SignUp("SignUp.txt");
+				break;
+			case 3: 
+				system("cls");
+				GuidlineToSignUp();
+				GoBackOrExit();
 				break;
 			case 0: 
 				system("cls");
@@ -3326,6 +3332,45 @@ void GrantPermission(const char *filename) {	//cho phep dang nhap
 	} // end IsGranting
 }
 
+
+void GuidlineToSignUp () {   // huong dang sign in va sign up
+	char HowToSignUp[200] = " 1.If you don't have an account, you should create one by pressing '2'\n";
+	char SignUpNo1[200] = "   .Username cannot contain spaces and the number of characters must be > 0 and <= 18\n";
+	char SignUpNo2[200] = "   .Password only need to have the number of characters >= 8 and <= 18\n";
+	char SignUpNo3[200] = "   .After creating an account successfully, you need to wait for the login permission from the admin\n";
+    char HowToSignIn[200] = " 2.If you already have an account and have permission to login from the admin, you can log in as employee.\n";
+    
+    for (i = 0; i < strlen(HowToSignUp); i++) {			// chay chu thank you
+        printf("%c", HowToSignUp[i]);
+        Sleep(40);
+    }
+    printf("\n");
+    system("pause");
+    printf("\n");
+    for (i = 0; i < strlen(SignUpNo1); i++) {			// chay chu thank you
+        printf("%c", SignUpNo1[i]);
+        Sleep(40);
+    }
+    for (i = 0; i < strlen(SignUpNo2); i++) {			// chay chu thank you
+        printf("%c", SignUpNo2[i]);
+        Sleep(40);
+    }
+    for (i = 0; i < strlen(SignUpNo3); i++) {			// chay chu thank you
+        printf("%c", SignUpNo3[i]);
+        Sleep(40);
+    }
+    printf("\n");
+    system("pause");
+    printf("\n");
+    for (i = 0; i < strlen(HowToSignIn); i++) {			// chay chu thank you
+        printf("%c", HowToSignIn[i]);
+        Sleep(40);
+    }
+    
+    printf("\n\n");
+    system("pause");
+    printf("\n\n");
+}
 
 
 
