@@ -430,6 +430,7 @@ void MenuForLogging() {  // menu de logging
 		printf("               [1]. Sign in.\n");
 		printf("               [2]. Sign up.\n");
 		printf("               [3]. Guidline.\n");
+		printf("               [4]. About me.\n");
 		printf("               [0]. Exit app.\n");
 		printf(" Enter your option: ");
 		scanf("%s", checkOption);
@@ -453,6 +454,11 @@ void MenuForLogging() {  // menu de logging
 			case 3: 
 				system("cls");
 				GuidlineToSignUp();
+				GoBackOrExit();
+				break;
+			case 4: 
+				system("cls");
+				AboutMe();
 				GoBackOrExit();
 				break;
 			case 0: 
@@ -3372,6 +3378,14 @@ void GuidlineToSignUp () {   // huong dang sign in va sign up
     printf("\n\n");
 }
 
-
+void AboutMe () {
+	printf(" My name is: Nguyen Huy Hoang\n");
+	printf(" I am studying at FPT University in Ho Chi Minh City\n");
+	printf(" This is considered as a great PRF class exercise as well as a first project of my own\n");
+	printf(" I did this project in the summer semester of 2023, when I was 19 years old\n");
+	printf(" This project may not be perfect but I still hope everyone enjoys it\n");
+	printf(" Thank you all\n");
+	printf("\n\n");
+}
 
 
